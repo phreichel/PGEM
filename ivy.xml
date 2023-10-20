@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ivy-module
+	version="2.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
+	
+	<info
+		organisation="phi"
+		module="engine"
+		status="integration">
+	</info>
+	
+	<dependencies>
+
+		<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+		<dependency org="org.projectlombok" name="lombok" rev="1.18.28"/>
+
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
+		<dependency org="com.fasterxml.jackson.core" name="jackson-core" rev="2.15.2"/>
+
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations -->
+		<dependency org="com.fasterxml.jackson.core" name="jackson-annotations" rev="2.15.2"/>
+
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+		<dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.15.2"/>
+
+		<!-- https://mvnrepository.com/artifact/javax.vecmath/vecmath -->
+		<dependency org="javax.vecmath" name="vecmath" rev="1.5.2"/>
+
+		<!-- https://mvnrepository.com/artifact/org.jogamp.gluegen/gluegen-rt -->
+		<dependency org="org.jogamp.gluegen" name="gluegen-rt" rev="2.3.2"/>
+		
+		<!-- https://mvnrepository.com/artifact/org.jogamp.gluegen/gluegen-rt-main -->
+		<dependency org="org.jogamp.gluegen" name="gluegen-rt-main" rev="2.3.2"/>
+
+		<!-- https://mvnrepository.com/artifact/org.jogamp.jogl/jogl-all -->
+		<dependency org="org.jogamp.jogl" name="jogl-all" rev="2.3.2"/>
+
+		<!-- https://mvnrepository.com/artifact/org.jogamp.jogl/jogl-all-main -->
+		<dependency org="org.jogamp.jogl" name="jogl-all-main" rev="2.3.2"/>
+
+		<!-- https://mvnrepository.com/artifact/org.jogamp.jogl/oculusvr -->
+		<dependency org="org.jogamp.jogl" name="oculusvr" rev="2.3.2"/>
+
+		<!-- https://mvnrepository.com/artifact/org.jogamp.joal/joal -->
+		<dependency org="org.jogamp.joal" name="joal" rev="2.3.2"/>
+	
+		<!-- https://mvnrepository.com/artifact/org.jogamp.joal/joal-main -->
+		<dependency org="org.jogamp.joal" name="joal-main" rev="2.3.2"/>
+		
+		<!-- https://mvnrepository.com/artifact/org.orekit/orekit -->
+		<dependency org="org.orekit" name="orekit" rev="11.3.2"/>
+		
+		<!-- https://mvnrepository.com/artifact/org.hipparchus/hipparchus-core -->
+		<dependency org="org.hipparchus" name="hipparchus-core" rev="2.3"/>
+
+		<!-- https://mvnrepository.com/artifact/org.hipparchus/hipparchus-geometry -->
+		<dependency org="org.hipparchus" name="hipparchus-geometry" rev="2.3"/>
+		
+		<!-- https://mvnrepository.com/artifact/org.hipparchus/hipparchus-ode -->
+		<dependency org="org.hipparchus" name="hipparchus-ode" rev="2.3"/>
+		
+		<!-- https://mvnrepository.com/artifact/org.hipparchus/hipparchus-fitting -->
+		<dependency org="org.hipparchus" name="hipparchus-fitting" rev="2.3"/>
+		
+		<!-- https://mvnrepository.com/artifact/org.hipparchus/hipparchus-optim -->
+		<dependency org="org.hipparchus" name="hipparchus-optim" rev="2.3"/>
+	
+		<!-- https://mvnrepository.com/artifact/org.hipparchus/hipparchus-filtering -->
+		<dependency org="org.hipparchus" name="hipparchus-filtering" rev="2.3"/>
+	
+		<!-- https://mvnrepository.com/artifact/org.hipparchus/hipparchus-stat -->
+		<dependency org="org.hipparchus" name="hipparchus-stat" rev="2.3"/>
+	
+	</dependencies>
+	
+</ivy-module>
