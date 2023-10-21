@@ -4,12 +4,18 @@ package pgem.gui;
 
 import java.io.File;
 
+import javax.vecmath.Vector2f;
+
 import pgem.render.Graphics;
 import pgem.render.Renderer;
 
 //*************************************************************************************************
 public class GUIRenderer implements Renderer {
 
+	//=============================================================================================
+	private static final Vector2f ZERO = new Vector2f();
+	//=============================================================================================
+	
 	//=============================================================================================
 	private final GUI gui;
 	//=============================================================================================
@@ -52,6 +58,7 @@ public class GUIRenderer implements Renderer {
 
 	//=============================================================================================
 	private void render(Widget widget) {
+		if (widget.renders.contains(Render.HIDDEN)) return;
 		g.pushTransform();
 		g.translate(widget.position());
 		startTransparent(widget);
@@ -87,23 +94,30 @@ public class GUIRenderer implements Renderer {
 	private void renderBackground(Widget widget) {
 		if (!widget.renders.contains(Render.BACKGROUND)) return;
 		g.color(widget.backgroundColor);
-		g.rectangle(true, 0f, 0f, widget.size().x, widget.size().y);
+		g.rectangle(true, ZERO, widget.size());
 	}
 	//=============================================================================================
 
 	//=============================================================================================
 	private void renderImage(Widget widget) {
 		if (!widget.renders.contains(Render.IMAGE)) return;
-		g.color(widget.imageColor);
-		g.image(widget.image(), 0, 0, widget.size().x, widget.size().y);
+		g.color(widget.imageData.color);
+		g.image(widget.imageData.name, ZERO, widget.size());
 	}
 	//=============================================================================================
 
 	//=============================================================================================
 	private void renderText(Widget widget) {
 		if (!widget.renders.contains(Render.TEXT)) return;
-		g.color(widget.textColor);
-		g.write(widget.font(), widget.text(), 0, 0, widget.size().x, widget.size().y);
+		g.color(widget.textData.color);
+		g.text(
+			widget.textData.font,
+			widget.textData.text,
+			ZERO,
+			widget.size(),
+			widget.textData.horizontalAlign,
+			widget.textData.verticalAlign
+		);
 	}
 	//=============================================================================================
 	

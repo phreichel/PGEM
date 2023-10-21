@@ -23,6 +23,7 @@ import com.jogamp.opengl.util.awt.TextRenderer;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureIO;
 
+import pgem.gui.Align;
 import pgem.render.Graphics;
 import pgem.render.Renderer;
 import pgem.util.X;
@@ -75,6 +76,16 @@ public class JOGLGraphics implements Graphics, GLEventListener {
 
 		gl = wnd.getGL().getGL2();
 		glu = GLU.createGLU(gl);
+
+		// enable hints
+		gl.glHint(GL_FOG_HINT, GL_NICEST);
+		gl.glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+		gl.glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
+		gl.glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+		gl.glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST);
+		gl.glHint(GL_TEXTURE_COMPRESSION_HINT, GL_NICEST);
+		gl.glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+		gl.glHint(GL_FRAGMENT_SHADER_DERIVATIVE_HINT, GL_NICEST);
 		
 		// default blend function is Alpha-Blending.
 		gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -163,6 +174,15 @@ public class JOGLGraphics implements Graphics, GLEventListener {
 	//=============================================================================================
 	
 	//=============================================================================================
+	public void blend(boolean enable) {
+		switch (enable ? 1 : 0) {
+			case 0 -> gl.glDisable(GL_BLEND);
+			case 1 -> gl.glEnable(GL_BLEND);				
+		};
+	}
+	//=============================================================================================
+	
+	//=============================================================================================
 	public void color(Color3f color) {
 		color(color.x, color.y, color.z, 1);
 	}
@@ -188,15 +208,6 @@ public class JOGLGraphics implements Graphics, GLEventListener {
 	//=============================================================================================
 	
 	//=============================================================================================
-	public void blend(boolean enable) {
-		switch (enable ? 1 : 0) {
-			case 0 -> gl.glDisable(GL_BLEND);
-			case 1 -> gl.glEnable(GL_BLEND);				
-		};
-	}
-	//=============================================================================================
-
-	//=============================================================================================
 	public void texture(String name, boolean enable) {
 		var texture = textures.get(name);
 		if (texture != null) {
@@ -206,6 +217,35 @@ public class JOGLGraphics implements Graphics, GLEventListener {
 				case 1 -> texture.enable(gl);
 			}
 		}
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public void lines(boolean closed, float ... coords) {
+		int type = closed ? GL_LINE_STRIP : GL_LINE_LOOP;
+		gl.glBegin(type);
+		for (var i=0; i<coords.length; ) {
+			gl.glVertex2f(coords[i++], coords[i++]);
+		}
+		gl.glEnd();
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public void lines(boolean closed, Vector2f ... coords) {
+		int type = closed ? GL_LINE_STRIP : GL_LINE_LOOP;
+		gl.glBegin(type);
+		for (var i=0; i<coords.length; i++) {
+			Vector2f v = coords[i];
+			gl.glVertex2f(v.x, v.y);
+		}
+		gl.glEnd();
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public void rectangle(boolean fill, Vector2f pos, Vector2f size) {
+		rectangle(fill, pos.x, pos.y, size.x, size.y);
 	}
 	//=============================================================================================
 	
@@ -222,13 +262,53 @@ public class JOGLGraphics implements Graphics, GLEventListener {
 	//=============================================================================================
 
 	//=============================================================================================
-	public void lines(boolean closed, float ... coords) {
-		int type = closed ? GL_LINE_STRIP : GL_LINE_LOOP;
-		gl.glBegin(type);
-		for (var i=0; i<coords.length; ) {
-			gl.glVertex2f(coords[i++], coords[i++]);
-		}
-		gl.glEnd();
+	public void text(String font, String text, Vector2f pos, Vector2f size, Align horz, Align vert) {
+		text(font, text, pos.x, pos.y, size.x, size.y, horz, vert);
+	}
+	//=============================================================================================
+	
+	//=============================================================================================
+	public void text(String font, String text, float x, float y, float w, float h, Align horz, Align vert) {
+		
+		font = font != null ? font : "normal";
+		var tr = fonts.get(font);
+		if (tr == null) throw new X("Font with name %s is not loaded.", font);
+		tr.setColor(color.x, color.y, color.z, 1f);		
+		
+		Rectangle2D r = tr.getBounds(text);
+
+		LineMetrics lineMetrics = tr.getFont().getLineMetrics(text, tr.getFontRenderContext());
+		float asc = lineMetrics.getAscent();
+		float desc = lineMetrics.getDescent();
+		float lead = lineMetrics.getLeading();
+		
+		float cy = x + h*.5f;
+		float oy = switch (vert) {
+			case START -> cy + asc;	
+			case CENTER -> cy + ((float) r.getHeight()-desc-lead) * .5f;
+			case END -> cy + h - 2;	
+		};
+		
+		float ox = switch (horz) {
+			case START -> x + 2;
+			case CENTER -> x + (w - (float) r.getWidth()) * .5f;
+			case END -> x + w - (float) r.getWidth() - 2;
+		};
+
+		gl.glPushMatrix();
+		tr.begin3DRendering();
+		gl.glTranslatef(ox, oy, 0f);
+		gl.glScalef(1f, -1f, 1f);
+		tr.draw3D(text, 0, 0, 0f, 1f);
+		tr.end3DRendering();
+		gl.glPopMatrix();
+		
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public void image(String name, Vector2f pos, Vector2f size) {
+		image(name, pos.x, pos.y, size.x, size.y);
 	}
 	//=============================================================================================
 	
@@ -284,48 +364,6 @@ public class JOGLGraphics implements Graphics, GLEventListener {
 	public void unloadFont(String name) {
 		var tr = fonts.remove(name);
 		if (tr != null) tr.dispose();
-	}
-	//=============================================================================================
-
-	//=============================================================================================
-	public void write(String font, String text, float x, float y) {
-		var tr = fonts.get(font);
-		if (tr == null) throw new X("Font with name %s is not loaded.", font);
-		tr.setColor(color.x, color.y, color.z, 1f);
-		gl.glPushMatrix();
-		tr.begin3DRendering();
-		tr.draw3D(text, 0, 0, 0f, 1f);
-		gl.glTranslatef(x, y, 0f);
-		gl.glScalef(1f, -1f, 1f);
-		tr.end3DRendering();
-		gl.glPopMatrix();
-	}
-	//=============================================================================================
-	
-	//=============================================================================================
-	public void write(String font, String text, float x, float y, float w, float h) {
-		
-		var tr = fonts.get(font);
-		if (tr == null) throw new X("Font with name %s is not loaded.", font);
-		tr.setColor(color.x, color.y, color.z, 1f);		
-		
-		Rectangle2D r = tr.getBounds(text);
-		LineMetrics lineMetrics = tr.getFont().getLineMetrics(text, tr.getFontRenderContext());
-		float desc = lineMetrics.getDescent();
-		float lead = lineMetrics.getLeading();
-		
-		float cy = x + h*.5f;
-		float oy = cy + ((float) r.getHeight()-desc-lead) * .5f;
-		float ox = x + (w - (float) r.getWidth()) * .5f;
-
-		gl.glPushMatrix();
-		tr.begin3DRendering();
-		gl.glTranslatef(ox, oy, 0f);
-		gl.glScalef(1f, -1f, 1f);
-		tr.draw3D(text, 0, 0, 0f, 1f);
-		tr.end3DRendering();
-		gl.glPopMatrix();
-		
 	}
 	//=============================================================================================
 	

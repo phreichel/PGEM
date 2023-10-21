@@ -4,7 +4,6 @@ package pgem.app;
 
 import pgem.msg.MsgHub;
 import pgem.gui.GUI;
-import pgem.gui.Render;
 import pgem.gui.Widget;
 import pgem.log.Level;
 import pgem.log.Log;
@@ -40,22 +39,31 @@ public class App {
 		msgHub.link(
 			MsgType.WND_CLOSE,
 			this::handleQuit);
-		
-		Widget w = new Widget();
-		w.renders.add(Render.BACKGROUND);
-		w.renders.add(Render.BORDER);
-		w.renders.add(Render.TRANSPARENT);
-		w.dock.set(0, 0, 0, 0);
-		w.position(100, 200);
-		w.size(150, 18);
-		gui.root.size(800, 600);
-		//w.image("TEST");
-		w.text("caption", "Hello World guys!");
-		w.borderColor.set(0, 0, 1, .3f);
-		w.backgroundColor.set(1, 1, 1, .3f);
-		w.textColor.set(1, 0, 0, .5f);
-		w.parent(gui.root);
 
+		Widget panel = gui.factory().panel(400, 300);
+		panel.position(2, 2);
+		panel.dock.set(0, 0, 1, 1);
+		panel.parent(gui.root);
+		
+		Widget label = gui.factory().label("Hello, World!", 100, 18);
+		label.position(2, 2);
+		label.parent(panel);
+
+		Widget textbox = gui.factory().textBox("Hello, World!", 294, 18);
+		textbox.position(2 + 100 + 2, 2);
+		textbox.dock.set(0, 0, 0, 1);
+		textbox.parent(panel);
+
+		Widget apply = gui.factory().button("APPLY", 60, 18);
+		apply.position(139, 300 - 20);
+		apply.dock.set(1, .5f, 1, .5f);
+		apply.parent(panel);
+
+		Widget cancel = gui.factory().button("CANCEL", 60, 18);
+		cancel.position(201, 300 - 20);
+		cancel.dock.set(1, .5f, 1, .5f);
+		cancel.parent(panel);
+		
 		gui.hook(msgHub);
 		gui.hook(port);
 		port.link(msgHub);	
