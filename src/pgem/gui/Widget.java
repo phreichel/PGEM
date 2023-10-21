@@ -7,6 +7,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.vecmath.Color4f;
 import javax.vecmath.Vector2f;
 
 //*************************************************************************************************
@@ -15,13 +16,29 @@ public class Widget {
 	//=============================================================================================
 	private Widget parent = null;
 	private final List<Widget> children = new ArrayList<>();
+	//=============================================================================================
+	
+	//=============================================================================================
 	private final Vector2f position = new Vector2f();
 	private final Vector2f size = new Vector2f(800, 600);
-	public final Dock dock = new Dock();
-	public LayoutStyle layoutStyle = LayoutStyle.NONE;
-	public final Set<RenderFlag> renderFlags = EnumSet.noneOf(RenderFlag.class);
 	//=============================================================================================
 
+	//=============================================================================================
+	public final Set<Render> renders = EnumSet.noneOf(Render.class);
+	public final Dock dock = new Dock();
+	public final Color4f textColor = new Color4f(0f, 0f, 0f, 1f);
+	public final Color4f borderColor = new Color4f(.8f, .8f, .8f, 1f);
+	public final Color4f backgroundColor = new Color4f(.9f, .9f, .9f, 1f);
+	public final Color4f imageColor = new Color4f(1f, 1f, 1f, 1f);
+	public Layout layout = Layout.NONE;
+	//=============================================================================================
+
+	//=============================================================================================
+	private String font = null;
+	private String text = null;
+	private String image = null;
+	//=============================================================================================
+	
 	//=============================================================================================
 	public Widget parent() {
 		return parent;
@@ -92,6 +109,57 @@ public class Widget {
 		float nh = size.y + dh * (dock.bottom-dock.top);
 		position(nx, ny);
 		size(nw, nh);
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public String font() {
+		return (font==null) ? "normal" : font;
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public void font(String font) {
+		this.font = font;
+	}
+	//=============================================================================================
+	
+	//=============================================================================================
+	public String text() {
+		return text;
+	}
+	//=============================================================================================
+	
+	//=============================================================================================
+	public void text(String font, String text) {
+		font(font);
+		text(text);
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public void text(String text) {
+		switch ((text == null) ? 0 : 1) {
+			case 0 -> renders.remove(Render.TEXT); 
+			case 1 -> renders.add(Render.TEXT);
+		}
+		this.text = text;
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public String image() {
+		return image;
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public void image(String image) {
+		switch ((image == null) ? 0 : 1) {
+			case 0 -> renders.remove(Render.IMAGE); 
+			case 1 -> renders.add(Render.IMAGE);
+		}
+		this.image = image;
 	}
 	//=============================================================================================
 	

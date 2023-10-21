@@ -3,6 +3,8 @@ package pgem.render.jogl;
 //*************************************************************************************************
 
 import java.awt.Font;
+import java.awt.font.LineMetrics;
+import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.vecmath.Color3f;
+import javax.vecmath.Color4f;
 import javax.vecmath.Vector2f;
 
 import com.jogamp.opengl.GL2;
@@ -41,7 +44,7 @@ public class JOGLGraphics implements Graphics, GLEventListener {
 	//=============================================================================================
 
 	//=============================================================================================
-	private final Color3f color = new Color3f();
+	private final Color4f color = new Color4f(0, 0, 0, 1);
 	//=============================================================================================
 	
 	//=============================================================================================
@@ -67,7 +70,9 @@ public class JOGLGraphics implements Graphics, GLEventListener {
 	
 	//=============================================================================================
 	public void init(GLAutoDrawable drawable) {
+
 		wnd = drawable;
+
 		gl = wnd.getGL().getGL2();
 		glu = GLU.createGLU(gl);
 		
@@ -138,12 +143,6 @@ public class JOGLGraphics implements Graphics, GLEventListener {
 		
 	}
 	//=============================================================================================
-
-	//=============================================================================================
-	public void translate(Vector2f position) {
-		gl.glTranslatef(position.x, position.y, 0f);
-	}
-	//=============================================================================================
 	
 	//=============================================================================================
 	public void pushTransform() {
@@ -152,6 +151,43 @@ public class JOGLGraphics implements Graphics, GLEventListener {
 	//=============================================================================================
 
 	//=============================================================================================
+	public void popTransform() {
+		gl.glPopMatrix();
+	}
+	//=============================================================================================
+	
+	//=============================================================================================
+	public void translate(Vector2f position) {
+		gl.glTranslatef(position.x, position.y, 0f);
+	}
+	//=============================================================================================
+	
+	//=============================================================================================
+	public void color(Color3f color) {
+		color(color.x, color.y, color.z, 1);
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public void color(Color4f color) {
+		color(color.x, color.y, color.z, color.w);
+	}
+	//=============================================================================================
+	
+	//=============================================================================================
+	public void color(float r, float g, float b) {
+		color(r, g, b, 1);
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public void color(float r, float g, float b, float a) {
+		color.set(r, g, b, a);
+		gl.glColor4f(r, g, b, a);
+	}
+	//=============================================================================================
+	
+	//=============================================================================================
 	public void blend(boolean enable) {
 		switch (enable ? 1 : 0) {
 			case 0 -> gl.glDisable(GL_BLEND);
@@ -159,7 +195,7 @@ public class JOGLGraphics implements Graphics, GLEventListener {
 		};
 	}
 	//=============================================================================================
-	
+
 	//=============================================================================================
 	public void texture(String name, boolean enable) {
 		var texture = textures.get(name);
@@ -174,20 +210,7 @@ public class JOGLGraphics implements Graphics, GLEventListener {
 	//=============================================================================================
 	
 	//=============================================================================================
-	public void popTransform() {
-		gl.glPopMatrix();
-	}
-	//=============================================================================================
-
-	//=============================================================================================
-	public void color(float r, float g, float b) {
-		color.set(r, g, b);
-		gl.glColor3f(r, g, b);
-	}
-	//=============================================================================================
-
-	//=============================================================================================
-	public void rectangle(float x, float y, float w, float h, boolean fill) {
+	public void rectangle(boolean fill, float x, float y, float w, float h) {
 		int type = fill ? GL_QUADS : GL_LINE_LOOP;
 		gl.glBegin(type);
 		gl.glVertex2f(x+0, y+0);
@@ -198,6 +221,17 @@ public class JOGLGraphics implements Graphics, GLEventListener {
 	}
 	//=============================================================================================
 
+	//=============================================================================================
+	public void lines(boolean closed, float ... coords) {
+		int type = closed ? GL_LINE_STRIP : GL_LINE_LOOP;
+		gl.glBegin(type);
+		for (var i=0; i<coords.length; ) {
+			gl.glVertex2f(coords[i++], coords[i++]);
+		}
+		gl.glEnd();
+	}
+	//=============================================================================================
+	
 	//=============================================================================================
 	public void image(String name, float x, float y, float w, float h) {
 		texture(name, true);
@@ -265,6 +299,33 @@ public class JOGLGraphics implements Graphics, GLEventListener {
 		gl.glScalef(1f, -1f, 1f);
 		tr.end3DRendering();
 		gl.glPopMatrix();
+	}
+	//=============================================================================================
+	
+	//=============================================================================================
+	public void write(String font, String text, float x, float y, float w, float h) {
+		
+		var tr = fonts.get(font);
+		if (tr == null) throw new X("Font with name %s is not loaded.", font);
+		tr.setColor(color.x, color.y, color.z, 1f);		
+		
+		Rectangle2D r = tr.getBounds(text);
+		LineMetrics lineMetrics = tr.getFont().getLineMetrics(text, tr.getFontRenderContext());
+		float desc = lineMetrics.getDescent();
+		float lead = lineMetrics.getLeading();
+		
+		float cy = x + h*.5f;
+		float oy = cy + ((float) r.getHeight()-desc-lead) * .5f;
+		float ox = x + (w - (float) r.getWidth()) * .5f;
+
+		gl.glPushMatrix();
+		tr.begin3DRendering();
+		gl.glTranslatef(ox, oy, 0f);
+		gl.glScalef(1f, -1f, 1f);
+		tr.draw3D(text, 0, 0, 0f, 1f);
+		tr.end3DRendering();
+		gl.glPopMatrix();
+		
 	}
 	//=============================================================================================
 	

@@ -4,7 +4,7 @@ package pgem.app;
 
 import pgem.msg.MsgHub;
 import pgem.gui.GUI;
-import pgem.gui.RenderFlag;
+import pgem.gui.Render;
 import pgem.gui.Widget;
 import pgem.log.Level;
 import pgem.log.Log;
@@ -28,32 +28,40 @@ public class App {
 	
 	//=============================================================================================
 	private void init() {
+
 		terminate = false;
+		
 		Log.getDefault().enable(
 			Level.INFO,
 			Level.WARNING,
 			Level.ERROR,
 			Level.DEBUG);
+		
 		msgHub.link(
 			MsgType.WND_CLOSE,
 			this::handleQuit);
 		
 		Widget w = new Widget();
-		w.renderFlags.add(RenderFlag.BACKGROUND);
-		w.renderFlags.add(RenderFlag.BORDER);
-		w.dock.set(0, 0, 1, 1);
+		w.renders.add(Render.BACKGROUND);
+		w.renders.add(Render.BORDER);
+		w.renders.add(Render.TRANSPARENT);
+		w.dock.set(0, 0, 0, 0);
 		w.position(100, 200);
-		w.size(300, 200);
+		w.size(150, 18);
 		gui.root.size(800, 600);
+		//w.image("TEST");
+		w.text("caption", "Hello World guys!");
+		w.borderColor.set(0, 0, 1, .3f);
+		w.backgroundColor.set(1, 1, 1, .3f);
+		w.textColor.set(1, 0, 0, .5f);
 		w.parent(gui.root);
 
 		gui.hook(msgHub);
 		gui.hook(port);
-		port.link(msgHub);
+		port.link(msgHub);	
 		port.window()
 			.position(50, 50)
 			.size(800, 600)
-			.fullscreen(true)
 			.title("PGEM Example Window 01")
 			.visible(true);
 	
@@ -64,6 +72,7 @@ public class App {
 	private void loop() {
 		while (!terminate) {
 			msgHub.dispatch();
+			gui.update();
 			port.render();
 			Thread.yield();
 		}

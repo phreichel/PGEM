@@ -27,6 +27,7 @@ public class GUIRenderer implements Renderer {
 	//=============================================================================================
 	public void init(Graphics g) {
 		this.g = g;
+		g.loadFont("caption", "Terminal BOLD 14");
 		g.loadFont("normal", "Terminal BOLD 12");
 		g.loadTexture("PLUS", new File("data/gui/plus.png"));
 		g.loadTexture("TEST", new File("data/gui/test.png"));
@@ -70,43 +71,47 @@ public class GUIRenderer implements Renderer {
 
 	//=============================================================================================
 	private void startTransparent(Widget widget) {
-		if (!widget.renderFlags.contains(RenderFlag.TRANSPARENT)) return;
+		if (!widget.renders.contains(Render.TRANSPARENT)) return;
 		g.blend(true);
 	}
 	//=============================================================================================
 
 	//=============================================================================================
 	private void stopTransparent(Widget widget) {
-		if (!widget.renderFlags.contains(RenderFlag.TRANSPARENT)) return;
+		if (!widget.renders.contains(Render.TRANSPARENT)) return;
 		g.blend(false);
 	}
 	//=============================================================================================
 
 	//=============================================================================================
 	private void renderBackground(Widget widget) {
-		if (!widget.renderFlags.contains(RenderFlag.BACKGROUND)) return;
-		g.color(0f, 1f, 1f);
-		g.rectangle(0f, 0f, widget.size().x, widget.size().y, true);
+		if (!widget.renders.contains(Render.BACKGROUND)) return;
+		g.color(widget.backgroundColor);
+		g.rectangle(true, 0f, 0f, widget.size().x, widget.size().y);
 	}
 	//=============================================================================================
 
 	//=============================================================================================
 	private void renderImage(Widget widget) {
-		if (!widget.renderFlags.contains(RenderFlag.IMAGE)) return;
+		if (!widget.renders.contains(Render.IMAGE)) return;
+		g.color(widget.imageColor);
+		g.image(widget.image(), 0, 0, widget.size().x, widget.size().y);
 	}
 	//=============================================================================================
 
 	//=============================================================================================
 	private void renderText(Widget widget) {
-		if (!widget.renderFlags.contains(RenderFlag.TEXT)) return;
+		if (!widget.renders.contains(Render.TEXT)) return;
+		g.color(widget.textColor);
+		g.write(widget.font(), widget.text(), 0, 0, widget.size().x, widget.size().y);
 	}
 	//=============================================================================================
 	
 	//=============================================================================================
 	private void renderBorder(Widget widget) {
-		if (!widget.renderFlags.contains(RenderFlag.BORDER)) return;
-		g.color(1f, 0f, 0f);
-		g.rectangle(0f, 0f, widget.size().x, widget.size().y, false);
+		if (!widget.renders.contains(Render.BORDER)) return;
+		g.color(widget.borderColor);
+		g.rectangle(false, 0f, 0f, widget.size().x, widget.size().y);
 	}
 	//=============================================================================================
 
