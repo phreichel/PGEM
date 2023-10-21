@@ -8,6 +8,8 @@ import pgem.port.Port;
 
 import static pgem.msg.MsgType.*;
 
+import javax.vecmath.Vector2f;
+
 //*************************************************************************************************
 public class GUI {
 
@@ -35,10 +37,55 @@ public class GUI {
 		
 	}
 	//=============================================================================================
-	
+
 	//=============================================================================================
 	private void handlePointer(Msg msg) {
-		
+		var hovering = hovering(msg.pointer);
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	private Widget hovered = null;
+	//=============================================================================================
+	
+	//=============================================================================================
+	public Widget hovering(Vector2f parentPointer) {
+		var hovering = hovering(root, parentPointer);
+		if (hovering != hovered) {
+			if (hovered != null) {
+				hovered.interactData.hover = false;
+			}
+			if (hovering != null) {
+				hovering.interactData.hover = true;
+			}
+			hovered = hovering;
+		}
+		return hovering;
+	}
+	//=============================================================================================
+	
+	//=============================================================================================
+	public Widget hovering(Widget widget, Vector2f parentPointer) {
+		Vector2f localPointer = new Vector2f(parentPointer);
+		localPointer.sub(widget.position());
+		Widget hovering = null;
+		boolean match =
+			localPointer.x >= 0f &&
+			localPointer.y >= 0f &&
+			localPointer.x <= widget.size().x &&
+			localPointer.y <= widget.size().y;
+		if (match) {
+			hovering = widget;
+			for (var i=widget.children().size()-1; i>=0; i--) {
+				var child = widget.children().get(i);
+				var result = hovering(child, localPointer);
+				if (result != null) {
+					hovering = result;
+					break;
+				}
+			}
+		}
+		return hovering;
 	}
 	//=============================================================================================
 	

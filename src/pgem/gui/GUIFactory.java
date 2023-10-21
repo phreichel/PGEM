@@ -27,6 +27,16 @@ public class GUIFactory {
 	//=============================================================================================
 
 	//=============================================================================================
+	public Widget image(String texture, float w, float h) {
+		Widget image = new Widget();
+		image.renders.add(Render.IMAGE);
+		image.imageData.name = texture;
+		image.size(w, h);
+		return image;
+	}
+	//=============================================================================================
+	
+	//=============================================================================================
 	public Widget textBox(String text, float w, float h) {
 		Widget textBox = new Widget();
 		textBox.renders.add(Render.BORDER);
@@ -47,6 +57,7 @@ public class GUIFactory {
 		button.renders.add(Render.BORDER);
 		button.renders.add(Render.BACKGROUND);
 		button.renders.add(Render.TEXT);
+		button.renders.add(Render.INTERACT);
 		button.borderColor.set(0, 0, 0, 1);
 		button.backgroundColor.set(.7f, .7f, .7f, 1);
 		button.textData.text = label;

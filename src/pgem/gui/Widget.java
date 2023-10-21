@@ -36,6 +36,7 @@ public class Widget {
 	//=============================================================================================
 	public final TextData textData  = new TextData();
 	public final ImageData imageData  = new ImageData();
+	public final InteractData interactData = new InteractData();
 	//=============================================================================================
 	
 	//=============================================================================================

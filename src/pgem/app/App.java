@@ -4,6 +4,7 @@ package pgem.app;
 
 import pgem.msg.MsgHub;
 import pgem.gui.GUI;
+import pgem.gui.Render;
 import pgem.gui.Widget;
 import pgem.log.Level;
 import pgem.log.Log;
@@ -41,9 +42,26 @@ public class App {
 			this::handleQuit);
 
 		Widget panel = gui.factory().panel(400, 300);
-		panel.position(2, 2);
+		panel.position(50, 50);
 		panel.dock.set(0, 0, 1, 1);
+		panel.borderColor.set(1, 0, 0, 1);
 		panel.parent(gui.root);
+
+		Widget image = gui.factory().image("DECO", 400, 300);
+		image.renders.add(Render.TRANSPARENT);
+		image.imageData.color.set(1, 0.6f, 0, 1);
+		image.imageData.size.set(20, 20);
+		image.position(0, 0);
+		image.dock.set(0, 0, 1, 1);
+		image.parent(panel);
+
+		Widget subpanel = gui.factory().panel(388, 250);
+		subpanel.renders.add(Render.TRANSPARENT);
+		subpanel.backgroundColor.set(.6f, .6f, 1f, .5f);
+		subpanel.borderColor.set(0, 0, 1, 1);
+		subpanel.position(10, 25);
+		subpanel.dock.set(0, 0, 1, 1);
+		subpanel.parent(panel);
 		
 		Widget label = gui.factory().label("Hello, World!", 100, 18);
 		label.position(2, 2);

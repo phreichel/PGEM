@@ -41,6 +41,7 @@ public interface Graphics {
 	public void text(String font, String text, float x, float y, float w, float h, Align horz, Align vert);
 	public void image(String texture, Vector2f pos, Vector2f size);
 	public void image(String texture, float x, float y, float w, float h);
+	public void image(String texture, Vector2f pos, Vector2f size, Vector2f txorg, Vector2f txext, boolean scaled);
 	//=============================================================================================
 
 	//=============================================================================================

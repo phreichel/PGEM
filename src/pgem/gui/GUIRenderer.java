@@ -37,6 +37,7 @@ public class GUIRenderer implements Renderer {
 		g.loadFont("normal", "Terminal BOLD 12");
 		g.loadTexture("PLUS", new File("data/gui/plus.png"));
 		g.loadTexture("TEST", new File("data/gui/test.png"));
+		g.loadTexture("DECO", new File("data/gui/deco.png"));
 	}
 	//=============================================================================================
 
@@ -94,6 +95,9 @@ public class GUIRenderer implements Renderer {
 	private void renderBackground(Widget widget) {
 		if (!widget.renders.contains(Render.BACKGROUND)) return;
 		g.color(widget.backgroundColor);
+		if (widget.renders.contains(Render.INTERACT) && widget.interactData.hover) {
+			g.color(widget.interactData.color);
+		}
 		g.rectangle(true, ZERO, widget.size());
 	}
 	//=============================================================================================
@@ -102,7 +106,14 @@ public class GUIRenderer implements Renderer {
 	private void renderImage(Widget widget) {
 		if (!widget.renders.contains(Render.IMAGE)) return;
 		g.color(widget.imageData.color);
-		g.image(widget.imageData.name, ZERO, widget.size());
+		g.image(
+			widget.imageData.name,
+			ZERO,
+			widget.size(),
+			widget.imageData.position,
+			widget.imageData.size,
+			true
+		);
 	}
 	//=============================================================================================
 

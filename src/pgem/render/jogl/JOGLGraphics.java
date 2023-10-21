@@ -86,7 +86,7 @@ public class JOGLGraphics implements Graphics, GLEventListener {
 		gl.glHint(GL_TEXTURE_COMPRESSION_HINT, GL_NICEST);
 		gl.glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 		gl.glHint(GL_FRAGMENT_SHADER_DERIVATIVE_HINT, GL_NICEST);
-		
+
 		// default blend function is Alpha-Blending.
 		gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		
@@ -307,14 +307,14 @@ public class JOGLGraphics implements Graphics, GLEventListener {
 	//=============================================================================================
 
 	//=============================================================================================
-	public void image(String name, Vector2f pos, Vector2f size) {
-		image(name, pos.x, pos.y, size.x, size.y);
+	public void image(String texture, Vector2f pos, Vector2f size) {
+		image(texture, pos.x, pos.y, size.x, size.y);
 	}
 	//=============================================================================================
 	
 	//=============================================================================================
-	public void image(String name, float x, float y, float w, float h) {
-		texture(name, true);
+	public void image(String texture, float x, float y, float w, float h) {
+		texture(texture, true);
 		gl.glBegin(GL_QUADS);
 		gl.glTexCoord2f(0f, 1f);
 		gl.glVertex2f(x+0, y+0);
@@ -325,7 +325,37 @@ public class JOGLGraphics implements Graphics, GLEventListener {
 		gl.glTexCoord2f(0f, 0f);
 		gl.glVertex2f(x+0, y+h);
 		gl.glEnd();
-		texture(name, false);
+		texture(texture, false);
+	}
+	//=============================================================================================
+	
+	//=============================================================================================
+	public void image(String texture, Vector2f pos, Vector2f size, Vector2f txorg, Vector2f txext, boolean scaled) {
+
+		float x = pos.x;
+		float y = pos.y;
+		
+		float w = size.x;
+		float h = size.y;
+
+		float ax = txorg.x;
+		float ay = txorg.y;
+
+		float bx = txorg.x + (scaled ? (size.x / txext.x) : txext.x);
+		float by = txorg.y + (scaled ? (size.y / txext.y) : txext.y);
+		
+		texture(texture, true);
+		gl.glBegin(GL_QUADS);
+		gl.glTexCoord2f(ax, by);
+		gl.glVertex2f(x+0, y+0);
+		gl.glTexCoord2f(bx, by);
+		gl.glVertex2f(x+w, y+0);
+		gl.glTexCoord2f(bx, ay);
+		gl.glVertex2f(x+w, y+h);
+		gl.glTexCoord2f(ax, ay);
+		gl.glVertex2f(x+0, y+h);
+		gl.glEnd();
+		texture(texture, false);
 	}
 	//=============================================================================================
 	
@@ -335,6 +365,11 @@ public class JOGLGraphics implements Graphics, GLEventListener {
 			var texture = textures.get(name);
 			if (texture != null) return;
 			texture = TextureIO.newTexture(path, true);
+
+			texture.bind(gl);
+			texture.setTexParameteri(gl, GL_TEXTURE_WRAP_S, GL_REPEAT);
+			texture.setTexParameteri(gl, GL_TEXTURE_WRAP_T, GL_REPEAT);
+			
 			textures.put(name, texture);
 		} catch (Exception e) {
 			throw new X(e);
