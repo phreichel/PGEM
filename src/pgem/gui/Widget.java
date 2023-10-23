@@ -11,6 +11,10 @@ import java.util.Set;
 import javax.vecmath.Color4f;
 import javax.vecmath.Vector2f;
 
+import pgem.msg.Msg;
+import pgem.msg.MsgType;
+import pgem.util.X;
+
 //*************************************************************************************************
 public class Widget {
 
@@ -90,12 +94,14 @@ public class Widget {
 
 	//=============================================================================================
 	public void position(Vector2f position) {
+		if (!caps.contains(GUICap.MOVABLE)) throw new X("No Capability");
 		this.position.set(position);
 	}
 	//=============================================================================================
 	
 	//=============================================================================================
 	public void position(float x, float y) {
+		if (!caps.contains(GUICap.MOVABLE)) throw new X("No Capability");
 		position.set(x, y);
 	}
 	//=============================================================================================
@@ -108,12 +114,14 @@ public class Widget {
 
 	//=============================================================================================
 	public void size(Vector2f size) {
+		if (!caps.contains(GUICap.RESIZABLE)) throw new X("No Capability");
 		this.size(size.x, size.y);
 	}
 	//=============================================================================================
 	
 	//=============================================================================================
 	public void size(float width, float height) {
+		if (!caps.contains(GUICap.RESIZABLE)) throw new X("No Capability");
 		float dw = width - this.size.x;
 		float dh = height - this.size.y;
 		this.size.set(width, height);
@@ -134,5 +142,36 @@ public class Widget {
 	}
 	//=============================================================================================
 
+	//=============================================================================================
+	protected void handle(Vector2f ofs, Msg msg) {
+		Vector2f offset = new Vector2f(position());
+		offset.add(ofs);
+		if (MsgType.PTR_MASK.contains(msg.type)) {
+			boolean hover = contains(ofs, size(), msg.pointer);
+			setFlag(GUIFlag.HOVERED, hover);
+		}
+		for (var child : children()) {
+			child.handle(ofs, msg);
+		}
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	private boolean contains(Vector2f offset, Vector2f size, Vector2f pointer) {
+		return
+			(offset.x <= pointer.x) &&
+			(offset.y <= pointer.y) &&
+			(offset.x + size.x >= pointer.x) &&
+			(offset.y + size.y >= pointer.y);
+	}
+	//=============================================================================================
+	
+	//=============================================================================================
+	private void setFlag(GUIFlag flag, boolean set) {
+		if (set) flags.add(flag);
+		else flags.remove(flag);
+	}
+	//=============================================================================================
+	
 }
 //*************************************************************************************************
