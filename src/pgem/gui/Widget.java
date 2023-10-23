@@ -3,6 +3,7 @@ package pgem.gui;
 //*************************************************************************************************
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
@@ -14,10 +15,19 @@ import javax.vecmath.Vector2f;
 public class Widget {
 
 	//=============================================================================================
-	private Widget parent = null;
-	private final List<Widget> children = new ArrayList<>();
+	private static final List<Widget> EMPTY = Collections.unmodifiableList(new ArrayList<>(0));
 	//=============================================================================================
 	
+	//=============================================================================================
+	private Widget parent = null;
+	private final List<Widget> children;
+	//=============================================================================================
+
+	//=============================================================================================
+	public final Set<GUICap> caps = EnumSet.noneOf(GUICap.class);
+	public final Set<GUIFlag> flags = EnumSet.noneOf(GUIFlag.class);
+	//=============================================================================================
+
 	//=============================================================================================
 	private final Vector2f position = new Vector2f();
 	private final Vector2f size = new Vector2f(800, 600);
@@ -37,6 +47,18 @@ public class Widget {
 	public final TextData textData  = new TextData();
 	public final ImageData imageData  = new ImageData();
 	public final InteractData interactData = new InteractData();
+	//=============================================================================================
+
+	//=============================================================================================
+	public Widget() {
+		this.children = EMPTY;
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public Widget(boolean group) {
+		this.children = group ? new ArrayList<>(5) : EMPTY;
+	}
 	//=============================================================================================
 	
 	//=============================================================================================

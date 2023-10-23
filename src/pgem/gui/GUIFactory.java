@@ -6,8 +6,22 @@ package pgem.gui;
 public class GUIFactory {
 
 	//=============================================================================================
+	public Widget root() {
+		Widget root = new Widget(true);
+		root.caps.add(GUICap.GROUP);
+		root.caps.add(GUICap.RESIZABLE);
+		return root;
+	}
+	//=============================================================================================
+	
+	//=============================================================================================
 	public Widget panel(float w, float h) {
-		Widget panel = new Widget();
+		Widget panel = new Widget(true);
+		panel.caps.add(GUICap.GROUP);
+		panel.caps.add(GUICap.HIDABLE);
+		panel.caps.add(GUICap.MOVABLE);
+		panel.caps.add(GUICap.RESIZABLE);
+		panel.caps.add(GUICap.FOCUSABLE);
 		panel.renders.add(Render.BORDER);
 		panel.renders.add(Render.BACKGROUND);
 		panel.size(w, h);
@@ -18,6 +32,9 @@ public class GUIFactory {
 	//=============================================================================================
 	public Widget label(String text, float w, float h) {
 		Widget label = new Widget();
+		label.caps.add(GUICap.HIDABLE);
+		label.caps.add(GUICap.MOVABLE);
+		label.caps.add(GUICap.RESIZABLE);
 		label.renders.add(Render.TEXT);
 		label.textData.horizontalAlign = Align.END;
 		label.textData.text = text;
@@ -29,6 +46,9 @@ public class GUIFactory {
 	//=============================================================================================
 	public Widget image(String texture, float w, float h) {
 		Widget image = new Widget();
+		image.caps.add(GUICap.HIDABLE);
+		image.caps.add(GUICap.MOVABLE);
+		image.caps.add(GUICap.RESIZABLE);
 		image.renders.add(Render.IMAGE);
 		image.imageData.name = texture;
 		image.size(w, h);
@@ -39,6 +59,10 @@ public class GUIFactory {
 	//=============================================================================================
 	public Widget textBox(String text, float w, float h) {
 		Widget textBox = new Widget();
+		textBox.caps.add(GUICap.HIDABLE);
+		textBox.caps.add(GUICap.MOVABLE);
+		textBox.caps.add(GUICap.RESIZABLE);
+		textBox.caps.add(GUICap.FOCUSABLE);
 		textBox.renders.add(Render.BORDER);
 		textBox.renders.add(Render.BACKGROUND);
 		textBox.renders.add(Render.TEXT);
@@ -54,6 +78,10 @@ public class GUIFactory {
 	//=============================================================================================
 	public Widget button(String label, float w, float h) {
 		Widget button = new Widget();
+		button.caps.add(GUICap.HIDABLE);
+		button.caps.add(GUICap.MOVABLE);
+		button.caps.add(GUICap.RESIZABLE);
+		button.caps.add(GUICap.FOCUSABLE);
 		button.renders.add(Render.BORDER);
 		button.renders.add(Render.BACKGROUND);
 		button.renders.add(Render.TEXT);
