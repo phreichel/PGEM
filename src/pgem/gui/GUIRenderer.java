@@ -96,7 +96,7 @@ public class GUIRenderer implements Renderer {
 		if (!widget.renders.contains(Render.BACKGROUND)) return;
 		g.color(widget.backgroundColor);
 		if (widget.renders.contains(Render.INTERACT) && widget.interactData.hover) {
-			g.color(widget.interactData.color);
+			g.color(widget.interactData.hoverColor);
 		}
 		g.rectangle(true, ZERO, widget.size());
 	}
@@ -127,7 +127,8 @@ public class GUIRenderer implements Renderer {
 			ZERO,
 			widget.size(),
 			widget.textData.horizontalAlign,
-			widget.textData.verticalAlign
+			widget.textData.verticalAlign,
+			widget.textData.caret
 		);
 	}
 	//=============================================================================================
@@ -136,6 +137,9 @@ public class GUIRenderer implements Renderer {
 	private void renderBorder(Widget widget) {
 		if (!widget.renders.contains(Render.BORDER)) return;
 		g.color(widget.borderColor);
+		if (widget.renders.contains(Render.INTERACT) && widget.interactData.focus) {
+			g.color(widget.interactData.focusColor);
+		}
 		g.rectangle(false, 0f, 0f, widget.size().x, widget.size().y);
 	}
 	//=============================================================================================

@@ -4,9 +4,14 @@ package pgem.gui;
 
 import pgem.msg.Msg;
 import pgem.msg.MsgHub;
+import pgem.msg.MsgType;
+import pgem.port.Button;
 import pgem.port.Port;
 
 import static pgem.msg.MsgType.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.vecmath.Vector2f;
 
@@ -40,7 +45,11 @@ public class GUI {
 
 	//=============================================================================================
 	private void handlePointer(Msg msg) {
+		
 		var hovering = hovering(msg.pointer);
+		var focused = focused(msg, hovering);
+		if (focused == null) return;
+		clicked(msg, focused);
 	}
 	//=============================================================================================
 
@@ -88,6 +97,50 @@ public class GUI {
 		return hovering;
 	}
 	//=============================================================================================
+
+	//=============================================================================================
+	private Widget focused = null;
+	//=============================================================================================
+	
+	//=============================================================================================
+	public Widget focused(Msg msg, Widget hovering) {
+		if (msg.type.equals(PTR_PRESSED)) {
+			if (hovering.renders.contains(Render.FOCUS)) {
+				if (focused != hovering) {
+					if (focused != null) {
+						focused.interactData.focus = false;
+					}
+					focused = hovering;
+					if (focused != null) {
+						focused.interactData.focus = true;
+					}
+				}
+			}
+		}
+		return focused;
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	private void clicked(Msg msg, Widget focused) {
+		if (!msg.type.equals(PTR_PRESSED)) return;
+		if (!msg.button.equals(Button.PTR_BTN1)) return;
+		if (focused.interactData.onClick == null) return;
+		switch (focused.interactData.onClick) {
+			case "quit" -> postQuit();
+		}
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	private void postQuit() {
+		for (var hub : msghubs) {
+			Msg msg = hub.allocate();
+			msg.type = MsgType.WND_CLOSE;
+			hub.post(msg);
+		}
+	}
+	//=============================================================================================
 	
 	//=============================================================================================
 	private void handleResize(Msg msg) {
@@ -96,7 +149,12 @@ public class GUI {
 	//=============================================================================================
 
 	//=============================================================================================
+	private List<MsgHub> msghubs = new ArrayList<>();
+	//=============================================================================================
+
+	//=============================================================================================
 	public void hook(MsgHub msgHub) {
+		msghubs.add(msgHub);
 		msgHub.link(KBD_PRESSED, this::handleKeyboard);
 		msgHub.link(KBD_RELEASED, this::handleKeyboard);
 		msgHub.link(KBD_TYPED, this::handleKeyboard);
@@ -110,6 +168,7 @@ public class GUI {
 
 	//=============================================================================================
 	public void unhook(MsgHub msgHub) {
+		msghubs.remove(msgHub);
 		msgHub.unlink(KBD_PRESSED, this::handleKeyboard);
 		msgHub.unlink(KBD_RELEASED, this::handleKeyboard);
 		msgHub.unlink(KBD_TYPED, this::handleKeyboard);

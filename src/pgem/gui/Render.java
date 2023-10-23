@@ -12,7 +12,8 @@ public enum Render {
 	IMAGE,
 	TEXT,
 	BORDER,
-	INTERACT
+	INTERACT,
+	FOCUS
 	//=============================================================================================
 
 }

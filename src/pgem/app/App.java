@@ -72,12 +72,12 @@ public class App {
 		textbox.dock.set(0, 0, 0, 1);
 		textbox.parent(panel);
 
-		Widget apply = gui.factory().button("APPLY", 60, 18);
+		Widget apply = gui.factory().button("APPLY", 60, 18, "quit");
 		apply.position(139, 300 - 20);
 		apply.dock.set(1, .5f, 1, .5f);
 		apply.parent(panel);
 
-		Widget cancel = gui.factory().button("CANCEL", 60, 18);
+		Widget cancel = gui.factory().button("CANCEL", 60, 18, null);
 		cancel.position(201, 300 - 20);
 		cancel.dock.set(1, .5f, 1, .5f);
 		cancel.parent(panel);

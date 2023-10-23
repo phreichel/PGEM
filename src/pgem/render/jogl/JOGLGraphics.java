@@ -266,6 +266,12 @@ public class JOGLGraphics implements Graphics, GLEventListener {
 		text(font, text, pos.x, pos.y, size.x, size.y, horz, vert);
 	}
 	//=============================================================================================
+
+	//=============================================================================================
+	public void text(String font, String text, Vector2f pos, Vector2f size, Align horz, Align vert, int caret) {
+		text(font, text, pos.x, pos.y, size.x, size.y, horz, vert, caret);
+	}
+	//=============================================================================================
 	
 	//=============================================================================================
 	public void text(String font, String text, float x, float y, float w, float h, Align horz, Align vert) {
@@ -306,6 +312,52 @@ public class JOGLGraphics implements Graphics, GLEventListener {
 	}
 	//=============================================================================================
 
+	//=============================================================================================
+	public void text(String font, String text, float x, float y, float w, float h, Align horz, Align vert, int caret) {
+		
+		caret = Math.max(caret, 0);
+		caret = Math.min(caret, text.length());
+		
+		font = font != null ? font : "normal";
+		var tr = fonts.get(font);
+		if (tr == null) throw new X("Font with name %s is not loaded.", font);
+		tr.setColor(color.x, color.y, color.z, 1f);		
+		
+		Rectangle2D r = tr.getBounds(text);
+
+		LineMetrics lineMetrics = tr.getFont().getLineMetrics(text, tr.getFontRenderContext());
+		float asc = lineMetrics.getAscent();
+		float desc = lineMetrics.getDescent();
+		float lead = lineMetrics.getLeading();
+		
+		float cy = x + h*.5f;
+		float oy = switch (vert) {
+			case START -> cy + asc;	
+			case CENTER -> cy + ((float) r.getHeight()-desc-lead) * .5f;
+			case END -> cy + h - 2;	
+		};
+		
+		float ox = switch (horz) {
+			case START -> x + 2;
+			case CENTER -> x + (w - (float) r.getWidth()) * .5f;
+			case END -> x + w - (float) r.getWidth() - 2;
+		};
+
+		gl.glPushMatrix();
+		tr.begin3DRendering();
+		gl.glTranslatef(ox, oy, 0f);
+		gl.glScalef(1f, -1f, 1f);
+		tr.draw3D(text, 0, 0, 0f, 1f);
+		tr.end3DRendering();
+		gl.glPopMatrix();
+
+		Rectangle2D rcaret = tr.getBounds(text.substring(0, caret));
+		float caretx = ox + (float) rcaret.getWidth();
+		this.color(0, 0, 0);
+		this.lines(false, caretx, oy, caretx, oy+40);
+	}
+	//=============================================================================================
+	
 	//=============================================================================================
 	public void image(String texture, Vector2f pos, Vector2f size) {
 		image(texture, pos.x, pos.y, size.x, size.y);

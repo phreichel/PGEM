@@ -42,8 +42,11 @@ public class GUIFactory {
 		textBox.renders.add(Render.BORDER);
 		textBox.renders.add(Render.BACKGROUND);
 		textBox.renders.add(Render.TEXT);
+		textBox.renders.add(Render.INTERACT);
+		textBox.renders.add(Render.FOCUS);
 		textBox.borderColor.set(0, 0, 0, 1);
 		textBox.backgroundColor.set(1, 1, 1, 1);
+		textBox.interactData.hoverColor.set(textBox.backgroundColor);
 		textBox.textData.horizontalAlign = Align.START;
 		textBox.textData.text = text;
 		textBox.size(w, h);
@@ -52,15 +55,17 @@ public class GUIFactory {
 	//=============================================================================================
 
 	//=============================================================================================
-	public Widget button(String label, float w, float h) {
+	public Widget button(String label, float w, float h, String onClick) {
 		Widget button = new Widget();
 		button.renders.add(Render.BORDER);
 		button.renders.add(Render.BACKGROUND);
 		button.renders.add(Render.TEXT);
 		button.renders.add(Render.INTERACT);
+		button.renders.add(Render.FOCUS);
 		button.borderColor.set(0, 0, 0, 1);
 		button.backgroundColor.set(.7f, .7f, .7f, 1);
 		button.textData.text = label;
+		button.interactData.onClick = onClick;
 		button.size(w, h);
 		return button;
 	}
