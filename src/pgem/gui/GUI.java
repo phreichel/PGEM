@@ -23,7 +23,7 @@ public class GUI {
 	//=============================================================================================
 	
 	//=============================================================================================
-	public final Widget root = new Widget();
+	public final Widget root = factory.root();
 	//=============================================================================================
 
 	//=============================================================================================
@@ -36,14 +36,9 @@ public class GUI {
 		return this.factory;
 	}
 	//=============================================================================================
-	
-	//=============================================================================================
-	private void handleKeyboard(Msg msg) {
-		
-	}
-	//=============================================================================================
 
 	//=============================================================================================
+<<<<<<< HEAD
 	private void handlePointer(Msg msg) {
 		
 		var hovering = hovering(msg.pointer);
@@ -95,6 +90,11 @@ public class GUI {
 			}
 		}
 		return hovering;
+=======
+	private void handleMessage(Msg msg) {
+		Vector2f offset = new Vector2f(0, 0);
+		root.handle(offset, msg);
+>>>>>>> branch 'main' of https://github.com/phreichel/PGEM
 	}
 	//=============================================================================================
 
@@ -154,6 +154,7 @@ public class GUI {
 
 	//=============================================================================================
 	public void hook(MsgHub msgHub) {
+<<<<<<< HEAD
 		msghubs.add(msgHub);
 		msgHub.link(KBD_PRESSED, this::handleKeyboard);
 		msgHub.link(KBD_RELEASED, this::handleKeyboard);
@@ -162,12 +163,22 @@ public class GUI {
 		msgHub.link(PTR_PRESSED, this::handlePointer);
 		msgHub.link(PTR_RELEASED, this::handlePointer);
 		msgHub.link(PTR_MOVED, this::handlePointer);
+=======
+		msgHub.link(KBD_PRESSED, this::handleMessage);
+		msgHub.link(KBD_RELEASED, this::handleMessage);
+		msgHub.link(KBD_TYPED, this::handleMessage);
+		msgHub.link(PTR_CLICKED, this::handleMessage);
+		msgHub.link(PTR_PRESSED, this::handleMessage);
+		msgHub.link(PTR_RELEASED, this::handleMessage);
+		msgHub.link(PTR_MOVED, this::handleMessage);
+>>>>>>> branch 'main' of https://github.com/phreichel/PGEM
 		msgHub.link(WND_RESIZE, this::handleResize);
 	}
 	//=============================================================================================
 
 	//=============================================================================================
 	public void unhook(MsgHub msgHub) {
+<<<<<<< HEAD
 		msghubs.remove(msgHub);
 		msgHub.unlink(KBD_PRESSED, this::handleKeyboard);
 		msgHub.unlink(KBD_RELEASED, this::handleKeyboard);
@@ -176,6 +187,15 @@ public class GUI {
 		msgHub.unlink(PTR_PRESSED, this::handlePointer);
 		msgHub.unlink(PTR_RELEASED, this::handlePointer);
 		msgHub.unlink(PTR_MOVED, this::handlePointer);
+=======
+		msgHub.unlink(KBD_PRESSED, this::handleMessage);
+		msgHub.unlink(KBD_RELEASED, this::handleMessage);
+		msgHub.unlink(KBD_TYPED, this::handleMessage);
+		msgHub.unlink(PTR_CLICKED, this::handleMessage);
+		msgHub.unlink(PTR_PRESSED, this::handleMessage);
+		msgHub.unlink(PTR_RELEASED, this::handleMessage);
+		msgHub.unlink(PTR_MOVED, this::handleMessage);
+>>>>>>> branch 'main' of https://github.com/phreichel/PGEM
 		msgHub.unlink(WND_RESIZE, this::handleResize);
 	}
 	//=============================================================================================
