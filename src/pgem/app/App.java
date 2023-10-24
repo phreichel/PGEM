@@ -98,7 +98,6 @@ public class App {
 	private void loop() {
 		while (!terminate) {
 			msgHub.dispatch();
-			gui.update();
 			port.render();
 			Thread.yield();
 		}

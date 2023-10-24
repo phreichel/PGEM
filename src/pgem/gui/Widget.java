@@ -13,13 +13,18 @@ import javax.vecmath.Vector2f;
 
 import pgem.msg.Msg;
 import pgem.msg.MsgType;
-import pgem.util.X;
 
 //*************************************************************************************************
 public class Widget {
 
 	//=============================================================================================
 	private static final List<Widget> EMPTY = Collections.unmodifiableList(new ArrayList<>(0));
+	//=============================================================================================
+
+	//=============================================================================================
+	public final Set<GUICap> caps = EnumSet.noneOf(GUICap.class);
+	public final Set<GUIFlag> flags = EnumSet.noneOf(GUIFlag.class);
+	public final Set<Render> renders = EnumSet.noneOf(Render.class);
 	//=============================================================================================
 	
 	//=============================================================================================
@@ -28,18 +33,9 @@ public class Widget {
 	//=============================================================================================
 
 	//=============================================================================================
-	public final Set<GUICap> caps = EnumSet.noneOf(GUICap.class);
-	public final Set<GUIFlag> flags = EnumSet.noneOf(GUIFlag.class);
-	//=============================================================================================
-
-	//=============================================================================================
 	private final Vector2f position = new Vector2f();
 	private final Vector2f size = new Vector2f(800, 600);
 	public final Dock dock = new Dock();
-	//=============================================================================================
-
-	//=============================================================================================
-	public final Set<Render> renders = EnumSet.noneOf(Render.class);
 	//=============================================================================================
 
 	//=============================================================================================
@@ -94,14 +90,14 @@ public class Widget {
 
 	//=============================================================================================
 	public void position(Vector2f position) {
-		if (!caps.contains(GUICap.MOVABLE)) throw new X("No Capability");
+		if (!caps.contains(GUICap.MOVABLE)) return;
 		this.position.set(position);
 	}
 	//=============================================================================================
 	
 	//=============================================================================================
 	public void position(float x, float y) {
-		if (!caps.contains(GUICap.MOVABLE)) throw new X("No Capability");
+		if (!caps.contains(GUICap.MOVABLE)) return;
 		position.set(x, y);
 	}
 	//=============================================================================================
@@ -114,14 +110,14 @@ public class Widget {
 
 	//=============================================================================================
 	public void size(Vector2f size) {
-		if (!caps.contains(GUICap.RESIZABLE)) throw new X("No Capability");
+		if (!caps.contains(GUICap.RESIZABLE)) return;
 		this.size(size.x, size.y);
 	}
 	//=============================================================================================
 	
 	//=============================================================================================
 	public void size(float width, float height) {
-		if (!caps.contains(GUICap.RESIZABLE)) throw new X("No Capability");
+		if (!caps.contains(GUICap.RESIZABLE)) return;
 		float dw = width - this.size.x;
 		float dh = height - this.size.y;
 		this.size.set(width, height);
@@ -148,7 +144,7 @@ public class Widget {
 		offset.add(ofs);
 		if (MsgType.PTR_MASK.contains(msg.type)) {
 			boolean hover = contains(ofs, size(), msg.pointer);
-			setFlag(GUIFlag.HOVERED, hover);
+			flag(GUIFlag.HOVERED, hover);
 		}
 		for (var child : children()) {
 			child.handle(ofs, msg);
@@ -167,9 +163,10 @@ public class Widget {
 	//=============================================================================================
 	
 	//=============================================================================================
-	private void setFlag(GUIFlag flag, boolean set) {
+	private Widget flag(GUIFlag flag, boolean set) {
 		if (set) flags.add(flag);
 		else flags.remove(flag);
+		return this;
 	}
 	//=============================================================================================
 	
