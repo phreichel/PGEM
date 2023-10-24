@@ -44,8 +44,9 @@ public class Widget {
 	//=============================================================================================
 	
 	//=============================================================================================
-	public final TextData textData  = new TextData();
-	public final ImageData imageData  = new ImageData();
+	public final TextData textData = new TextData();
+	public final TextEditor textEditor = new TextEditor();
+	public final ImageData imageData = new ImageData();
 	public final InteractData interactData = new InteractData();
 	//=============================================================================================
 
@@ -145,6 +146,10 @@ public class Widget {
 		if (MsgType.PTR_MASK.contains(msg.type)) {
 			boolean hover = contains(ofs, size(), msg.pointer);
 			flag(GUIFlag.HOVERED, hover);
+		}
+		if (renders.contains(Render.TEXT) && renders.contains(Render.INTERACT)) {
+			textEditor.handle(msg);
+			textData.text = textEditor.text();
 		}
 		for (var child : children()) {
 			child.handle(ofs, msg);

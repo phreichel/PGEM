@@ -73,6 +73,7 @@ public class GUIFactory {
 		textBox.interactData.hoverColor.set(textBox.backgroundColor);
 		textBox.textData.horizontalAlign = Align.START;
 		textBox.textData.text = text;
+		textBox.textEditor.text(text);
 		textBox.size(w, h);
 		return textBox;
 	}

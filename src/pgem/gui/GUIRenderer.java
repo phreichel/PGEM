@@ -128,7 +128,7 @@ public class GUIRenderer implements Renderer {
 			widget.size(),
 			widget.textData.horizontalAlign,
 			widget.textData.verticalAlign,
-			widget.textData.caret
+			widget.textEditor.caret()
 		);
 	}
 	//=============================================================================================
