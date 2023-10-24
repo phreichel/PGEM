@@ -5,8 +5,6 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
-
-import pgem.log.Log;
 import pgem.msg.Msg;
 import pgem.msg.MsgType;
 import pgem.port.Button;
@@ -54,6 +52,12 @@ public class TextEditor {
 	}
 	//=============================================================================================
 
+	//=============================================================================================
+	public int mark() {
+		return mark;
+	}
+	//=============================================================================================
+	
 	//=============================================================================================
 	public String text() {
 		return text.toString();
@@ -155,6 +159,15 @@ public class TextEditor {
 		var select  = msg.buttons.contains(Button.SHIFT);
 		var control = msg.buttons.contains(Button.CONTROL);
 		switch (msg.button) {
+
+			case A -> {
+				if (control) {
+					caret = 0;
+					mark = text.length();
+				} else {
+					insert("" + msg.character);
+				}
+			}
 		
 			case C -> {
 				if (control) {

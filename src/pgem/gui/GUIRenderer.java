@@ -33,8 +33,8 @@ public class GUIRenderer implements Renderer {
 	//=============================================================================================
 	public void init(Graphics g) {
 		this.g = g;
-		g.loadFont("caption", "Terminal BOLD 14");
-		g.loadFont("normal", "Terminal BOLD 12");
+		g.loadFont("caption", "Terminal BOLD 18");
+		g.loadFont("normal", "Terminal BOLD 16");
 		g.loadTexture("PLUS", new File("data/gui/plus.png"));
 		g.loadTexture("TEST", new File("data/gui/test.png"));
 		g.loadTexture("DECO", new File("data/gui/deco.png"));
@@ -128,7 +128,8 @@ public class GUIRenderer implements Renderer {
 			widget.size(),
 			widget.textData.horizontalAlign,
 			widget.textData.verticalAlign,
-			widget.textEditor.caret()
+			widget.textEditor.caret(),
+			widget.textEditor.mark()
 		);
 	}
 	//=============================================================================================

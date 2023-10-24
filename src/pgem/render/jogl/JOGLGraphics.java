@@ -268,8 +268,8 @@ public class JOGLGraphics implements Graphics, GLEventListener {
 	//=============================================================================================
 
 	//=============================================================================================
-	public void text(String font, String text, Vector2f pos, Vector2f size, Align horz, Align vert, int caret) {
-		text(font, text, pos.x, pos.y, size.x, size.y, horz, vert, caret);
+	public void text(String font, String text, Vector2f pos, Vector2f size, Align horz, Align vert, int caret, int mark) {
+		text(font, text, pos.x, pos.y, size.x, size.y, horz, vert, caret, mark);
 	}
 	//=============================================================================================
 	
@@ -313,7 +313,14 @@ public class JOGLGraphics implements Graphics, GLEventListener {
 	//=============================================================================================
 
 	//=============================================================================================
-	public void text(String font, String text, float x, float y, float w, float h, Align horz, Align vert, int caret) {
+	public void text(
+			String font,
+			String text,
+			float x, float y,
+			float w, float h,
+			Align horz, Align vert,
+			int caret,
+			int mark) {
 		
 		caret = Math.max(caret, 0);
 		caret = Math.min(caret, text.length());
@@ -343,6 +350,17 @@ public class JOGLGraphics implements Graphics, GLEventListener {
 			case END -> x + w - (float) r.getWidth() - 2;
 		};
 
+		var rcaret = tr.getBounds(text.substring(0, caret));
+		var rmark  = tr.getBounds(text.substring(0, mark));
+		var markx  = ox + (float) rmark.getWidth();
+		var caretx = ox + (float) rcaret.getWidth();
+		var a = Math.min(markx, caretx);
+		var b = Math.max(markx, caretx);
+		this.color(.8f, .8f, .8f);
+		this.rectangle(true, a, oy, b-a, -asc);
+		this.color(1, 0, 0);
+		this.lines(false, caretx, oy, caretx, oy-asc);
+		
 		gl.glPushMatrix();
 		tr.begin3DRendering();
 		gl.glTranslatef(ox, oy, 0f);
@@ -351,10 +369,6 @@ public class JOGLGraphics implements Graphics, GLEventListener {
 		tr.end3DRendering();
 		gl.glPopMatrix();
 
-		Rectangle2D rcaret = tr.getBounds(text.substring(0, caret));
-		float caretx = ox + (float) rcaret.getWidth();
-		this.color(0, 0, 0);
-		this.lines(false, caretx, oy, caretx, oy+40);
 	}
 	//=============================================================================================
 	
