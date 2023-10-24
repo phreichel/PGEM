@@ -330,9 +330,12 @@ public class JOGLGraphics implements Graphics, GLEventListener {
 		if (tr == null) throw new X("Font with name %s is not loaded.", font);
 		tr.setColor(color.x, color.y, color.z, 1f);		
 		
+		final String STR = "Âp"; 
+		
+		Rectangle2D rr = tr.getBounds(STR);
 		Rectangle2D r = tr.getBounds(text);
 
-		LineMetrics lineMetrics = tr.getFont().getLineMetrics(text, tr.getFontRenderContext());
+		LineMetrics lineMetrics = tr.getFont().getLineMetrics(STR, tr.getFontRenderContext());
 		float asc = lineMetrics.getAscent();
 		float desc = lineMetrics.getDescent();
 		float lead = lineMetrics.getLeading();
@@ -340,7 +343,7 @@ public class JOGLGraphics implements Graphics, GLEventListener {
 		float cy = x + h*.5f;
 		float oy = switch (vert) {
 			case START -> cy + asc;	
-			case CENTER -> cy + ((float) r.getHeight()-desc-lead) * .5f;
+			case CENTER -> cy + ((float) rr.getHeight()-desc-lead) * .5f;
 			case END -> cy + h - 2;	
 		};
 		
@@ -350,16 +353,14 @@ public class JOGLGraphics implements Graphics, GLEventListener {
 			case END -> x + w - (float) r.getWidth() - 2;
 		};
 
-		var rcaret = tr.getBounds(text.substring(0, caret));
-		var rmark  = tr.getBounds(text.substring(0, mark));
-		var markx  = ox + (float) rmark.getWidth();
-		var caretx = ox + (float) rcaret.getWidth();
+		var rcaret = tr.getBounds(text.substring(0, caret) + STR);
+		var rmark  = tr.getBounds(text.substring(0, mark) + STR);
+		var markx  = ox + (float) (rmark.getWidth() - rr.getWidth());
+		var caretx = ox + (float) (rcaret.getWidth() - rr.getWidth());
 		var a = Math.min(markx, caretx);
 		var b = Math.max(markx, caretx);
 		this.color(.8f, .8f, .8f);
 		this.rectangle(true, a, oy, b-a, -asc);
-		this.color(1, 0, 0);
-		this.lines(false, caretx, oy, caretx, oy-asc);
 		
 		gl.glPushMatrix();
 		tr.begin3DRendering();
@@ -369,6 +370,9 @@ public class JOGLGraphics implements Graphics, GLEventListener {
 		tr.end3DRendering();
 		gl.glPopMatrix();
 
+		this.color(1, 0, 0);
+		this.rectangle(true, caretx, oy, 2, -asc);
+		
 	}
 	//=============================================================================================
 	

@@ -110,6 +110,7 @@ public class TextEditor {
 	
 	//=============================================================================================
 	public void insert(String s) {
+		deleteSelection();
 		text.insert(caret, s);
 		moveRelative(s.length(), false);
 	}
@@ -164,7 +165,7 @@ public class TextEditor {
 				if (control) {
 					caret = 0;
 					mark = text.length();
-				} else {
+				} else if (msg.character != '\0') {
 					insert("" + msg.character);
 				}
 			}
@@ -178,7 +179,7 @@ public class TextEditor {
 							.getSystemClipboard()
 							.setContents(tx, null);
 					}
-				} else {
+				} else if (msg.character != '\0') {
 					insert("" + msg.character);
 				}
 			}
@@ -197,7 +198,7 @@ public class TextEditor {
 					} catch (Exception e) {
 						new X(e);
 					}
-				} else {
+				} else if (msg.character != '\0') {
 					insert("" + msg.character);
 				}
 			}
@@ -213,17 +214,43 @@ public class TextEditor {
 						deleteSelection();
 					}
 				} else {
-					insert("" + msg.character);
+					if (msg.character != '\0') {
+						insert("" + msg.character);
+					}
 				}
 			}
 
 			case POS1 -> moveToBegin(select);
 			case END -> moveToEnd(select);
-			case LEFT -> moveRelative(-1, select);
-			case RIGHT -> moveRelative(1, select);
+
+			case LEFT -> {
+				if (control) {
+					int n = caret-1;
+					while ((n > 0) && (text.charAt(n) == ' ' || text.charAt(n) == '\t')) n--;
+					while ((n > 0) && (text.charAt(n) != ' ' && text.charAt(n) != '\t')) n--;
+					n = Math.max(0,  n <= 0 ? 0 : n-1);
+					move(n, select);
+				} else {
+					moveRelative(-1, select);
+				}
+			}
+			
+			case RIGHT -> {
+				if (control) {
+					int n = caret;
+					while ((n < text.length()) && (text.charAt(n) != ' ' && text.charAt(n) != '\t')) n++;
+					while ((n < text.length()) && (text.charAt(n) == ' ' || text.charAt(n) == '\t')) n++;
+					n = Math.min(text.length(),  n);
+					move(n, select);
+				} else {
+					moveRelative(1, select);
+				}
+			}
 			case DELETE -> delete();
 			case BACK_SPACE -> backspace();			
-			default -> { if (msg.character != '\0') insert("" + msg.character); }
+			default -> {
+				if (!control) insert("" + msg.character);
+			}
 			
 		}
 	}

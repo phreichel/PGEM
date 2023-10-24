@@ -63,11 +63,11 @@ public class App {
 		subpanel.dock.set(0, 0, 1, 1);
 		subpanel.parent(panel);
 		
-		Widget label = gui.factory().label("Hello, World!", 100, 18);
+		Widget label = gui.factory().label("Hello, World!", 100, 20);
 		label.position(2, 2);
 		label.parent(panel);
 
-		Widget textbox = gui.factory().textBox("Hello, World!", 294, 18);
+		Widget textbox = gui.factory().textBox("Hello, World!", 294, 20);
 		textbox.position(2 + 100 + 2, 2);
 		textbox.dock.set(0, 0, 0, 1);
 		textbox.parent(panel);
