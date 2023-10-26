@@ -228,7 +228,7 @@ public class TextEditor {
 					int n = caret-1;
 					while ((n > 0) && (text.charAt(n) == ' ' || text.charAt(n) == '\t')) n--;
 					while ((n > 0) && (text.charAt(n) != ' ' && text.charAt(n) != '\t')) n--;
-					n = Math.max(0,  n <= 0 ? 0 : n-1);
+					n = Math.max(0,  n <= 0 ? 0 : n+1);
 					move(n, select);
 				} else {
 					moveRelative(-1, select);
