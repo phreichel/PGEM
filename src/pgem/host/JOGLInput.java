@@ -19,7 +19,7 @@ import pgem.msg.MsgBox;
 import pgem.msg.MsgType;
 
 //*************************************************************************************************
-public class JOGLInput implements KeyListener, MouseListener {
+class JOGLInput implements KeyListener, MouseListener {
 
 	//=============================================================================================
 	private final MsgBox msgBox;

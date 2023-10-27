@@ -18,7 +18,7 @@ import pgem.msg.MsgType;
 import pgem.msg.WindowData;
 
 //*************************************************************************************************
-public class JOGLWindow implements WindowListener {
+class JOGLWindow implements WindowListener {
 
 	//=============================================================================================
 	private static final String DEFAULT_TITLE = "PGEM Window";
