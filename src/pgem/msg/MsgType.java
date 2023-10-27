@@ -14,8 +14,14 @@ public enum MsgType {
 	
 	NONE(null),
 
-	WINDOW_CLOSE(null),
 	APPLICATION_QUIT(null),
+
+	WINDOW_TITLE(WindowData.class),
+	WINDOW_SIZE(WindowData.class),
+	WINDOW_VISIBLE(WindowData.class),
+	WINDOW_MAXIMIZED(WindowData.class),
+	WINDOW_FULLSCREEN(WindowData.class),
+	WINDOW_CLOSE(null),
 	
 	BUTTON_PRESSED(InputData.class),
 	BUTTON_RELEASED(InputData.class),
@@ -42,6 +48,15 @@ public enum MsgType {
 	private MsgType(Class<? extends MsgData> dataClass) {
 		this.dataClass = dataClass;
 	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public static final Set<MsgType> WINDOW_MASK = EnumSet.of(
+		WINDOW_TITLE,
+		WINDOW_SIZE,
+		WINDOW_MAXIMIZED,
+		WINDOW_FULLSCREEN
+	);
 	//=============================================================================================
 	
 	//=============================================================================================
