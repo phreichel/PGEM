@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 //*************************************************************************************************
-public class InputData implements MsgData {
+public final class InputData implements MsgData {
 
 	//=============================================================================================
 	public Button button = Button.NONE;

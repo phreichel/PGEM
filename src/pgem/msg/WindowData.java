@@ -5,7 +5,7 @@ package pgem.msg;
 import javax.vecmath.Vector2f;
 
 //*************************************************************************************************
-public class WindowData implements MsgData {
+public final class WindowData implements MsgData {
 
 	//=============================================================================================
 	public String title;

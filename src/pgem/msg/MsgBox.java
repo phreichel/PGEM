@@ -13,7 +13,7 @@ import java.util.Queue;
 import pgem.X;
 
 //*************************************************************************************************
-public class MsgBox {
+public final class MsgBox {
 
 	//=============================================================================================
 	private final Queue<Msg> msgQueue = new ArrayDeque<>();
