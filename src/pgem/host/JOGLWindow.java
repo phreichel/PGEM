@@ -44,13 +44,14 @@ final class JOGLWindow implements WindowListener {
 	//=============================================================================================
 
 	//=============================================================================================
-	public void init(JOGLInput input) {
+	public void init(JOGLInput input, JOGLGraphics graphics) {
 		window.setTitle(DEFAULT_TITLE);
 		window.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 		window.setDefaultCloseOperation(WindowClosingMode.DO_NOTHING_ON_CLOSE);
 		window.addKeyListener(input);
 		window.addMouseListener(input);
 		window.addWindowListener(this);
+		window.addGLEventListener(graphics);
 		msgBox.plug(MsgType.WINDOW_TITLE, this::handle);
 		msgBox.plug(MsgType.WINDOW_SIZE, this::handle);
 		msgBox.plug(MsgType.WINDOW_VISIBLE, this::handle);

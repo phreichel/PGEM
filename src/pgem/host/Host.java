@@ -4,6 +4,7 @@ package pgem.host;
 
 import javax.vecmath.Vector2f;
 
+import pgem.graphics.Canvas;
 import pgem.msg.MsgBox;
 
 //*************************************************************************************************
@@ -52,6 +53,11 @@ public interface Host {
 	public Vector2f size();
 	public Host size(Vector2f size);
 	public Host size(float width, float height);
+	//=============================================================================================
+
+	//=============================================================================================
+	public Host plug(Canvas canvas);
+	public Host unplug(Canvas canvas);
 	//=============================================================================================
 	
 }
