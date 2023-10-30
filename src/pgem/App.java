@@ -2,6 +2,7 @@
 package pgem;
 //*************************************************************************************************
 
+import pgem.gui.GUI;
 import pgem.host.Host;
 import pgem.msg.Msg;
 import pgem.msg.MsgBox;
@@ -12,6 +13,7 @@ public final class App {
 
 	//=============================================================================================
 	private final MsgBox msgBox = new MsgBox();
+	private final GUI gui = new GUI();
 	private final Host host = Host.create(Host.TYPE_JOGL, msgBox);
 	//=============================================================================================
 
@@ -42,6 +44,7 @@ public final class App {
 	//=============================================================================================
 	private void init() {
 		host.init();
+		host.plug(gui);
 		msgBox.plug(MsgType.APPLICATION_QUIT, this::handleQuit);
 		msgBox.plug(MsgType.WINDOW_CLOSE, this::handleQuit);
 	}

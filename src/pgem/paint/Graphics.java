@@ -1,5 +1,5 @@
 //*************************************************************************************************
-package pgem.graphics;
+package pgem.paint;
 
 import javax.vecmath.Color3f;
 import javax.vecmath.Color4f;
@@ -11,6 +11,7 @@ import javax.vecmath.Vector2f;
 public interface Graphics {
 
 	//=============================================================================================
+	public void surface();
 	public void surface(float width, float height);
 	public void perspective(float fovy, float aspect, float near, float far);
 	//=============================================================================================

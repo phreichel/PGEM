@@ -1,133 +1,116 @@
 //*************************************************************************************************
-package pgem.host;
+package pgem.gui;
 //*************************************************************************************************
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.vecmath.Vector2f;
 
-import com.jogamp.openal.sound3d.AudioSystem3D;
-
-import pgem.msg.MsgBox;
-import pgem.paint.Painter;
-
 //*************************************************************************************************
-final class JOGLHost implements Host {
+public class Widget {
 
 	//=============================================================================================
-	private final JOGLInput input;
-	private final JOGLGraphics graphics;
-	private final JOGLWindow window;
+	private static final List<Widget> EMPTY = Collections.unmodifiableList(new ArrayList<>(0));
 	//=============================================================================================
 	
 	//=============================================================================================
-	public JOGLHost(MsgBox msgBox) {
-		input = new JOGLInput(msgBox);
-		graphics = new JOGLGraphics();
-		window = new JOGLWindow(msgBox);
-	}
+	private final Vector2f position = new Vector2f();
+	private final Vector2f size = new Vector2f();
+	//=============================================================================================
+
+	//=============================================================================================
+	private Widget parent = null;
+	private final List<Widget> children;
+	private final List<Widget> _children;
+	//=============================================================================================
+
+	//=============================================================================================
+	private final Map<GUIFlag, Object> components = new EnumMap<>(GUIFlag.class);
+	private final Map<GUIFlag, Object> _components = Collections.unmodifiableMap(components);
 	//=============================================================================================
 	
 	//=============================================================================================
-	public void init() {
-		AudioSystem3D.init();
-		window.init(input, graphics);
+	public Widget() {
+		this(false);
 	}
 	//=============================================================================================
 
 	//=============================================================================================
-	public void update() {
-		window.update();
-	}
-	//=============================================================================================
-
-	//=============================================================================================
-	public void done() {
-		window.done();
-	}
-	//=============================================================================================
-
-	//=============================================================================================
-	public boolean visible() {
-		return window.visible();
+	public Widget(boolean group) {
+		children = group ? new ArrayList<>() : EMPTY;
+		_children = group ? Collections.unmodifiableList(children) : EMPTY;
 	}
 	//=============================================================================================
 	
 	//=============================================================================================
-	public Host visible(boolean visible) {
-		window.visible(visible);
-		return this;
+	public Vector2f position() {
+		return this.position;
 	}
 	//=============================================================================================
 
 	//=============================================================================================
-	public boolean fullscreen() {
-		return window.fullscreen();
-	}
-	//=============================================================================================
-	
-	//=============================================================================================
-	public Host fullscreen(boolean fullscreen) {
-		window.fullscreen(fullscreen);
-		return this;
+	public void position(Vector2f p) {
+		position(p.x, p.y);
 	}
 	//=============================================================================================
 
 	//=============================================================================================
-	public boolean maximized() {
-		return window.maximized();
-	}
-	//=============================================================================================
-	
-	//=============================================================================================
-	public Host maximized(boolean maximized) {
-		window.maximized(maximized);
-		return this;
-	}
-	//=============================================================================================
-
-	//=============================================================================================
-	public String title() {
-		return window.title();
-	}
-	//=============================================================================================
-
-	//=============================================================================================
-	public Host title(String title) {
-		window.title(title);
-		return this;
+	public void position(float x, float y) {
+		this.position.set(x, y);
 	}
 	//=============================================================================================
 
 	//=============================================================================================
 	public Vector2f size() {
-		return size();
+		return this.size;
 	}
 	//=============================================================================================
 
 	//=============================================================================================
-	public Host size(Vector2f size) {
-		window.size(size);
-		return this;
+	public void size(Vector2f s) {
+		size(s.x, s.y);
+	}
+
+	//=============================================================================================
+	public void size(float w, float h) {
+		this.size.set(w, h);
 	}
 	//=============================================================================================
 
 	//=============================================================================================
-	public Host size(float width, float height) {
-		window.size(width, height);
-		return this;
+	public Widget parent() {
+		return this.parent;
 	}
 	//=============================================================================================
 
 	//=============================================================================================
-	public Host plug(Painter painter) {
-		graphics.plug(painter);
-		return this;
+	public void parent(Widget p) {
+		if (this.parent == p) return;
+		if (this.parent != null) this.parent.children.remove(this);
+		this.parent = p;
+		if (this.parent != null) this.parent.children.add(this);
 	}
 	//=============================================================================================
 
 	//=============================================================================================
-	public Host unplug(Painter painter) {
-		graphics.unplug(painter);
-		return this;
+	public List<Widget> children() {
+		return _children;
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public Map<GUIFlag, Object> components() {
+		return _components;
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public void component(GUIFlag flag, Object component) {
+		this.components.put(flag, component);
 	}
 	//=============================================================================================
 	

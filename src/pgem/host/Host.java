@@ -4,8 +4,8 @@ package pgem.host;
 
 import javax.vecmath.Vector2f;
 
-import pgem.graphics.Canvas;
 import pgem.msg.MsgBox;
+import pgem.paint.Painter;
 
 //*************************************************************************************************
 public interface Host {
@@ -56,8 +56,8 @@ public interface Host {
 	//=============================================================================================
 
 	//=============================================================================================
-	public Host plug(Canvas canvas);
-	public Host unplug(Canvas canvas);
+	public Host plug(Painter painter);
+	public Host unplug(Painter painter);
 	//=============================================================================================
 	
 }

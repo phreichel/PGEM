@@ -14,37 +14,39 @@ import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.glu.GLU;
 
-import pgem.graphics.Canvas;
-import pgem.graphics.Graphics;
+import pgem.paint.Painter;
+import pgem.paint.Graphics;
 
 //*************************************************************************************************
 public class JOGLGraphics implements GLEventListener, Graphics {
 
 	//=============================================================================================
+	private GLAutoDrawable wnd = null;
 	private GL2 gl = null;
 	private GLU glu = null;
 	//=============================================================================================
 
 	//=============================================================================================
-	private final List<Canvas> list = new ArrayList<>();
+	private final List<Painter> list = new ArrayList<>();
 	//=============================================================================================
 	
 	//=============================================================================================
-	public void plug(Canvas canvas) {
-		list.add(canvas);
+	public void plug(Painter painter) {
+		list.add(painter);
 	}
 	//=============================================================================================
 
 	//=============================================================================================
-	public void unplug(Canvas canvas) {
-		list.remove(canvas);
+	public void unplug(Painter painter) {
+		list.remove(painter);
 	}
 	//=============================================================================================
 	
 	//=============================================================================================
 	public void init(GLAutoDrawable drawable) {
 		
-		gl = drawable.getGL().getGL2();
+		wnd = drawable;
+		gl = wnd.getGL().getGL2();
 		glu = GLU.createGLU(gl);
 		
 		gl.glHint(GL2.GL_POINT_SMOOTH_HINT, GL2.GL_NICEST);
@@ -70,6 +72,7 @@ public class JOGLGraphics implements GLEventListener, Graphics {
 	
 	//=============================================================================================
 	public void display(GLAutoDrawable drawable) {
+		gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
 		for (int i=0; i<list.size(); i++) {
 			var canvas = list.get(i);
 			canvas.paint(this);
@@ -83,11 +86,18 @@ public class JOGLGraphics implements GLEventListener, Graphics {
 	//=============================================================================================
 
 	//=============================================================================================
+	public void surface() {
+		surface(wnd.getSurfaceWidth(), wnd.getSurfaceWidth());
+	}
+	//=============================================================================================
+	
+	//=============================================================================================
 	public void surface(float width, float height) {
 		gl.glDisable(GL2.GL_LIGHTING);
+		gl.glDisable(GL2.GL_DEPTH_TEST);
 		gl.glMatrixMode(GL2.GL_PROJECTION);
 		gl.glLoadIdentity();
-		glu.gluOrtho2D(0, width, 0, height);
+		glu.gluOrtho2D(-1, width, -1, height);
 		gl.glMatrixMode(GL2.GL_MODELVIEW);
 		gl.glLoadIdentity();
 	}
@@ -96,6 +106,7 @@ public class JOGLGraphics implements GLEventListener, Graphics {
 	//=============================================================================================
 	public void perspective(float fovy, float aspect, float near, float far) {
 		gl.glEnable(GL2.GL_LIGHTING);
+		gl.glEnable(GL2.GL_DEPTH_TEST);
 		gl.glMatrixMode(GL2.GL_PROJECTION);
 		gl.glLoadIdentity();
 		glu.gluPerspective(fovy, aspect, near, far);
