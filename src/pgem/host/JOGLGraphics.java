@@ -15,6 +15,7 @@ import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.glu.GLU;
 
 import pgem.paint.Painter;
+import pgem.paint.Fn;
 import pgem.paint.Graphics;
 
 //*************************************************************************************************
@@ -346,6 +347,29 @@ public class JOGLGraphics implements GLEventListener, Graphics {
 
 		gl.glEnd();
 	
+	}
+	//=============================================================================================
+	
+	//=============================================================================================
+	public void fn(float x, float y, float precision, float from, float to, Fn fn) {
+
+		int steps = (int) Math.rint((to-from) / precision);
+
+		gl.glBegin(GL2.GL_LINE_STRIP);
+	
+		for (int i=0; i<= steps; i++) {
+			
+			float a = (float) i / (float) steps;
+			float fx = from*a + to*(1f-a);
+			float dx = (to - from) * a;
+			float dy = fn.fn(fx);
+			
+			gl.glVertex2f(x+dx, x+dy);
+			
+		}
+
+		gl.glEnd();
+		
 	}
 	//=============================================================================================
 	
