@@ -220,6 +220,136 @@ public class JOGLGraphics implements GLEventListener, Graphics {
 	//=============================================================================================
 
 	//=============================================================================================
+	public void spline(float precision, float ... coords) {
+		
+		var idx = 0;
+
+		gl.glBegin(GL2.GL_LINE_STRIP);
+
+		var cx = 0f;
+		var cy = 0f;
+	
+		while (idx <= coords.length-4) {
+	
+			var ax = (idx < 2) ? coords[idx++] : cx;
+			var ay = (idx < 2) ? coords[idx++] : cy;
+	
+			var bx = coords[idx++];
+			var by = coords[idx++];
+			
+			cx = coords[idx++];
+			cy = coords[idx++];
+			
+			var dax = bx-ax;
+			var day = by-ay;
+			var dbx = cx-bx;
+			var dby = cy-by;
+
+			var lena = Math.sqrt(dax*dax + day*day);
+			var lenb = Math.sqrt(dbx*dbx + dby*dby);
+			
+			var steps = (int) Math.rint((lena+lenb) / precision);
+			
+			for (int i=0; i<=steps; i++) {
+				
+				var a = 1f - (1f / steps) * i;
+				
+				var abx = ax*a + bx*(1f-a);
+				var aby = ay*a + by*(1f-a);
+
+				var bcx = bx*a + cx*(1f-a);
+				var bcy = by*a + cy*(1f-a);
+
+				var abcx = abx*a + bcx*(1f-a);
+				var abcy = aby*a + bcy*(1f-a);
+				
+				gl.glVertex2f(abcx, abcy);
+	
+			}
+			
+			ax = cx;
+			ay = cy;
+			
+		}
+
+		gl.glEnd();
+		
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public void bezier(float precision, float ... coords) {
+		
+		var idx = 0;
+
+		gl.glBegin(GL2.GL_LINE_STRIP);
+	
+		var dx = 0f;
+		var dy = 0f;
+		
+		while (idx <= coords.length-6) {
+			
+			var ax = (idx < 2) ? coords[idx++] : dx;
+			var ay = (idx < 2) ? coords[idx++] : dy;
+
+			var bx = coords[idx++];
+			var by = coords[idx++];
+			
+			var cx = coords[idx++];
+			var cy = coords[idx++];
+
+			dx = coords[idx++];
+			dy = coords[idx++];
+	
+			var dax = bx-ax;
+			var day = by-ay;
+
+			var dbx = cx-bx;
+			var dby = cy-by;
+
+			var dcx = dx-cx;
+			var dcy = dy-cy;
+	
+			var lena = Math.sqrt(dax*dax + day*day);
+			var lenb = Math.sqrt(dbx*dbx + dby*dby);
+			var lenc = Math.sqrt(dcx*dcx + dcy*dcy);
+			
+			var steps = (int) Math.rint((lena+lenb+lenc) / precision);
+			
+			for (int i=0; i<=steps; i++) {
+				
+				var a = 1f - (1f / steps) * i;
+				
+				var abx = ax*a + bx*(1f-a);
+				var aby = ay*a + by*(1f-a);
+
+				var bcx = bx*a + cx*(1f-a);
+				var bcy = by*a + cy*(1f-a);
+
+				var cdx = cx*a + dx*(1f-a);
+				var cdy = cy*a + dy*(1f-a);
+				
+				var abcx = abx*a + bcx*(1f-a);
+				var abcy = aby*a + bcy*(1f-a);
+
+				var bcdx = bcx*a + cdx*(1f-a);
+				var bcdy = bcy*a + cdy*(1f-a);
+
+				var abcdx = abcx*a + bcdx*(1f-a);
+				var abcdy = abcy*a + bcdy*(1f-a);
+	
+				gl.glVertex2f(abcdx, abcdy);
+	
+			}
+						
+		}
+
+		gl.glEnd();
+	
+	}
+	//=============================================================================================
+	
+	//=============================================================================================
 	public void box(boolean filled, Vector2f origin, Vector2f size) {
 		box(filled, origin.x, origin.y, size.x, size.y);
 	}

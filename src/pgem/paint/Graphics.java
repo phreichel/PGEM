@@ -39,6 +39,8 @@ public interface Graphics {
 	public void points(Vector2f ... coords);
 	public void lines(boolean closed, float ... coords);
 	public void lines(boolean closed, Vector2f ... coords);
+	public void spline(float precision, float ... coords);
+	public void bezier(float precision, float ... coords);
 	public void box(boolean filled, Vector2f origin, Vector2f size);
 	public void box(boolean filled, float x, float y, float width, float height);
 	//=============================================================================================
