@@ -57,11 +57,11 @@ public class TestPainter implements Painter {
 		g.bezier(
 			10f,
 			500, 900,
-			700, 900,
-			700, 500,
+			750, 900,
+			750, 500,
 			500, 500,
-			300, 500,
-			300, 900,
+			250, 500,
+			250, 900,
 			500, 900);
 	
 		g.color(1f, 0f, 1f);

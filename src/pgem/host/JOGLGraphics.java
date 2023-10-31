@@ -88,7 +88,7 @@ public class JOGLGraphics implements GLEventListener, Graphics {
 
 	//=============================================================================================
 	public void surface() {
-		surface(wnd.getSurfaceWidth(), wnd.getSurfaceWidth());
+		surface(wnd.getSurfaceWidth(), wnd.getSurfaceHeight());
 	}
 	//=============================================================================================
 	
