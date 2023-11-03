@@ -2,8 +2,12 @@
 package pgem.host;
 //*************************************************************************************************
 
+import java.awt.Font;
+import java.awt.font.LineMetrics;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.vecmath.Color3f;
 import javax.vecmath.Color4f;
@@ -13,8 +17,10 @@ import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.glu.GLU;
+import com.jogamp.opengl.util.awt.TextRenderer;
 
 import pgem.paint.Painter;
+import pgem.paint.TextData;
 import pgem.paint.Fn;
 import pgem.paint.Graphics;
 
@@ -27,6 +33,11 @@ public class JOGLGraphics implements GLEventListener, Graphics {
 	private GLU glu = null;
 	//=============================================================================================
 
+	//=============================================================================================
+	private final Color4f color = new Color4f();
+	private final Map<String, TextRenderer> fonts = new HashMap<>();
+	//=============================================================================================
+	
 	//=============================================================================================
 	private final List<Painter> list = new ArrayList<>();
 	//=============================================================================================
@@ -168,6 +179,7 @@ public class JOGLGraphics implements GLEventListener, Graphics {
 	public void color(float r, float g, float b, float a) {
 		if (a == 1) gl.glDisable(GL2.GL_BLEND);
 		else gl.glEnable(GL2.GL_BLEND);
+		color.set(r, g, b, a);
 		gl.glColor4f(r, g, b, a);
 	}
 	//=============================================================================================
@@ -381,6 +393,7 @@ public class JOGLGraphics implements GLEventListener, Graphics {
 
 	//=============================================================================================
 	public void box(boolean filled, float x, float y, float w, float h) {
+		gl.glPushAttrib(GL2.GL_POLYGON_BIT);
 		if (filled) gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
 		else gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
 		gl.glBegin(GL2.GL_QUADS);
@@ -389,6 +402,62 @@ public class JOGLGraphics implements GLEventListener, Graphics {
 		gl.glVertex2f(x+w, y+h);
 		gl.glVertex2f(x+0, y+h);
 		gl.glEnd();
+		gl.glPopAttrib();
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public void fontInit(String name, String fontdef) {
+		if (fonts.containsKey(name)) return;
+		var font = Font.decode(fontdef); 
+		var textRenderer = new TextRenderer(font, true, true, null, true);
+		textRenderer.setSmoothing(true);
+		fonts.put(name, textRenderer);
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public void fontDone(String name) {
+		var textRenderer = fonts.remove(name);
+		textRenderer.dispose();
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public TextData textMetrics(String text, String font, TextData data) {
+
+		var textRenderer = fonts.get(font);
+		LineMetrics lineMetrics = textRenderer
+			.getFont()
+			.getLineMetrics(text, textRenderer.getFontRenderContext());
+
+		if (data == null) data = new TextData();
+
+		var r = textRenderer.getBounds(text);
+		var baslineIndex = lineMetrics.getBaselineIndex();
+		
+		data.set(
+			font,
+			text,
+			(float) r.getWidth(),
+			lineMetrics.getHeight(),
+			lineMetrics.getBaselineOffsets()[baslineIndex],
+			lineMetrics.getAscent(),
+			lineMetrics.getDescent(),
+			lineMetrics.getLeading());
+		
+		return data;
+
+	}
+	//=============================================================================================
+	
+	//=============================================================================================
+	public void text(float x, float y, String text, String font) {
+		var textRenderer = fonts.get(font);
+		textRenderer.setColor(color.x, color.y, color.z, color.w);
+		textRenderer.beginRendering(wnd.getSurfaceWidth(), wnd.getSurfaceHeight(), true);
+		textRenderer.draw(text, (int) x, (int) y);
+		textRenderer.endRendering();
 	}
 	//=============================================================================================
 

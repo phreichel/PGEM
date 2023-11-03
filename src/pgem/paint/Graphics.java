@@ -46,5 +46,12 @@ public interface Graphics {
 	public void box(boolean filled, float x, float y, float width, float height);
 	//=============================================================================================
 
+	//=============================================================================================
+	public void fontInit(String name, String fontdef);
+	public void fontDone(String name);
+	public void text(float x, float y, String text, String font);
+	public TextData textMetrics(String text, String font, TextData data);
+	//=============================================================================================
+
 }
 //*************************************************************************************************
