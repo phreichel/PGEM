@@ -5,6 +5,7 @@ package pgem.host;
 import javax.vecmath.Vector2f;
 
 import com.jogamp.nativewindow.WindowClosingProtocol.WindowClosingMode;
+import com.jogamp.newt.Window;
 import com.jogamp.newt.event.WindowEvent;
 import com.jogamp.newt.event.WindowListener;
 import com.jogamp.newt.event.WindowUpdateEvent;
@@ -150,7 +151,18 @@ final class JOGLWindow implements WindowListener {
 	//=============================================================================================
 
 	//=============================================================================================
-	public void windowResized(WindowEvent e) {}
+	public void windowResized(WindowEvent e) {
+		Window window = (Window) e.getSource();
+		var msg = msgBox.alloc(MsgType.WINDOW_RESIZED);
+		WindowData data = (WindowData) msg.data;
+		data.size.set(
+			window.getWidth(),
+			window.getHeight());
+		msgBox.post(msg);
+	}
+	//=============================================================================================
+
+	//=============================================================================================
 	public void windowMoved(WindowEvent e) {}
 	public void windowDestroyed(WindowEvent e) {}
 	public void windowGainedFocus(WindowEvent e) {}

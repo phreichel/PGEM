@@ -10,10 +10,13 @@ import java.util.Map;
 
 import javax.vecmath.Vector2f;
 
+import pgem.paint.Graphics;
+
 //*************************************************************************************************
 public class Widget {
 
 	//=============================================================================================
+	private static final Vector2f ORIGIN = new Vector2f(0, 0);
 	private static final List<Widget> EMPTY = Collections.unmodifiableList(new ArrayList<>(0));
 	//=============================================================================================
 	
@@ -111,6 +114,34 @@ public class Widget {
 	//=============================================================================================
 	public void component(GUIFlag flag, Object component) {
 		this.components.put(flag, component);
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public void paint(Graphics g) {
+		g.push();
+		g.translate(position.x, position.y);
+		paintWidget(g);
+		paintChildren(g);
+		g.pop();
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	protected void paintWidget(Graphics g) {
+		g.color(.1f, .1f, .1f, .4f);
+		g.box(true, ORIGIN, size);
+		g.color(1, 0, 0);
+		g.box(false, ORIGIN, size);
+	}
+	//=============================================================================================
+	
+	//=============================================================================================
+	protected void paintChildren(Graphics g) {
+		for (int i = children.size()-1; i>=0; i--) {
+			var child = children.get(i);
+			child.paint(g);
+		}
 	}
 	//=============================================================================================
 	

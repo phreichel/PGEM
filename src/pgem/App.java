@@ -48,11 +48,15 @@ public final class App {
 	
 	//=============================================================================================
 	private void init() {
+		
 		host.init();
 		host.plug(gui);
 		host.plug(test);
+
 		msgBox.plug(MsgType.APPLICATION_QUIT, this::handleQuit);
 		msgBox.plug(MsgType.WINDOW_CLOSE, this::handleQuit);
+		msgBox.plug(MsgType.WINDOW_RESIZED, gui::handleResize);
+		
 	}
 	//=============================================================================================
 
