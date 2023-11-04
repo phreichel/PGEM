@@ -4,6 +4,7 @@ package pgem.host;
 
 import java.awt.Font;
 import java.awt.font.LineMetrics;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,9 +19,12 @@ import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.util.awt.TextRenderer;
+import com.jogamp.opengl.util.texture.Texture;
+import com.jogamp.opengl.util.texture.TextureIO;
 
 import pgem.paint.Painter;
 import pgem.paint.TextData;
+import pgem.X;
 import pgem.paint.Fn;
 import pgem.paint.Graphics;
 
@@ -36,6 +40,7 @@ public class JOGLGraphics implements GLEventListener, Graphics {
 	//=============================================================================================
 	private final Color4f color = new Color4f();
 	private final Map<String, TextRenderer> fonts = new HashMap<>();
+	private final Map<String, Texture> images = new HashMap<>();
 	//=============================================================================================
 	
 	//=============================================================================================
@@ -233,6 +238,27 @@ public class JOGLGraphics implements GLEventListener, Graphics {
 	//=============================================================================================
 
 	//=============================================================================================
+	public void box(boolean filled, Vector2f origin, Vector2f size) {
+		box(filled, origin.x, origin.y, size.x, size.y);
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public void box(boolean filled, float x, float y, float w, float h) {
+		gl.glPushAttrib(GL2.GL_POLYGON_BIT);
+		if (filled) gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
+		else gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
+		gl.glBegin(GL2.GL_QUADS);
+		gl.glVertex2f(x+0, y+0);
+		gl.glVertex2f(x+w, y+0);
+		gl.glVertex2f(x+w, y+h);
+		gl.glVertex2f(x+0, y+h);
+		gl.glEnd();
+		gl.glPopAttrib();
+	}
+	//=============================================================================================
+	
+	//=============================================================================================
 	public void spline(float precision, float ... coords) {
 		
 		var idx = 0;
@@ -363,7 +389,7 @@ public class JOGLGraphics implements GLEventListener, Graphics {
 	//=============================================================================================
 	
 	//=============================================================================================
-	public void fn(float x, float y, float precision, float from, float to, Fn fn) {
+	public void function(float x, float y, float precision, float from, float to, Fn fn) {
 
 		int steps = (int) Math.rint((to-from) / precision);
 
@@ -385,27 +411,6 @@ public class JOGLGraphics implements GLEventListener, Graphics {
 	}
 	//=============================================================================================
 	
-	//=============================================================================================
-	public void box(boolean filled, Vector2f origin, Vector2f size) {
-		box(filled, origin.x, origin.y, size.x, size.y);
-	}
-	//=============================================================================================
-
-	//=============================================================================================
-	public void box(boolean filled, float x, float y, float w, float h) {
-		gl.glPushAttrib(GL2.GL_POLYGON_BIT);
-		if (filled) gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
-		else gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
-		gl.glBegin(GL2.GL_QUADS);
-		gl.glVertex2f(x+0, y+0);
-		gl.glVertex2f(x+w, y+0);
-		gl.glVertex2f(x+w, y+h);
-		gl.glVertex2f(x+0, y+h);
-		gl.glEnd();
-		gl.glPopAttrib();
-	}
-	//=============================================================================================
-
 	//=============================================================================================
 	public void fontInit(String name, String fontdef) {
 		if (fonts.containsKey(name)) return;
@@ -461,5 +466,56 @@ public class JOGLGraphics implements GLEventListener, Graphics {
 	}
 	//=============================================================================================
 
+	//=============================================================================================
+	public void imageInit(String name, String filePath) {
+		try {
+			var file = new File(filePath);
+			var texture = TextureIO.newTexture(file, true);
+			images.put(name, texture);
+		} catch (Exception e) {
+			throw new X(e); 
+		}
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public void imageDone(String name) {
+		var texture = images.get(name);
+		texture.destroy(gl);
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public void image(String name, float x, float y, float w, float h) {
+	
+		gl.glPushAttrib(GL2.GL_ENABLE_BIT);
+		gl.glEnable(GL2.GL_BLEND);
+		
+		var texture = images.get(name);
+		texture.bind(gl);
+		texture.enable(gl);
+		
+		gl.glBegin(GL2.GL_QUADS);
+		
+		gl.glTexCoord2f(0, 0);
+		gl.glVertex2f(x+0, y+0);
+		
+		gl.glTexCoord2f(1, 0);
+		gl.glVertex2f(x+w, y+0);
+		
+		gl.glTexCoord2f(1, 1);
+		gl.glVertex2f(x+w, y+h);
+		
+		gl.glTexCoord2f(0, 1);
+		gl.glVertex2f(x+0, y+h);
+
+		gl.glEnd();
+		
+		texture.disable(gl);
+		gl.glPopAttrib();
+
+	}
+	//=============================================================================================
+	
 }
 //*************************************************************************************************

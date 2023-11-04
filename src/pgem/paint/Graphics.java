@@ -39,11 +39,11 @@ public interface Graphics {
 	public void points(Vector2f ... coords);
 	public void lines(boolean closed, float ... coords);
 	public void lines(boolean closed, Vector2f ... coords);
-	public void spline(float precision, float ... coords);
-	public void bezier(float precision, float ... coords);
-	public void fn(float x, float y, float precision, float from, float to, Fn fn);
 	public void box(boolean filled, Vector2f origin, Vector2f size);
 	public void box(boolean filled, float x, float y, float width, float height);
+	public void spline(float precision, float ... coords);
+	public void bezier(float precision, float ... coords);
+	public void function(float x, float y, float precision, float from, float to, Fn fn);
 	//=============================================================================================
 
 	//=============================================================================================
@@ -53,5 +53,11 @@ public interface Graphics {
 	public TextData textMetrics(String text, String font, TextData data);
 	//=============================================================================================
 
+	//=============================================================================================
+	public void imageInit(String name, String filePath);
+	public void imageDone(String name);
+	public void image(String name, float x, float y, float w, float h);
+	//=============================================================================================
+	
 }
 //*************************************************************************************************

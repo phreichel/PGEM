@@ -6,7 +6,29 @@ package pgem.paint;
 public class TestPainter implements Painter {
 
 	//=============================================================================================
+	private static final String DEFAULT = "default";
+	//=============================================================================================
+	
+	//=============================================================================================
+	private boolean init = false;
+	//=============================================================================================
+
+	//=============================================================================================
+	private void init(Graphics g) {
+		
+		if (init) return;
+		init = true;
+		
+		g.fontInit(DEFAULT, "Aptos Black PLAIN 20");
+		g.imageInit(DEFAULT, "./data/icons/fullscreen.png");
+		
+	}
+	//=============================================================================================
+	
+	//=============================================================================================
 	public void paint(Graphics g) {
+		
+		init(g);
 		
 		g.surface();
 		
@@ -66,65 +88,20 @@ public class TestPainter implements Painter {
 		g.push();
 		g.rotate(35);
 		g.color(1f, 0f, 1f);
-		g.fn(100, 500, 1f, 0f, 800f, this::sin);
+		g.function(100, 500, 1f, 0f, 800f, this::sin);
 		g.pop();
 		
-		//g.fontInit("default", "Old English Text MT PLAIN 20");
-		g.fontInit("default", "Aptos Black PLAIN 20");
-
 		final var text  = "Peter the Cheetah playing Quiddich!";
 		g.color(.8f, .8f, .7f);
-		g.text(1000, 600, text, "default");
-
-		/*
-		var metrics = g.textMetrics(text, "default", null);
-
-		g.color(1, 0, 0);
-		g.box(
-			false,
-			100 + metrics.x,
-			100 + metrics.baseline - metrics.descent,
-			metrics.w,
-			metrics.descent + metrics.ascent);
-
-		g.color(1, 1, 0);
-		g.lines(
-			false,
-			100 + metrics.x,
-			100 + metrics.baseline,
-			100 + metrics.w,
-			100 + metrics.baseline);
-
-		g.color(1, .5f, 0);
-		g.lines(
-			false,
-			100 + metrics.x,
-			100 + metrics.baseline - metrics.descent,
-			100 + metrics.w,
-			100 + metrics.baseline - metrics.descent);
-
-		g.color(.5f, 1f, 0);
-		g.lines(
-			false,
-			100 + metrics.x,
-			100 + metrics.baseline + metrics.ascent,
-			100 + metrics.w,
-			100 + metrics.baseline + metrics.ascent);
-		*/
+		g.text(1000, 600, text, DEFAULT);
 
 		final var text2 = "oooooze";
 		g.color(.8f, .8f, .7f);
-		g.text(1000, 580, text2, "default");
-		/*
-		metrics = g.textMetrics(text2, "default", metrics);
-		g.color(1, 0, 0);
-		g.box(
-			false,
-			400 + metrics.x,
-			100 + metrics.baseline - metrics.descent,
-			metrics.w,
-			metrics.descent + metrics.ascent);
-		*/
+		g.text(1000, 580, text2, DEFAULT);
+		
+		g.color(1, 0, 0, 1f);
+		g.image(DEFAULT, 500, 100, 64, 64);
+
 	}
 	//=============================================================================================
 
