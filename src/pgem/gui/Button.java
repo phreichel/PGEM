@@ -6,6 +6,10 @@ import javax.vecmath.Color3f;
 import javax.vecmath.Color4f;
 import javax.vecmath.Vector2f;
 
+import pgem.msg.Axis;
+import pgem.msg.InputData;
+import pgem.msg.Msg;
+import pgem.msg.MsgType;
 import pgem.paint.Graphics;
 
 //*************************************************************************************************
@@ -22,9 +26,31 @@ public class Button extends Widget {
 	//=============================================================================================
 
 	//=============================================================================================
+	private boolean armed = false;
+	private Action action = null;
+	//=============================================================================================
+	
+	//=============================================================================================
 	public Button() {
 		super(true);
+		action = this::action;
 	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public Action action() {
+		return action;
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public void action(Action action) {
+		this.action = action;
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	protected void action(Widget widget, Msg msg) {}
 	//=============================================================================================
 	
 	//=============================================================================================
@@ -153,12 +179,60 @@ public class Button extends Widget {
 	protected void paintWidget(Graphics g) {
 		g.color(background);
 		g.box(true, ORIGIN, size());
-		g.color(borderLight);
-		g.lines(false, 0, 0, 0, size().y, size().x, size().y);
-		g.color(borderDark);
-		g.lines(false, 0, 0, size().x, 0, size().x, size().y);
+		var s = size(); 
+		if (!armed) {
+			g.color(borderLight);
+			g.lines(false, 0, 0, 0, s.y, s.x, s.y);
+			g.color(borderDark);
+			g.lines(false, 0, 0, s.x, 0, s.x, s.y);
+		} else {
+			g.color(borderDark);
+			g.lines(false, 0, 0, 0, s.y, s.x, s.y);
+			g.color(borderLight);
+			g.lines(false, 0, 0, s.x, 0, s.x, s.y);
+		}
 	}
 	//=============================================================================================
 
+	//=============================================================================================
+	public void handleWidget(Msg msg) {
+
+		if (msg.type.equals(MsgType.POINTER_RELEASED)) {
+			var data = msg.data(InputData.class);
+			if (data.button.equals(pgem.msg.Button.POINTER_1)) {
+				armed = false;
+			}
+		}
+
+		if (msg.consumed) return;
+		
+		if (MsgType.POINTER_MASK.contains(msg.type)) {
+			var data = msg.data(InputData.class);
+			float px = data.axes.get(Axis.POINTER_HORIZONTAL);
+			float py = data.axes.get(Axis.POINTER_VERTICAL);
+			if (containsScreen(px, py)) {
+				msg.consumed = true;
+				if (msg.type.equals(MsgType.POINTER_PRESSED)) {
+					focus();
+					if (data.button.equals(pgem.msg.Button.POINTER_1)) {
+						armed = true;
+					}
+				}
+				else if (msg.type.equals(MsgType.POINTER_RELEASED)) {
+					if (data.button.equals(pgem.msg.Button.POINTER_1)) {
+						triggerAction(msg);
+					}
+				}
+			}
+		}
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	private void triggerAction(Msg msg) {
+		this.action.perform(this, msg);
+	}
+	//=============================================================================================
+	
 }
 //*************************************************************************************************

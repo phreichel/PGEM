@@ -2,8 +2,6 @@
 package pgem.gui;
 //*************************************************************************************************
 
-import javax.vecmath.Vector2f;
-
 import pgem.msg.Msg;
 import pgem.msg.WindowData;
 import pgem.paint.Graphics;
@@ -70,8 +68,7 @@ public class GUI implements Painter {
 
 	//=============================================================================================
 	public void handleInput(Msg msg) {
-		var offset = new Vector2f(0, 0);
-		root.handle(msg, offset);
+		root.handle(msg);
 	}
 	//=============================================================================================
 	
