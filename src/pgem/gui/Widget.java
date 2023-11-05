@@ -4,9 +4,7 @@ package pgem.gui;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.vecmath.Vector2f;
 
@@ -23,7 +21,7 @@ public class Widget {
 	//=============================================================================================
 	private final Vector2f position = new Vector2f();
 	private final Vector2f size = new Vector2f();
-	private final Dock dock = new Dock(Dock.BOTTOM_LEFT);
+	private final Dock     dock = new Dock(Dock.BOTTOM_LEFT);
 	//=============================================================================================
 
 	//=============================================================================================
@@ -32,11 +30,6 @@ public class Widget {
 	private final List<Widget> _children;
 	//=============================================================================================
 
-	//=============================================================================================
-	private final Map<GUIFlag, Object> components = new EnumMap<>(GUIFlag.class);
-	private final Map<GUIFlag, Object> _components = Collections.unmodifiableMap(components);
-	//=============================================================================================
-	
 	//=============================================================================================
 	public Widget() {
 		this(false);
@@ -47,6 +40,13 @@ public class Widget {
 	public Widget(boolean group) {
 		children = group ? new ArrayList<>() : EMPTY;
 		_children = group ? Collections.unmodifiableList(children) : EMPTY;
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public GUI gui() {
+		if (parent == null) return null;
+		return parent.gui();
 	}
 	//=============================================================================================
 	
@@ -137,17 +137,15 @@ public class Widget {
 	//=============================================================================================
 
 	//=============================================================================================
-	public Map<GUIFlag, Object> components() {
-		return _components;
+	public void style(Style style) {
+		for (int i=0; i<children.size(); i++) {
+			var child = children.get(i);
+			child.style(style);
+		}
+		styleWidget(style);
 	}
 	//=============================================================================================
-
-	//=============================================================================================
-	public void component(GUIFlag flag, Object component) {
-		this.components.put(flag, component);
-	}
-	//=============================================================================================
-
+	
 	//=============================================================================================
 	public void paint(Graphics g) {
 		g.push();
@@ -159,6 +157,7 @@ public class Widget {
 	//=============================================================================================
 
 	//=============================================================================================
+	protected void styleWidget(Style style) {};
 	protected void paintWidget(Graphics g) {};
 	//=============================================================================================
 	

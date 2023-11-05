@@ -2,85 +2,85 @@
 package pgem.gui;
 //*************************************************************************************************
 
-import javax.vecmath.Color3f;
+import java.util.EnumMap;
+import java.util.Map;
+
 import javax.vecmath.Color4f;
 
-import pgem.paint.Graphics;
-
 //*************************************************************************************************
-public class Image extends Widget {
+public class Style {
 
 	//=============================================================================================
-	private String image = null;
-	private Color4f color = new Color4f();
+	private final Map<StyleColor, Color4f> colors = new EnumMap<>(StyleColor.class);
+	private final Map<StyleFont, Font> fonts = new EnumMap<>(StyleFont.class);
+	private final Map<StyleIcon, Icon> icons = new EnumMap<>(StyleIcon.class);
 	//=============================================================================================
-	
+
 	//=============================================================================================
-	public Image() {
-		super();
+	public Style() {
+
+		put(StyleColor.BUTTON_BACKGROUND, 0, 0, .8f, 1);
+		put(StyleColor.BUTTON_BORDER_LIGHT, .4f, .4f, 1, 1);
+		put(StyleColor.BUTTON_BORDER_DARK, 0, 0, 1, 1);
+		put(StyleColor.FRAME_BACKGROUND, .4f, 0, 0, .4f);
+		put(StyleColor.FRAME_BORDER, 0, 0, 1, 1);
+		put(StyleColor.FRAME_DRAG_BORDER, 0, 1, 1, 1);
+	    put(StyleColor.FRAME_TITLE_BACKGROUND, 0, 0, .6f, 1);
+	    put(StyleColor.FRAME_TITLE_BORDER, 0, 0, 1, 1);
+	    put(StyleColor.FRAME_TITLE_COLOR, 0, 1, 1, 1);
+	    put(StyleColor.IMAGE_COLOR, 1, 1, 1, 1);
+	    put(StyleColor.LABEL_COLOR, 1, 1, 1, 1);
+	    put(StyleColor.PANEL_BACKGROUND, 0, 0, .4f, .6f);
+	    put(StyleColor.PANEL_BORDER, 0, 0, 1, 1);
+
+		put(StyleFont.DEFAULT, Font.DEFAULT_16);
+		put(StyleFont.LABEL, Font.DEFAULT_16);
+		put(StyleFont.FRAME_TITLE, Font.DEFAULT_18);
+	    
+		put(StyleIcon.FRAME_CLOSE, Icon.CLOSE);
+	    
 	}
 	//=============================================================================================
 
 	//=============================================================================================
-	public String image() {
-		return image;
+	public Font get(StyleFont styleFont) {
+		return fonts.get(styleFont);
 	}
 	//=============================================================================================
 
 	//=============================================================================================
-	public void image(String image) {
-		this.image = image;
-	}
-	//=============================================================================================
-
-	//=============================================================================================
-	public Color4f color() {
-		return color;
-	}
-	//=============================================================================================
-
-	//=============================================================================================
-	public void color(Color3f color) {
-		this.color.set(
-			color.x,
-			color.y,
-			color.z,
-			1);
-	}
-	//=============================================================================================
-	
-	//=============================================================================================
-	public void color(Color4f color) {
-		this.color.set(
-			color.x,
-			color.y,
-			color.z,
-			color.w);
-	}
-	//=============================================================================================
-
-	//=============================================================================================
-	public void color(float r, float g, float b) {
-		this.color.set(r, g, b, 1);
+	public void put(StyleFont styleFont, Font font) {
+		fonts.put(styleFont, font);
 	}
 	//=============================================================================================
 	
 	//=============================================================================================
-	public void color(float r, float g, float b, float a) {
-		this.color.set(r, g, b, a);
+	public Icon get(StyleIcon styleIcon) {
+		return icons.get(styleIcon);
 	}
 	//=============================================================================================
 
 	//=============================================================================================
-	protected void styleWidget(Style style) {
-		color(style.get(StyleColor.IMAGE_COLOR));
+	public void put(StyleIcon styleIcon, Icon icon) {
+		icons.put(styleIcon, icon);
 	}
 	//=============================================================================================
 	
 	//=============================================================================================
-	protected void paintWidget(Graphics g) {
-		g.color(color);
-		g.image(image, 0, 0, size().x, size().y);
+	public Color4f get(StyleColor styleColor) {
+		return colors.get(styleColor);
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public void put(StyleColor styleColor, Color4f color) {
+		colors.put(styleColor, color);
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public void put(StyleColor styleColor, float r, float g, float b, float a) {
+		colors.put(styleColor, new Color4f(r, g, b, a));
 	}
 	//=============================================================================================
 	

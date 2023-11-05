@@ -16,9 +16,9 @@ public class Button extends Widget {
 	//=============================================================================================
 	
 	//=============================================================================================
-	private Color4f borderLight = new Color4f(.2f, .2f, 1, 1);
-	private Color4f borderDark = new Color4f(0, 0, 1, 1);
-	private Color4f background = new Color4f(0, 0, .8f, 1);
+	private Color4f borderLight = new Color4f();
+	private Color4f borderDark = new Color4f();
+	private Color4f background = new Color4f();
 	//=============================================================================================
 
 	//=============================================================================================
@@ -138,6 +138,14 @@ public class Button extends Widget {
 	//=============================================================================================
 	public void borderDark(float r, float g, float b, float a) {
 		this.borderDark.set(r, g, b, a);
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	protected void styleWidget(Style style) {
+		background(style.get(StyleColor.BUTTON_BACKGROUND));
+		borderDark(style.get(StyleColor.BUTTON_BORDER_DARK));
+		borderLight(style.get(StyleColor.BUTTON_BORDER_LIGHT));
 	}
 	//=============================================================================================
 	

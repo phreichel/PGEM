@@ -44,7 +44,6 @@ public class Frame extends Widget {
 		titlePanel.border(0, 0, 1, 1);
 		titlePanel.background(0, 0, .8f, 1);
 
-		titleLabel.font(GUI.TITLE_FONT);
 		titleLabel.position(2, 2);
 		titleLabel.size(767, 16);
 		titleLabel.dock(Dock.SCALE);
@@ -58,8 +57,7 @@ public class Frame extends Widget {
 		closeButtonImage.position(0, 0);
 		closeButtonImage.size(20, 20);
 		closeButtonImage.color(0, 1, 1, 1);
-		closeButtonImage.dock(Dock.SCALE);
-		closeButtonImage.image(GUI.CLOSE_IMAGE);
+		closeButtonImage.dock(Dock.SCALE);		
 		
 		contentPanel.position(3, 3);
 		contentPanel.size(794, 571);
@@ -94,6 +92,18 @@ public class Frame extends Widget {
 	}
 	//=============================================================================================
 
+	//=============================================================================================
+	protected void styleWidget(Style style) {
+		framePanel.border(style.get(dragging ? StyleColor.FRAME_DRAG_BORDER : StyleColor.FRAME_BORDER));
+		framePanel.background(style.get(StyleColor.FRAME_BACKGROUND));
+		titlePanel.background(style.get(StyleColor.FRAME_TITLE_BACKGROUND));		
+		titlePanel.border(style.get(StyleColor.FRAME_TITLE_BORDER));		
+		titleLabel.color(style.get(StyleColor.FRAME_TITLE_COLOR));
+		titleLabel.font(style.get(StyleFont.FRAME_TITLE).name());
+		closeButtonImage.image(style.get(StyleIcon.FRAME_CLOSE).name());
+	}
+	//=============================================================================================
+	
 	//=============================================================================================
 	protected void handleWidget(Msg msg, Vector2f offset) {
 

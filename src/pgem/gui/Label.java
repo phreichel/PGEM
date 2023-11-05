@@ -14,7 +14,7 @@ public class Label extends Widget {
 	private String  text  = "TEXT";
 	private String  font  = "default";
 	private Align align = Align.CENTER;
-	private Color4f color = new Color4f(1, 0, 0, 1);
+	private Color4f color = new Color4f();
 	//=============================================================================================
 	
 	//=============================================================================================
@@ -97,6 +97,13 @@ public class Label extends Widget {
 	}
 	//=============================================================================================
 
+	//=============================================================================================
+	protected void styleWidget(Style style) {
+		color(style.get(StyleColor.LABEL_COLOR));
+		font(style.get(StyleFont.LABEL).name());
+	}
+	//=============================================================================================
+	
 	//=============================================================================================
 	protected void paintWidget(Graphics g) {
 		g.color(color);
