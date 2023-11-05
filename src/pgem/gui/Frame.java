@@ -25,6 +25,12 @@ public class Frame extends Widget {
 	private boolean  dragging = false;
 	private final Vector2f pointerBefore = new Vector2f();
 	//=============================================================================================
+
+	//=============================================================================================
+	private boolean maximized = false;
+	private final Vector2f normalPosition = new Vector2f();
+	private final Vector2f normalSize = new Vector2f();
+	//=============================================================================================
 	
 	//=============================================================================================
 	public Frame() {
@@ -100,6 +106,7 @@ public class Frame extends Widget {
 		titlePanel.border(style.get(StyleColor.FRAME_TITLE_BORDER));		
 		titleLabel.color(style.get(StyleColor.FRAME_TITLE_COLOR));
 		titleLabel.font(style.get(StyleFont.FRAME_TITLE).name());
+		closeButtonImage.color(style.get(StyleColor.FRAME_ICON_COLOR));
 		closeButtonImage.image(style.get(StyleIcon.FRAME_CLOSE).name());
 	}
 	//=============================================================================================
@@ -127,6 +134,32 @@ public class Frame extends Widget {
 						dragging = false;
 						framePanel.border(0, 0, 1, 1);
 						pointerBefore.set(-1, -1);
+					}
+				}
+			}
+			case POINTER_CLICKED -> {
+				var data = msg.data(InputData.class);
+				float px = data.axes.get(Axis.POINTER_HORIZONTAL);
+				float py = data.axes.get(Axis.POINTER_VERTICAL);
+				if (
+					!msg.consumed &&
+					px >= offset.x + framePanel.position().x + titlePanel.position().x &&
+					py >= offset.y + framePanel.position().y + titlePanel.position().y &&
+					px <= offset.x + framePanel.position().x + titlePanel.position().x + titlePanel.size().x &&
+					py <= offset.y + framePanel.position().y + titlePanel.position().y + titlePanel.size().y
+				) {
+					if (data.button.equals(pgem.msg.Button.POINTER_1) && data.clickCount >= 2) {
+						if (!maximized) {
+							maximized = true;
+							normalPosition.set(position());
+							normalSize.set(size());
+							position(0, 0);
+							size(parent().size());
+						} else {
+							maximized = false;
+							position(normalPosition);
+							size(normalSize);
+						}
 					}
 				}
 			}

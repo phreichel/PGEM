@@ -25,6 +25,7 @@ public class Style {
 		put(StyleColor.FRAME_BACKGROUND, .4f, 0, 0, .4f);
 		put(StyleColor.FRAME_BORDER, 0, 0, 1, 1);
 		put(StyleColor.FRAME_DRAG_BORDER, 0, 1, 1, 1);
+	    put(StyleColor.FRAME_ICON_COLOR, 0, 1, 1, 1);
 	    put(StyleColor.FRAME_TITLE_BACKGROUND, 0, 0, .6f, 1);
 	    put(StyleColor.FRAME_TITLE_BORDER, 0, 0, 1, 1);
 	    put(StyleColor.FRAME_TITLE_COLOR, 0, 1, 1, 1);
