@@ -2,190 +2,155 @@
 package pgem.gui;
 //*************************************************************************************************
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-
+import javax.vecmath.Color3f;
+import javax.vecmath.Color4f;
 import javax.vecmath.Vector2f;
 
-import pgem.msg.Msg;
 import pgem.paint.Graphics;
 
 //*************************************************************************************************
-public class Widget {
+public class Button extends Widget {
 
 	//=============================================================================================
-	private static final List<Widget> EMPTY = Collections.unmodifiableList(new ArrayList<>(0));
+	private static final Vector2f ORIGIN = new Vector2f(0, 0);
 	//=============================================================================================
 	
 	//=============================================================================================
-	private final Vector2f position = new Vector2f();
-	private final Vector2f size = new Vector2f();
-	private final Dock dock = new Dock(Dock.BOTTOM_LEFT);
+	private Color4f borderLight = new Color4f(.2f, .2f, 1, 1);
+	private Color4f borderDark = new Color4f(0, 0, 1, 1);
+	private Color4f background = new Color4f(0, 0, .8f, 1);
 	//=============================================================================================
 
 	//=============================================================================================
-	private Widget parent = null;
-	private final List<Widget> children;
-	private final List<Widget> _children;
-	//=============================================================================================
-
-	//=============================================================================================
-	private final Map<GUIFlag, Object> components = new EnumMap<>(GUIFlag.class);
-	private final Map<GUIFlag, Object> _components = Collections.unmodifiableMap(components);
-	//=============================================================================================
-	
-	//=============================================================================================
-	public Widget() {
-		this(false);
-	}
-	//=============================================================================================
-
-	//=============================================================================================
-	public Widget(boolean group) {
-		children = group ? new ArrayList<>() : EMPTY;
-		_children = group ? Collections.unmodifiableList(children) : EMPTY;
+	public Button() {
+		super(true);
 	}
 	//=============================================================================================
 	
 	//=============================================================================================
-	public Vector2f position() {
-		return this.position;
+	public Color4f background() {
+		return background;
 	}
 	//=============================================================================================
 
 	//=============================================================================================
-	public void position(Vector2f p) {
-		position(p.x, p.y);
-	}
-	//=============================================================================================
-
-	//=============================================================================================
-	public void position(float x, float y) {
-		this.position.set(x, y);
-	}
-	//=============================================================================================
-
-	//=============================================================================================
-	public Vector2f size() {
-		return this.size;
-	}
-	//=============================================================================================
-
-	//=============================================================================================
-	public void size(Vector2f s) {
-		size(s.x, s.y);
-	}
-	//=============================================================================================
-
-	//=============================================================================================
-	public void size(float w, float h) {
-		float dx = w - size.x;
-		float dy = h - size.y;
-		for (int i=0; i<children.size(); i++) {
-			var child = children.get(i);
-			child.position(
-				child.position.x + child.dock.left() * dx,
-				child.position.y + child.dock.bottom() * dy);
-			child.size(
-				child.size.x + (child.dock.right() - child.dock.left()) * dx,
-				child.size.y + (child.dock.top() - child.dock.bottom()) * dy);
-		}
-		this.size.set(w, h);
-	}
-	//=============================================================================================
-
-	//=============================================================================================
-	public Dock dock() {
-		return dock;
-	}
-	//=============================================================================================
-
-	//=============================================================================================
-	public void dock(Dock dock) {
-		this.dock.set(dock);
-	}
-	//=============================================================================================
-
-	//=============================================================================================
-	public void dock(float left, float right, float top, float bottom) {
-		this.dock.set(left, right, top, bottom);
+	public void background(Color3f background) {
+		this.background.set(
+			background.x,
+			background.y,
+			background.z,
+			1);
 	}
 	//=============================================================================================
 	
 	//=============================================================================================
-	public Widget parent() {
-		return this.parent;
+	public void background(Color4f background) {
+		this.background.set(
+			background.x,
+			background.y,
+			background.z,
+			background.w);
 	}
 	//=============================================================================================
 
 	//=============================================================================================
-	public void parent(Widget p) {
-		if (this.parent == p) return;
-		if (this.parent != null) this.parent.children.remove(this);
-		this.parent = p;
-		if (this.parent != null) this.parent.children.add(0, this);
+	public void background(float r, float g, float b) {
+		this.background.set(r, g, b, 1);
 	}
-	//=============================================================================================
-
-	//=============================================================================================
-	public List<Widget> children() {
-		return _children;
-	}
-	//=============================================================================================
-
-	//=============================================================================================
-	public Map<GUIFlag, Object> components() {
-		return _components;
-	}
-	//=============================================================================================
-
-	//=============================================================================================
-	public void component(GUIFlag flag, Object component) {
-		this.components.put(flag, component);
-	}
-	//=============================================================================================
-
-	//=============================================================================================
-	public void paint(Graphics g) {
-		g.push();
-		g.translate(position.x, position.y);
-		paintWidget(g);
-		paintChildren(g);
-		g.pop();
-	}
-	//=============================================================================================
-
-	//=============================================================================================
-	protected void paintWidget(Graphics g) {};
 	//=============================================================================================
 	
 	//=============================================================================================
-	protected void paintChildren(Graphics g) {
-		for (int i = children.size()-1; i>=0; i--) {
-			var child = children.get(i);
-			child.paint(g);
-		}
+	public void background(float r, float g, float b, float a) {
+		this.background.set(r, g, b, a);
 	}
 	//=============================================================================================
 
 	//=============================================================================================
-	public void handle(Msg msg, Vector2f offset) {		
-		offset.add(position);
-		for (int i = 0; i<children.size(); i++) {
-			var child = children.get(i);
-			child.handle(msg, offset);
-		}
-		handleWidget(msg, offset);
-		offset.sub(position);
+	public Color4f borderLight() {
+		return borderLight;
 	}
 	//=============================================================================================
 
 	//=============================================================================================
-	protected void handleWidget(Msg msg, Vector2f offset) {}
+	public void borderLight(Color3f borderLight) {
+		this.borderLight.set(
+			borderLight.x,
+			borderLight.y,
+			borderLight.z,
+			1);
+	}
 	//=============================================================================================
 	
+	//=============================================================================================
+	public void borderLight(Color4f borderLight) {
+		this.borderLight.set(
+			borderLight.x,
+			borderLight.y,
+			borderLight.z,
+			borderLight.w);
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public void borderLight(float r, float g, float b) {
+		this.borderLight.set(r, g, b, 1);
+	}
+	//=============================================================================================
+	
+	//=============================================================================================
+	public void borderLight(float r, float g, float b, float a) {
+		this.borderLight.set(r, g, b, a);
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public Color4f borderDark() {
+		return borderDark;
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public void borderDark(Color3f borderDark) {
+		this.borderDark.set(
+			borderDark.x,
+			borderDark.y,
+			borderDark.z,
+			1);
+	}
+	//=============================================================================================
+	
+	//=============================================================================================
+	public void borderDark(Color4f borderDark) {
+		this.borderDark.set(
+			borderDark.x,
+			borderDark.y,
+			borderDark.z,
+			borderDark.w);
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public void borderDark(float r, float g, float b) {
+		this.borderDark.set(r, g, b, 1);
+	}
+	//=============================================================================================
+	
+	//=============================================================================================
+	public void borderDark(float r, float g, float b, float a) {
+		this.borderDark.set(r, g, b, a);
+	}
+	//=============================================================================================
+	
+	//=============================================================================================
+	protected void paintWidget(Graphics g) {
+		g.color(background);
+		g.box(true, ORIGIN, size());
+		g.color(borderLight);
+		g.lines(false, 0, 0, 0, size().y, size().x, size().y);
+		g.color(borderDark);
+		g.lines(false, 0, 0, size().x, 0, size().x, size().y);
+	}
+	//=============================================================================================
+
 }
 //*************************************************************************************************

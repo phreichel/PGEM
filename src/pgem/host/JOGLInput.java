@@ -7,6 +7,7 @@ import java.util.Set;
 
 import javax.vecmath.Vector2f;
 
+import com.jogamp.newt.Window;
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.KeyListener;
 import com.jogamp.newt.event.MouseEvent;
@@ -84,8 +85,9 @@ final class JOGLInput implements KeyListener, MouseListener {
 	//=============================================================================================
 	public void mouseClicked(MouseEvent e) {
 		if (e.isAutoRepeat()) return;
+		Window window = (Window) e.getSource();
 		pointer.x = e.getX();
-		pointer.y = e.getY();
+		pointer.y = window.getHeight() - e.getY();
 		var msg = msgBox.alloc(MsgType.POINTER_CLICKED);
 		var data = msg.data(InputData.class);
 		data.button = pointerButton(e.getButton());
@@ -105,8 +107,9 @@ final class JOGLInput implements KeyListener, MouseListener {
 	//=============================================================================================
 	public void mousePressed(MouseEvent e) {
 		if (e.isAutoRepeat()) return;
+		Window window = (Window) e.getSource();
 		pointer.x = e.getX();
-		pointer.y = e.getY();
+		pointer.y = window.getHeight() - e.getY();
 		var msg = msgBox.alloc(MsgType.POINTER_PRESSED);
 		var data = msg.data(InputData.class);
 		data.button = pointerButton(e.getButton());
@@ -121,8 +124,9 @@ final class JOGLInput implements KeyListener, MouseListener {
 	//=============================================================================================
 	public void mouseReleased(MouseEvent e) {
 		if (e.isAutoRepeat()) return;
+		Window window = (Window) e.getSource();
 		pointer.x = e.getX();
-		pointer.y = e.getY();
+		pointer.y = window.getHeight() - e.getY();
 		var msg = msgBox.alloc(MsgType.POINTER_RELEASED);
 		var data = msg.data(InputData.class);
 		data.button = pointerButton(e.getButton());
@@ -137,8 +141,9 @@ final class JOGLInput implements KeyListener, MouseListener {
 	//=============================================================================================
 	public void mouseMoved(MouseEvent e) {
 		var msg = msgBox.alloc(MsgType.POINTER_MOVED);
+		Window window = (Window) e.getSource();
 		pointer.x = e.getX();
-		pointer.y = e.getY();
+		pointer.y = window.getHeight() - e.getY();
 		var data = msg.data(InputData.class);
 		data.buttons.addAll(buttons);
 		data.axes.put(Axis.POINTER_HORIZONTAL, pointer.x);
@@ -150,8 +155,9 @@ final class JOGLInput implements KeyListener, MouseListener {
 	//=============================================================================================
 	public void mouseDragged(MouseEvent e) {
 		var msg = msgBox.alloc(MsgType.POINTER_MOVED);
+		Window window = (Window) e.getSource();
 		pointer.x = e.getX();
-		pointer.y = e.getY();
+		pointer.y = window.getHeight() - e.getY();
 		var data = msg.data(InputData.class);
 		data.buttons.addAll(buttons);
 		data.axes.put(Axis.POINTER_HORIZONTAL, pointer.x);
@@ -163,8 +169,9 @@ final class JOGLInput implements KeyListener, MouseListener {
 	//=============================================================================================
 	public void mouseWheelMoved(MouseEvent e) {
 		var msg = msgBox.alloc(MsgType.POINTER_SCROLLED);
+		Window window = (Window) e.getSource();
 		pointer.x = e.getX();
-		pointer.y = e.getY();
+		pointer.y = window.getHeight() - e.getY();
 		var data = msg.data(InputData.class);
 		data.buttons.addAll(buttons);
 		data.axes.put(Axis.POINTER_HORIZONTAL, pointer.x);

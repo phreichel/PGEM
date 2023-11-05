@@ -2,87 +2,79 @@
 package pgem.gui;
 //*************************************************************************************************
 
-import javax.vecmath.Vector2f;
+import javax.vecmath.Color3f;
+import javax.vecmath.Color4f;
 
-import pgem.msg.Msg;
-import pgem.msg.WindowData;
 import pgem.paint.Graphics;
-import pgem.paint.Painter;
 
 //*************************************************************************************************
-public class GUI implements Painter {
+public class Image extends Widget {
 
 	//=============================================================================================
-	public static final String TITLE_FONT = "TITLE_FONT";
-	//=============================================================================================
-
-	//=============================================================================================
-	public static final String ARROW_DOWN_IMAGE = "ARROW_DOWN";
-	public static final String ARROW_UP_IMAGE = "ARROW_UP";
-	public static final String CLOSE_IMAGE = "CLOSE";
-	public static final String DESK_IMAGE = "DESK";
-	public static final String FULL_SCREEN_IMAGE = "FULL_SCREEN";
-	public static final String PLUS_IMAGE = "PLUS";
-	public static final String SHUT_DOWN_IMAGE = "SHUT_DOWN";
-	public static final String SIZE_IMAGE = "SIZE";
+	private String image = null;
+	private Color4f color = new Color4f(1, 1, 1, 1);
 	//=============================================================================================
 	
 	//=============================================================================================
-	private final Widget root = new Widget(true);
-	//=============================================================================================
-
-	//=============================================================================================
-	public Widget root() {
-		return root;
+	public Image() {
+		super();
 	}
 	//=============================================================================================
 
 	//=============================================================================================
-	public void paint(Graphics g) {
-
-		init(g);
-		
-		g.surface();
-		root.paint(g);
-		
+	public String image() {
+		return image;
 	}
 	//=============================================================================================
 
 	//=============================================================================================
-	private boolean initialized = false;
-	//=============================================================================================
-	
-	//=============================================================================================
-	private void init(Graphics g) {
-		
-		if (initialized) return;
-		initialized = true;
-		
-		g.fontInit(TITLE_FONT, "Aptos Black PLAIN 18");
-		
-		g.imageInit(ARROW_DOWN_IMAGE, "data/icons/arrowdown.png");
-		g.imageInit(ARROW_UP_IMAGE, "data/icons/arrowup.png");
-		g.imageInit(CLOSE_IMAGE, "data/icons/close.png");
-		g.imageInit(DESK_IMAGE, "data/icons/desk.png");
-		g.imageInit(FULL_SCREEN_IMAGE, "data/icons/fullscreen.png");
-		g.imageInit(PLUS_IMAGE, "data/icons/plus.png");
-		g.imageInit(SHUT_DOWN_IMAGE, "data/icons/shutdown.png");
-		g.imageInit(SIZE_IMAGE, "data/icons/size.png");
-		
+	public void image(String image) {
+		this.image = image;
 	}
 	//=============================================================================================
 
 	//=============================================================================================
-	public void handleInput(Msg msg) {
-		var offset = new Vector2f(0, 0);
-		root.handle(msg, offset);
+	public Color4f color() {
+		return color;
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public void color(Color3f color) {
+		this.color.set(
+			color.x,
+			color.y,
+			color.z,
+			1);
 	}
 	//=============================================================================================
 	
 	//=============================================================================================
-	public void handleResize(Msg msg) {
-		WindowData data = (WindowData) msg.data;
-		root.size(data.size);
+	public void color(Color4f color) {
+		this.color.set(
+			color.x,
+			color.y,
+			color.z,
+			color.w);
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public void color(float r, float g, float b) {
+		this.color.set(r, g, b, 1);
+	}
+	//=============================================================================================
+	
+	//=============================================================================================
+	public void color(float r, float g, float b, float a) {
+		this.color.set(r, g, b, a);
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	protected void paintWidget(Graphics g) {
+		g.color(color);
+		g.image(image, 0, 0, size().x, size().y);
 	}
 	//=============================================================================================
 	

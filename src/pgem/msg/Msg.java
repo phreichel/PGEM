@@ -9,6 +9,7 @@ public final class Msg {
 	public long    time;
 	public MsgType type;
 	public MsgData data;
+	public boolean consumed;
 	//=============================================================================================
 
 	//=============================================================================================
@@ -17,6 +18,7 @@ public final class Msg {
 	
 	//=============================================================================================
 	public void clear() {
+		consumed = false;
 		time = -1L;
 		type = MsgType.NONE;
 		data = null;

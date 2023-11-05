@@ -460,9 +460,17 @@ public class JOGLGraphics implements GLEventListener, Graphics {
 	public void text(float x, float y, String text, String font) {
 		var textRenderer = fonts.get(font);
 		textRenderer.setColor(color.x, color.y, color.z, color.w);
+
+		/*
 		textRenderer.beginRendering(wnd.getSurfaceWidth(), wnd.getSurfaceHeight(), true);
 		textRenderer.draw(text, (int) x, (int) y);
 		textRenderer.endRendering();
+		*/
+		
+		textRenderer.begin3DRendering();
+		textRenderer.draw3D(text, x, y, 0, 1);
+		textRenderer.end3DRendering();
+		
 	}
 	//=============================================================================================
 
