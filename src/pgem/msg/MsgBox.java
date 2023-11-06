@@ -16,7 +16,7 @@ import pgem.X;
 public final class MsgBox {
 
 	//=============================================================================================
-	private final Queue<Msg> msgQueue = new ArrayDeque<>();
+	private final Queue<Msg> msgInput = new ArrayDeque<>();
 	//=============================================================================================
 
 	//=============================================================================================
@@ -60,9 +60,7 @@ public final class MsgBox {
 	public Msg alloc(MsgType type) {
 
 		Msg msg = null;
-		synchronized (msgCache) {
-			msg = msgCache.poll();
-		}
+		msg = msgCache.poll();
 		if (msg == null) msg = new Msg();
 		
 		msg.time = System.currentTimeMillis();
@@ -72,11 +70,9 @@ public final class MsgBox {
 		var cls = type.dataClass;
 		if (cls == null) return msg;
 
-		synchronized (dataCaches) {
-			var cache = dataCaches.get(cls);
-			if (cache != null) {
-				msg.data = cache.poll();
-			}
+		var cache = dataCaches.get(cls);
+		if (cache != null) {
+			msg.data = cache.poll();
 		}
 
 		if (msg.data != null) return msg;
@@ -96,20 +92,18 @@ public final class MsgBox {
 
 	//=============================================================================================
 	public void post(Msg msg) {
-		synchronized (msgQueue) {
-			msgQueue.offer(msg);
+		synchronized (msgInput) {
+			msgInput.offer(msg);
 		}
 	}
 	//=============================================================================================
 
 	//=============================================================================================
 	public void update() {
-		synchronized (msgQueue) {
-			Msg msg = msgQueue.poll();
-			while (msg != null) {
-				dispatch(msg);
-				msg = msgQueue.poll();
-			}
+		Msg msg = msgInput.poll();
+		while (msg != null) {
+			dispatch(msg);
+			msg = msgInput.poll();
 		}
 	}
 	//=============================================================================================
@@ -139,21 +133,17 @@ public final class MsgBox {
 			
 			msg.data.clear();
 
-			synchronized (dataCaches) {
-				var cache = dataCaches.get(cls);
-				if (cache == null) {
-					cache = new ArrayDeque<>();
-					dataCaches.put(cls, cache);
-				}
-				cache.offer(msg.data);
+			var cache = dataCaches.get(cls);
+			if (cache == null) {
+				cache = new ArrayDeque<>();
+				dataCaches.put(cls, cache);
 			}
+			cache.offer(msg.data);
 			
 		}
 		
 		msg.clear();
-		synchronized (msgCache) {
-			msgCache.offer(msg);
-		}
+		msgCache.offer(msg);
 		
 	}
 	//=============================================================================================

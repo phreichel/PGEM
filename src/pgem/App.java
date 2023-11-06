@@ -56,7 +56,7 @@ public final class App {
 	private void init() {
 
 		gui.shortcut((w,m) -> {
-			var msg = msgBox.alloc(MsgType.WINDOW_MAXIMIZED);
+			var msg = msgBox.alloc(MsgType.WINDOW_FULLSCREEN);
 			var data = msg.data(WindowData.class);
 			fsState = !fsState;
 			data.state = fsState;
