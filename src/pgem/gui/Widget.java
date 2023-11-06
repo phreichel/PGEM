@@ -4,7 +4,9 @@ package pgem.gui;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.vecmath.Vector2f;
 
@@ -12,10 +14,22 @@ import pgem.msg.Msg;
 import pgem.paint.Graphics;
 
 //*************************************************************************************************
-public class Widget {
+public class Widget<W extends Widget<?>> {
 
 	//=============================================================================================
-	private static final List<Widget> EMPTY = Collections.unmodifiableList(new ArrayList<>(0));
+	private static final List<Widget<?>> EMPTY = Collections.unmodifiableList(new ArrayList<>(0));
+	//=============================================================================================
+
+	//=============================================================================================
+	public static final Widget<?> createWidget() {
+		return new Widget<Widget<?>>();
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public static final Widget<?> createWidget(boolean container) {
+		return new Widget<Widget<?>>(container);
+	}
 	//=============================================================================================
 	
 	//=============================================================================================
@@ -25,9 +39,13 @@ public class Widget {
 	//=============================================================================================
 
 	//=============================================================================================
-	private Widget parent = null;
-	private final List<Widget> children;
-	private final List<Widget> _children;
+	private final Set<GUIFlag> flags = EnumSet.noneOf(GUIFlag.class);
+	//=============================================================================================
+	
+	//=============================================================================================
+	private Widget<?> parent = null;
+	private final List<Widget<?>> children;
+	private final List<Widget<?>> _children;
 	//=============================================================================================
 
 	//=============================================================================================
@@ -49,6 +67,28 @@ public class Widget {
 		return parent.gui();
 	}
 	//=============================================================================================
+
+	//=============================================================================================
+	public Set<GUIFlag> flag() {
+		return flags;
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public boolean flag(GUIFlag flag) {
+		return flags.contains(flag);
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	@SuppressWarnings("unchecked")
+	public W flag(GUIFlag flag, boolean set) {
+		if (set) flags.add(flag);
+		else flags.remove(flag);
+		return (W) this;
+	}
+	//=============================================================================================
+
 	
 	//=============================================================================================
 	public Vector2f position() {
@@ -57,14 +97,16 @@ public class Widget {
 	//=============================================================================================
 
 	//=============================================================================================
-	public void position(Vector2f p) {
-		position(p.x, p.y);
+	public W position(Vector2f p) {
+		return position(p.x, p.y);
 	}
 	//=============================================================================================
 
 	//=============================================================================================
-	public void position(float x, float y) {
+	@SuppressWarnings("unchecked")
+	public W position(float x, float y) {
 		this.position.set(x, y);
+		return (W) this;
 	}
 	//=============================================================================================
 
@@ -90,13 +132,14 @@ public class Widget {
 	//=============================================================================================
 
 	//=============================================================================================
-	public void size(Vector2f s) {
-		size(s.x, s.y);
+	public W size(Vector2f s) {
+		return (W) size(s.x, s.y);
 	}
 	//=============================================================================================
 
 	//=============================================================================================
-	public void size(float w, float h) {
+	@SuppressWarnings("unchecked")
+	public W size(float w, float h) {
 		float dx = w - size.x;
 		float dy = h - size.y;
 		for (int i=0; i<children.size(); i++) {
@@ -109,6 +152,7 @@ public class Widget {
 				child.size.y + (child.dock.top() - child.dock.bottom()) * dy);
 		}
 		this.size.set(w, h);
+		return (W) this;
 	}
 	//=============================================================================================
 
@@ -119,34 +163,40 @@ public class Widget {
 	//=============================================================================================
 
 	//=============================================================================================
-	public void dock(Dock dock) {
+	@SuppressWarnings("unchecked")
+	public W dock(Dock dock) {
 		this.dock.set(dock);
+		return (W) this;
 	}
 	//=============================================================================================
 
 	//=============================================================================================
-	public void dock(float left, float right, float top, float bottom) {
+	@SuppressWarnings("unchecked")
+	public W dock(float left, float right, float top, float bottom) {
 		this.dock.set(left, right, top, bottom);
+		return (W) this;
 	}
 	//=============================================================================================
 	
 	//=============================================================================================
-	public Widget parent() {
+	public Widget<?> parent() {
 		return this.parent;
 	}
 	//=============================================================================================
 
 	//=============================================================================================
-	public void parent(Widget p) {
-		if (this.parent == p) return;
+	@SuppressWarnings("unchecked")
+	public W parent(Widget<?> p) {
+		if (this.parent == p) return (W) this;
 		if (this.parent != null) this.parent.children.remove(this);
 		this.parent = p;
 		if (this.parent != null) this.parent.children.add(0, this);
+		return (W) this;
 	}
 	//=============================================================================================
 
 	//=============================================================================================
-	public List<Widget> children() {
+	public List<Widget<?>> children() {
 		return _children;
 	}
 	//=============================================================================================
@@ -163,6 +213,7 @@ public class Widget {
 	
 	//=============================================================================================
 	public void paint(Graphics g) {
+		if (flag(GUIFlag.HIDDEN)) return;
 		g.push();
 		g.translate(position.x, position.y);
 		paintWidget(g);
@@ -186,7 +237,8 @@ public class Widget {
 	//=============================================================================================
 
 	//=============================================================================================
-	public void handle(Msg msg) {		
+	public void handle(Msg msg) {
+		if (flag(GUIFlag.HIDDEN)) return;
 		for (int i = 0; i<children.size(); i++) {
 			var child = children.get(i);
 			child.handle(msg);
@@ -229,19 +281,23 @@ public class Widget {
 	//=============================================================================================
 
 	//=============================================================================================
-	public void toTop() {
+	@SuppressWarnings("unchecked")
+	public W toTop() {
 		if (parent != null) {
 			parent.children.remove(this);
 			parent.children.add(0, this);
 		}
+		return (W) this;
 	}
 	//=============================================================================================
 	
 	//=============================================================================================
-	public void focus() {
+	@SuppressWarnings("unchecked")
+	public W focus() {
 		if (parent != null) {
 			parent.focus();
 		}
+		return (W) this;
 	}
 	//=============================================================================================
 	

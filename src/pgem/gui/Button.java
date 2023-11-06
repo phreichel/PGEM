@@ -13,12 +13,24 @@ import pgem.msg.MsgType;
 import pgem.paint.Graphics;
 
 //*************************************************************************************************
-public class Button extends Widget {
+public class Button extends Widget<Button> {
 
 	//=============================================================================================
 	private static final Vector2f ORIGIN = new Vector2f(0, 0);
 	//=============================================================================================
+
+	//=============================================================================================
+	public static final Button createButton() {
+		return new Button();
+	}
+	//=============================================================================================
 	
+	//=============================================================================================
+	public static final Button createButton(String label) {
+		return new Button(label);
+	}
+	//=============================================================================================
+
 	//=============================================================================================
 	private Color4f borderLight = new Color4f();
 	private Color4f borderDark = new Color4f();
@@ -26,7 +38,6 @@ public class Button extends Widget {
 	//=============================================================================================
 
 	//=============================================================================================
-	private boolean armed = false;
 	private Action action = null;
 	//=============================================================================================
 	
@@ -38,19 +49,32 @@ public class Button extends Widget {
 	//=============================================================================================
 
 	//=============================================================================================
+	public Button(String label) {
+		super(true);
+		action = this::action;
+		Label labelWidget = new Label();
+		labelWidget.text(label);
+		labelWidget.align(Align.CENTER);
+		labelWidget.dock(Dock.SCALE);
+		labelWidget.parent(this);
+	}
+	//=============================================================================================
+	
+	//=============================================================================================
 	public Action action() {
 		return action;
 	}
 	//=============================================================================================
 
 	//=============================================================================================
-	public void action(Action action) {
+	public Button action(Action action) {
 		this.action = action;
+		return this;
 	}
 	//=============================================================================================
 
 	//=============================================================================================
-	protected void action(Widget widget, Msg msg) {}
+	protected void action(Widget<?> widget, Msg msg) {}
 	//=============================================================================================
 	
 	//=============================================================================================
@@ -60,34 +84,38 @@ public class Button extends Widget {
 	//=============================================================================================
 
 	//=============================================================================================
-	public void background(Color3f background) {
+	public Button background(Color3f background) {
 		this.background.set(
 			background.x,
 			background.y,
 			background.z,
 			1);
+		return this; 
 	}
 	//=============================================================================================
 	
 	//=============================================================================================
-	public void background(Color4f background) {
+	public Button background(Color4f background) {
 		this.background.set(
 			background.x,
 			background.y,
 			background.z,
 			background.w);
+		return this;
 	}
 	//=============================================================================================
 
 	//=============================================================================================
-	public void background(float r, float g, float b) {
+	public Button background(float r, float g, float b) {
 		this.background.set(r, g, b, 1);
+		return this;
 	}
 	//=============================================================================================
 	
 	//=============================================================================================
-	public void background(float r, float g, float b, float a) {
+	public Button background(float r, float g, float b, float a) {
 		this.background.set(r, g, b, a);
+		return this;
 	}
 	//=============================================================================================
 
@@ -98,34 +126,38 @@ public class Button extends Widget {
 	//=============================================================================================
 
 	//=============================================================================================
-	public void borderLight(Color3f borderLight) {
+	public Button borderLight(Color3f borderLight) {
 		this.borderLight.set(
 			borderLight.x,
 			borderLight.y,
 			borderLight.z,
 			1);
+		return this;
 	}
 	//=============================================================================================
 	
 	//=============================================================================================
-	public void borderLight(Color4f borderLight) {
+	public Button borderLight(Color4f borderLight) {
 		this.borderLight.set(
 			borderLight.x,
 			borderLight.y,
 			borderLight.z,
 			borderLight.w);
+		return this;
 	}
 	//=============================================================================================
 
 	//=============================================================================================
-	public void borderLight(float r, float g, float b) {
+	public Button borderLight(float r, float g, float b) {
 		this.borderLight.set(r, g, b, 1);
+		return this;
 	}
 	//=============================================================================================
 	
 	//=============================================================================================
-	public void borderLight(float r, float g, float b, float a) {
+	public Button borderLight(float r, float g, float b, float a) {
 		this.borderLight.set(r, g, b, a);
+		return this;
 	}
 	//=============================================================================================
 
@@ -136,34 +168,38 @@ public class Button extends Widget {
 	//=============================================================================================
 
 	//=============================================================================================
-	public void borderDark(Color3f borderDark) {
+	public Button borderDark(Color3f borderDark) {
 		this.borderDark.set(
 			borderDark.x,
 			borderDark.y,
 			borderDark.z,
 			1);
+		return this;
 	}
 	//=============================================================================================
 	
 	//=============================================================================================
-	public void borderDark(Color4f borderDark) {
+	public Button borderDark(Color4f borderDark) {
 		this.borderDark.set(
 			borderDark.x,
 			borderDark.y,
 			borderDark.z,
 			borderDark.w);
+		return this;
 	}
 	//=============================================================================================
 
 	//=============================================================================================
-	public void borderDark(float r, float g, float b) {
+	public Button borderDark(float r, float g, float b) {
 		this.borderDark.set(r, g, b, 1);
+		return this;
 	}
 	//=============================================================================================
 	
 	//=============================================================================================
-	public void borderDark(float r, float g, float b, float a) {
+	public Button borderDark(float r, float g, float b, float a) {
 		this.borderDark.set(r, g, b, a);
+		return this;
 	}
 	//=============================================================================================
 
@@ -180,7 +216,7 @@ public class Button extends Widget {
 		g.color(background);
 		g.box(true, ORIGIN, size());
 		var s = size(); 
-		if (!armed) {
+		if (flag(GUIFlag.ARMED)) {
 			g.color(borderLight);
 			g.lines(false, 0, 0, 0, s.y, s.x, s.y);
 			g.color(borderDark);
@@ -200,7 +236,7 @@ public class Button extends Widget {
 		if (msg.type.equals(MsgType.POINTER_RELEASED)) {
 			var data = msg.data(InputData.class);
 			if (data.button.equals(pgem.msg.Button.POINTER_1)) {
-				armed = false;
+				flag(GUIFlag.ARMED, false);				
 			}
 		}
 
@@ -215,7 +251,7 @@ public class Button extends Widget {
 				if (msg.type.equals(MsgType.POINTER_PRESSED)) {
 					focus();
 					if (data.button.equals(pgem.msg.Button.POINTER_1)) {
-						armed = true;
+						flag(GUIFlag.ARMED, true);				
 					}
 				}
 				else if (msg.type.equals(MsgType.POINTER_RELEASED)) {

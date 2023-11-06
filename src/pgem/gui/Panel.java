@@ -9,10 +9,16 @@ import javax.vecmath.Vector2f;
 import pgem.paint.Graphics;
 
 //*************************************************************************************************
-public class Panel extends Widget {
+public class Panel extends Widget<Panel> {
 
 	//=============================================================================================
 	private static final Vector2f ORIGIN = new Vector2f(0, 0);
+	//=============================================================================================
+
+	//=============================================================================================
+	public static final Panel createPanel() {
+		return new Panel();
+	}
 	//=============================================================================================
 	
 	//=============================================================================================
@@ -33,34 +39,38 @@ public class Panel extends Widget {
 	//=============================================================================================
 
 	//=============================================================================================
-	public void border(Color3f border) {
+	public Panel border(Color3f border) {
 		this.border.set(
 			border.x,
 			border.y,
 			border.z,
 			1);
+		return this;
 	}
 	//=============================================================================================
 	
 	//=============================================================================================
-	public void border(Color4f border) {
+	public Panel border(Color4f border) {
 		this.border.set(
 			border.x,
 			border.y,
 			border.z,
 			border.w);
+		return this;
 	}
 	//=============================================================================================
 
 	//=============================================================================================
-	public void border(float r, float g, float b) {
+	public Panel border(float r, float g, float b) {
 		this.border.set(r, g, b, 1);
+		return this;
 	}
 	//=============================================================================================
 	
 	//=============================================================================================
-	public void border(float r, float g, float b, float a) {
+	public Panel border(float r, float g, float b, float a) {
 		this.border.set(r, g, b, a);
+		return this;
 	}
 	//=============================================================================================
 	
@@ -71,34 +81,38 @@ public class Panel extends Widget {
 	//=============================================================================================
 
 	//=============================================================================================
-	public void background(Color3f background) {
+	public Panel background(Color3f background) {
 		this.background.set(
 			background.x,
 			background.y,
 			background.z,
 			1);
+		return this;
 	}
 	//=============================================================================================
 	
 	//=============================================================================================
-	public void background(Color4f background) {
+	public Panel background(Color4f background) {
 		this.background.set(
 			background.x,
 			background.y,
 			background.z,
 			background.w);
+		return this;
 	}
 	//=============================================================================================
 
 	//=============================================================================================
-	public void background(float r, float g, float b) {
+	public Panel background(float r, float g, float b) {
 		this.background.set(r, g, b, 1);
+		return this;
 	}
 	//=============================================================================================
 	
 	//=============================================================================================
-	public void background(float r, float g, float b, float a) {
+	public Panel background(float r, float g, float b, float a) {
 		this.background.set(r, g, b, a);
+		return this;
 	}
 	//=============================================================================================
 

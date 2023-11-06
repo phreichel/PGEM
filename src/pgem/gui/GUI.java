@@ -3,6 +3,8 @@ package pgem.gui;
 //*************************************************************************************************
 
 import pgem.msg.Msg;
+import pgem.msg.MsgBox;
+import pgem.msg.MsgType;
 import pgem.msg.WindowData;
 import pgem.paint.Graphics;
 import pgem.paint.Painter;
@@ -12,11 +14,11 @@ public class GUI implements Painter {
 
 	//=============================================================================================
 	private final Style style = new Style();
-	private final Root  root  = new Root(this);
+	private final Root  root  = Root.createRoot(this);
 	//=============================================================================================
 
 	//=============================================================================================
-	public Widget root() {
+	public Widget<?> root() {
 		return root;
 	}
 	//=============================================================================================
@@ -24,6 +26,20 @@ public class GUI implements Painter {
 	//=============================================================================================
 	public Style style() {
 		return style;
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public void hook(MsgBox msgBox) {
+		msgBox.plug(MsgType.KEY_PRESSED, this::handleInput);
+		msgBox.plug(MsgType.KEY_RELEASED, this::handleInput);
+		msgBox.plug(MsgType.KEY_TYPED, this::handleInput);
+		msgBox.plug(MsgType.POINTER_MOVED, this::handleInput);
+		msgBox.plug(MsgType.POINTER_PRESSED, this::handleInput);
+		msgBox.plug(MsgType.POINTER_RELEASED, this::handleInput);
+		msgBox.plug(MsgType.POINTER_CLICKED, this::handleInput);
+		msgBox.plug(MsgType.POINTER_SCROLLED, this::handleInput);
+		msgBox.plug(MsgType.WINDOW_RESIZED, this::handleResize);
 	}
 	//=============================================================================================
 	
@@ -42,7 +58,7 @@ public class GUI implements Painter {
 	//=============================================================================================
 	private boolean initialized = false;
 	//=============================================================================================
-	
+
 	//=============================================================================================
 	private void init(Graphics g) {
 		

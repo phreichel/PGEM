@@ -2,8 +2,13 @@
 package pgem;
 //*************************************************************************************************
 
+import pgem.gui.Button;
+import pgem.gui.Dock;
 import pgem.gui.Frame;
 import pgem.gui.GUI;
+import pgem.gui.GUIFlag;
+import pgem.gui.Panel;
+import pgem.gui.Widget;
 import pgem.host.Host;
 import pgem.msg.Msg;
 import pgem.msg.MsgBox;
@@ -47,29 +52,43 @@ public final class App {
 
 		gui.root().size(1200, 800);
 		
+		final Widget<?> container = Widget
+			.createWidget(true)
+			.position(0, 0)
+			.size(1200, 800)
+			.dock(Dock.SCALE)
+			.parent(gui.root());
+		
 		for (int i=0; i<5; i++) {
 			Frame frame = new Frame();
 			frame.title("WINDOW " + (i+1));
 			frame.position(40 + i*20, 760 - frame.size().y - i * 30);
-			frame.parent(gui.root());
+			frame.parent(container);
 		}
+
+		Button menuButton = Button
+			.createButton("MENU")
+			.position(10, 770)
+			.size(60, 20)
+			.dock(Dock.TOP_LEFT)
+			.parent(gui.root());
+
+		final Panel menuPanel = Panel
+			.createPanel()
+			.size(100, 70)
+			.position(10, 700)
+			.dock(Dock.TOP_LEFT)
+			.flag(GUIFlag.HIDDEN, true)
+			.parent(gui.root());
+		
+		menuButton.action((w, m) -> { menuPanel.flag(GUIFlag.HIDDEN, !menuPanel.flag(GUIFlag.HIDDEN)); }); 
 		
 		host.init();
 		host.plug(gui);
 
 		msgBox.plug(MsgType.APPLICATION_QUIT, this::handleQuit);
 		msgBox.plug(MsgType.WINDOW_CLOSE, this::handleQuit);
-		
-		msgBox.plug(MsgType.KEY_PRESSED, gui::handleInput);
-		msgBox.plug(MsgType.KEY_RELEASED, gui::handleInput);
-		msgBox.plug(MsgType.KEY_TYPED, gui::handleInput);
-		msgBox.plug(MsgType.POINTER_MOVED, gui::handleInput);
-		msgBox.plug(MsgType.POINTER_PRESSED, gui::handleInput);
-		msgBox.plug(MsgType.POINTER_RELEASED, gui::handleInput);
-		msgBox.plug(MsgType.POINTER_CLICKED, gui::handleInput);
-		msgBox.plug(MsgType.POINTER_SCROLLED, gui::handleInput);
-		
-		msgBox.plug(MsgType.WINDOW_RESIZED, gui::handleResize);
+		gui.hook(msgBox);
 		
 	}
 	//=============================================================================================
@@ -109,3 +128,4 @@ public final class App {
 	
 }
 //*************************************************************************************************
+

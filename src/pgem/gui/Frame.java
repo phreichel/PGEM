@@ -10,19 +10,24 @@ import pgem.msg.Msg;
 import pgem.msg.MsgType;
 
 //*************************************************************************************************
-public class Frame extends Widget {
+public class Frame extends Widget<Frame> {
 
 	//=============================================================================================
-	private Panel framePanel = new Panel();
-	private Panel titlePanel = new Panel();
-	private Label titleLabel = new Label();
-	private Button closeButton = new Button();
-	private Image closeButtonImage = new Image();
-	private Panel contentPanel = new Panel();
+	public static final Frame createFrame() {
+		return new Frame();
+	}
+	//=============================================================================================
+	
+	//=============================================================================================
+	private Panel framePanel = null;
+	private Panel titlePanel = null;
+	private Label titleLabel = null;
+	private Button closeButton = null;
+	private Image closeButtonImage = null;
+	private Panel contentPanel = null;
 	//=============================================================================================
 
 	//=============================================================================================
-	private boolean dragging = false;
 	private final Vector2f pointerBefore = new Vector2f();
 	//=============================================================================================
 
@@ -40,34 +45,47 @@ public class Frame extends Widget {
 		size(800, 600);
 		dock(Dock.TOP_LEFT);
 		
-		framePanel.size(800, 600);
-		framePanel.dock(Dock.SCALE);
-		framePanel.background(0, 0, 0, 0);
+		framePanel = Panel
+			.createPanel()
+			.size(800, 600)
+			.dock(Dock.SCALE)
+			.background(0, 0, 0, 0);
 		
-		titlePanel.position(3, 577);
-		titlePanel.size(771, 20);
-		titlePanel.dock(Dock.SCALE_TOP);
-		titlePanel.border(0, 0, 1, 1);
-		titlePanel.background(0, 0, .8f, 1);
+		titlePanel = Panel
+			.createPanel()
+			.position(3, 577)
+			.size(771, 20)
+			.dock(Dock.SCALE_TOP)
+			.border(0, 0, 1, 1)
+			.background(0, 0, .8f, 1);
 
-		titleLabel.position(2, 2);
-		titleLabel.size(767, 16);
-		titleLabel.dock(Dock.SCALE);
-		titleLabel.align(Align.START);
-		titleLabel.color(0, 1, 1, 1);
+		titleLabel = Label
+			.createLabel()
+			.position(2, 2)
+			.size(767, 16)
+			.dock(Dock.SCALE)
+			.align(Align.START)
+			.color(0, 1, 1, 1);
 
-		closeButton.position(777, 577);
-		closeButton.size(20, 20);
-		closeButton.dock(Dock.TOP_RIGHT);
+		closeButton = Button
+			.createButton()
+			.position(777, 577)
+			.size(20, 20)
+			.dock(Dock.TOP_RIGHT)
+			.action(this::handleClose);
 
-		closeButtonImage.position(0, 0);
-		closeButtonImage.size(20, 20);
-		closeButtonImage.color(0, 1, 1, 1);
-		closeButtonImage.dock(Dock.SCALE);		
+		closeButtonImage = Image
+			.createImage()
+			.position(0, 0)
+			.size(20, 20)
+			.color(0, 1, 1, 1)
+			.dock(Dock.SCALE);
 		
-		contentPanel.position(3, 3);
-		contentPanel.size(794, 571);
-		contentPanel.dock(Dock.SCALE);
+		contentPanel = Panel
+			.createPanel()
+			.position(3, 3)
+			.size(794, 571)
+			.dock(Dock.SCALE);
 		
 		titleLabel.parent(titlePanel);
 		titlePanel.parent(framePanel);
@@ -76,10 +94,20 @@ public class Frame extends Widget {
 		contentPanel.parent(framePanel);
 		
 		framePanel.parent(this);
-
+		
 	}
 	//=============================================================================================
 
+	//=============================================================================================
+	public Frame focus() {
+		if (parent() != null) {
+			parent().focus();
+			toTop();
+		}
+		return this;
+	}
+	//=============================================================================================
+	
 	//=============================================================================================
 	public String title() {
 		return titleLabel.text();
@@ -87,20 +115,29 @@ public class Frame extends Widget {
 	//=============================================================================================
 
 	//=============================================================================================
-	public void title(String title) {
+	public Frame title(String title) {
 		titleLabel.text(title);
+		return this;
 	}
 	//=============================================================================================
 
 	//=============================================================================================
-	public Widget content() {
+	public Widget<?> content() {
 		return contentPanel;
 	}
 	//=============================================================================================
 
 	//=============================================================================================
+	private void handleClose(Widget<?> widget, Msg msg) {
+		if (flag(GUIFlag.HIDABLE)) {
+			flag(GUIFlag.HIDDEN, true);
+		}
+	}
+	//=============================================================================================
+	
+	//=============================================================================================
 	protected void styleWidget(Style style) {
-		framePanel.border(style.get(dragging ? StyleColor.FRAME_DRAG_BORDER : StyleColor.FRAME_BORDER));
+		framePanel.border(style.get(flag(GUIFlag.ARMED) ? StyleColor.FRAME_DRAG_BORDER : StyleColor.FRAME_BORDER));
 		framePanel.background(style.get(StyleColor.FRAME_BACKGROUND));
 		titlePanel.background(style.get(StyleColor.FRAME_TITLE_BACKGROUND));		
 		titlePanel.border(style.get(StyleColor.FRAME_TITLE_BORDER));		
@@ -138,13 +175,13 @@ public class Frame extends Widget {
 					focus();
 				}
 				
-				if (data.button.equals(pgem.msg.Button.POINTER_1)) {
-					if (!maximized && titlePanel.containsScreen(px, py)) {
-						dragging = true;
-						pointerBefore.set(px, py);
-					} else {
-						dragging = false;
-					}
+				if (
+					!maximized &&
+					titlePanel.containsScreen(px, py) &&
+					data.button.equals(pgem.msg.Button.POINTER_1)
+				) {
+					flag(GUIFlag.ARMED, true);
+					pointerBefore.set(px, py);
 				}
 
 			}
@@ -152,12 +189,12 @@ public class Frame extends Widget {
 			case POINTER_RELEASED -> {
 				var data = msg.data(InputData.class);
 				if (data.button.equals(pgem.msg.Button.POINTER_1)) {
-					dragging = false;
+					flag(GUIFlag.ARMED, false);
 				}
 			}
 			
 			case POINTER_MOVED -> {
-				if (dragging) {
+				if (flag(GUIFlag.ARMED)) {
 					var data = msg.data(InputData.class);
 					float px = data.axes.get(Axis.POINTER_HORIZONTAL);
 					float py = data.axes.get(Axis.POINTER_VERTICAL);
@@ -198,15 +235,6 @@ public class Frame extends Widget {
 
 		}
 		
-	}
-	//=============================================================================================
-
-	//=============================================================================================
-	public void focus() {
-		if (parent() != null) {
-			parent().focus();
-			toTop();
-		}
 	}
 	//=============================================================================================
 	
