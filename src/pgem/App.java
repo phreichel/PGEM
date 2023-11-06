@@ -13,6 +13,7 @@ import pgem.host.Host;
 import pgem.msg.Msg;
 import pgem.msg.MsgBox;
 import pgem.msg.MsgType;
+import pgem.msg.WindowData;
 
 //*************************************************************************************************
 public final class App {
@@ -46,10 +47,31 @@ public final class App {
 		quit = true;
 	}
 	//=============================================================================================
+
+	//=============================================================================================
+	private boolean fsState = false;
+	//=============================================================================================
 	
 	//=============================================================================================
 	private void init() {
 
+		gui.shortcut((w,m) -> {
+			var msg = msgBox.alloc(MsgType.WINDOW_MAXIMIZED);
+			var data = msg.data(WindowData.class);
+			fsState = !fsState;
+			data.state = fsState;
+			msgBox.post(msg);
+		},
+		pgem.msg.Button.KEY_F,
+		pgem.msg.Button.KEY_CONTROL);
+	
+		gui.shortcut((w,m) -> {
+				var msg = msgBox.alloc(MsgType.WINDOW_CLOSE);
+				msgBox.post(msg);
+			},
+			pgem.msg.Button.KEY_X,
+			pgem.msg.Button.KEY_ALT);
+		
 		gui.root().size(1200, 800);
 		
 		final Widget<?> container = Widget
@@ -89,8 +111,9 @@ public final class App {
 
 		msgBox.plug(MsgType.APPLICATION_QUIT, this::handleQuit);
 		msgBox.plug(MsgType.WINDOW_CLOSE, this::handleQuit);
-		gui.hook(msgBox);
 		
+		gui.hook(msgBox);
+	
 	}
 	//=============================================================================================
 

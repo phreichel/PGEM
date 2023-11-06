@@ -2,6 +2,9 @@
 package pgem.gui;
 //*************************************************************************************************
 
+import java.util.ArrayList;
+import java.util.List;
+
 import pgem.msg.Msg;
 import pgem.msg.MsgBox;
 import pgem.msg.MsgType;
@@ -13,7 +16,8 @@ import pgem.paint.Painter;
 public class GUI implements Painter {
 
 	//=============================================================================================
-	private final Style style = new Style();
+	private final List<Shortcut> shortcuts = new ArrayList<>();
+	private final Style style = new Style();	
 	private final Root  root  = Root.createRoot(style, this);
 	//=============================================================================================
 
@@ -31,6 +35,7 @@ public class GUI implements Painter {
 
 	//=============================================================================================
 	public void hook(MsgBox msgBox) {
+		msgBox.plug(MsgType.BUTTON_PRESSED, this::handleShortcuts);
 		msgBox.plug(MsgType.KEY_PRESSED, this::handleInput);
 		msgBox.plug(MsgType.KEY_RELEASED, this::handleInput);
 		msgBox.plug(MsgType.KEY_TYPED, this::handleInput);
@@ -80,7 +85,34 @@ public class GUI implements Painter {
 		
 	}
 	//=============================================================================================
+	
+	//=============================================================================================
+	public void handleShortcuts(Msg msg) {
+		for (var shortcut : shortcuts) {
+			shortcut.update(msg);
+		}
+	}
+	//=============================================================================================
 
+	//=============================================================================================
+	public void shortcut(Shortcut sc) {
+		shortcuts.add(sc);
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public void shortcut(Action action, pgem.msg.Button button, pgem.msg.Button ... modifiers) {
+		var sc = new Shortcut(action, button, modifiers);
+		shortcuts.add(sc);
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public List<Shortcut> shortcuts() {
+		return shortcuts;
+	}
+	//=============================================================================================
+	
 	//=============================================================================================
 	public void handleInput(Msg msg) {
 		root.handle(msg);

@@ -41,6 +41,7 @@ final class JOGLInput implements KeyListener, MouseListener {
 	public void keyPressed(KeyEvent e) {
 
 		if (!e.isAutoRepeat()) {
+			
 			var msg = msgBox.alloc(MsgType.KEY_PRESSED);
 			var data = msg.data(InputData.class);
 			data.button = keyButton(e.getKeySymbol());
@@ -50,6 +51,16 @@ final class JOGLInput implements KeyListener, MouseListener {
 			data.axes.put(Axis.POINTER_HORIZONTAL, pointer.x);
 			data.axes.put(Axis.POINTER_VERTICAL, pointer.y);
 			msgBox.post(msg);
+
+			var msg2 = msgBox.alloc(MsgType.BUTTON_PRESSED);
+			var data2 = msg2.data(InputData.class);
+			data2.button = keyButton(e.getKeySymbol());
+			data2.buttons.addAll(buttons);
+			if (e.isPrintableKey()) data2.keyCharacter = e.getKeyChar();
+			data2.axes.put(Axis.POINTER_HORIZONTAL, pointer.x);
+			data2.axes.put(Axis.POINTER_VERTICAL, pointer.y);
+			msgBox.post(msg2);
+			
 		}
 
 		if (e.isPrintableKey()) {
@@ -69,7 +80,9 @@ final class JOGLInput implements KeyListener, MouseListener {
 
 	//=============================================================================================
 	public void keyReleased(KeyEvent e) {
+
 		if (e.isAutoRepeat()) return;
+		
 		var msg = msgBox.alloc(MsgType.KEY_RELEASED);
 		var data = msg.data(InputData.class);
 		data.button = keyButton(e.getKeySymbol());
@@ -79,6 +92,16 @@ final class JOGLInput implements KeyListener, MouseListener {
 		data.axes.put(Axis.POINTER_HORIZONTAL, pointer.x);
 		data.axes.put(Axis.POINTER_VERTICAL, pointer.y);
 		msgBox.post(msg);
+
+		var msg2 = msgBox.alloc(MsgType.BUTTON_RELEASED);
+		var data2 = msg2.data(InputData.class);
+		data2.button = keyButton(e.getKeySymbol());
+		data2.buttons.addAll(buttons);
+		if (e.isPrintableKey()) data2.keyCharacter = e.getKeyChar();
+		data2.axes.put(Axis.POINTER_HORIZONTAL, pointer.x);
+		data2.axes.put(Axis.POINTER_VERTICAL, pointer.y);
+		msgBox.post(msg2);
+
 	}
 	//=============================================================================================
 
@@ -106,7 +129,9 @@ final class JOGLInput implements KeyListener, MouseListener {
 	
 	//=============================================================================================
 	public void mousePressed(MouseEvent e) {
+		
 		if (e.isAutoRepeat()) return;
+		
 		Window window = (Window) e.getSource();
 		pointer.x = e.getX();
 		pointer.y = window.getHeight() - e.getY();
@@ -118,12 +143,23 @@ final class JOGLInput implements KeyListener, MouseListener {
 		data.axes.put(Axis.POINTER_HORIZONTAL, pointer.x);
 		data.axes.put(Axis.POINTER_VERTICAL, pointer.y);
 		msgBox.post(msg);
+		
+		var msg2 = msgBox.alloc(MsgType.BUTTON_PRESSED);
+		var data2 = msg2.data(InputData.class);
+		data2.button = pointerButton(e.getButton());
+		data2.buttons.addAll(buttons);
+		data2.axes.put(Axis.POINTER_HORIZONTAL, pointer.x);
+		data2.axes.put(Axis.POINTER_VERTICAL, pointer.y);
+		msgBox.post(msg2);
+		
 	}
 	//=============================================================================================
 
 	//=============================================================================================
 	public void mouseReleased(MouseEvent e) {
+
 		if (e.isAutoRepeat()) return;
+		
 		Window window = (Window) e.getSource();
 		pointer.x = e.getX();
 		pointer.y = window.getHeight() - e.getY();
@@ -135,6 +171,15 @@ final class JOGLInput implements KeyListener, MouseListener {
 		data.axes.put(Axis.POINTER_HORIZONTAL, pointer.x);
 		data.axes.put(Axis.POINTER_VERTICAL, pointer.y);
 		msgBox.post(msg);
+		
+		var msg2 = msgBox.alloc(MsgType.BUTTON_RELEASED);
+		var data2 = msg2.data(InputData.class);
+		data2.button = pointerButton(e.getButton());
+		data2.buttons.addAll(buttons);
+		data2.axes.put(Axis.POINTER_HORIZONTAL, pointer.x);
+		data2.axes.put(Axis.POINTER_VERTICAL, pointer.y);
+		msgBox.post(msg2);
+		
 	}
 	//=============================================================================================
 
