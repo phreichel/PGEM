@@ -14,7 +14,7 @@ public class GUI implements Painter {
 
 	//=============================================================================================
 	private final Style style = new Style();
-	private final Root  root  = Root.createRoot(this);
+	private final Root  root  = Root.createRoot(style, this);
 	//=============================================================================================
 
 	//=============================================================================================
@@ -49,7 +49,6 @@ public class GUI implements Painter {
 		init(g);
 		
 		g.surface();
-		root.style(style);
 		root.paint(g);
 		
 	}

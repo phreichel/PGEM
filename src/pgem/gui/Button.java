@@ -2,8 +2,6 @@
 package pgem.gui;
 //*************************************************************************************************
 
-import javax.vecmath.Color3f;
-import javax.vecmath.Color4f;
 import javax.vecmath.Vector2f;
 
 import pgem.msg.Axis;
@@ -20,21 +18,15 @@ public class Button extends Widget<Button> {
 	//=============================================================================================
 
 	//=============================================================================================
-	public static final Button createButton() {
-		return new Button();
+	public static final Button createButton(Style style) {
+		return new Button(style);
 	}
 	//=============================================================================================
 	
 	//=============================================================================================
-	public static final Button createButton(String label) {
-		return new Button(label);
+	public static final Button createButton(Style style, String label) {
+		return new Button(style, label);
 	}
-	//=============================================================================================
-
-	//=============================================================================================
-	private Color4f borderLight = new Color4f();
-	private Color4f borderDark = new Color4f();
-	private Color4f background = new Color4f();
 	//=============================================================================================
 
 	//=============================================================================================
@@ -42,17 +34,17 @@ public class Button extends Widget<Button> {
 	//=============================================================================================
 	
 	//=============================================================================================
-	public Button() {
-		super(true);
+	public Button(Style style) {
+		super(style, true);
 		action = this::action;
 	}
 	//=============================================================================================
 
 	//=============================================================================================
-	public Button(String label) {
-		super(true);
+	public Button(Style style, String label) {
+		super(style, true);
 		action = this::action;
-		Label labelWidget = new Label();
+		Label labelWidget = Label.createLabel(style);
 		labelWidget.text(label);
 		labelWidget.align(Align.CENTER);
 		labelWidget.dock(Dock.SCALE);
@@ -78,153 +70,23 @@ public class Button extends Widget<Button> {
 	//=============================================================================================
 	
 	//=============================================================================================
-	public Color4f background() {
-		return background;
-	}
-	//=============================================================================================
-
-	//=============================================================================================
-	public Button background(Color3f background) {
-		this.background.set(
-			background.x,
-			background.y,
-			background.z,
-			1);
-		return this; 
-	}
-	//=============================================================================================
-	
-	//=============================================================================================
-	public Button background(Color4f background) {
-		this.background.set(
-			background.x,
-			background.y,
-			background.z,
-			background.w);
-		return this;
-	}
-	//=============================================================================================
-
-	//=============================================================================================
-	public Button background(float r, float g, float b) {
-		this.background.set(r, g, b, 1);
-		return this;
-	}
-	//=============================================================================================
-	
-	//=============================================================================================
-	public Button background(float r, float g, float b, float a) {
-		this.background.set(r, g, b, a);
-		return this;
-	}
-	//=============================================================================================
-
-	//=============================================================================================
-	public Color4f borderLight() {
-		return borderLight;
-	}
-	//=============================================================================================
-
-	//=============================================================================================
-	public Button borderLight(Color3f borderLight) {
-		this.borderLight.set(
-			borderLight.x,
-			borderLight.y,
-			borderLight.z,
-			1);
-		return this;
-	}
-	//=============================================================================================
-	
-	//=============================================================================================
-	public Button borderLight(Color4f borderLight) {
-		this.borderLight.set(
-			borderLight.x,
-			borderLight.y,
-			borderLight.z,
-			borderLight.w);
-		return this;
-	}
-	//=============================================================================================
-
-	//=============================================================================================
-	public Button borderLight(float r, float g, float b) {
-		this.borderLight.set(r, g, b, 1);
-		return this;
-	}
-	//=============================================================================================
-	
-	//=============================================================================================
-	public Button borderLight(float r, float g, float b, float a) {
-		this.borderLight.set(r, g, b, a);
-		return this;
-	}
-	//=============================================================================================
-
-	//=============================================================================================
-	public Color4f borderDark() {
-		return borderDark;
-	}
-	//=============================================================================================
-
-	//=============================================================================================
-	public Button borderDark(Color3f borderDark) {
-		this.borderDark.set(
-			borderDark.x,
-			borderDark.y,
-			borderDark.z,
-			1);
-		return this;
-	}
-	//=============================================================================================
-	
-	//=============================================================================================
-	public Button borderDark(Color4f borderDark) {
-		this.borderDark.set(
-			borderDark.x,
-			borderDark.y,
-			borderDark.z,
-			borderDark.w);
-		return this;
-	}
-	//=============================================================================================
-
-	//=============================================================================================
-	public Button borderDark(float r, float g, float b) {
-		this.borderDark.set(r, g, b, 1);
-		return this;
-	}
-	//=============================================================================================
-	
-	//=============================================================================================
-	public Button borderDark(float r, float g, float b, float a) {
-		this.borderDark.set(r, g, b, a);
-		return this;
-	}
-	//=============================================================================================
-
-	//=============================================================================================
-	protected void styleWidget(Style style) {
-		background(style.get(StyleColor.BUTTON_BACKGROUND));
-		borderDark(style.get(StyleColor.BUTTON_BORDER_DARK));
-		borderLight(style.get(StyleColor.BUTTON_BORDER_LIGHT));
-	}
-	//=============================================================================================
-	
-	//=============================================================================================
 	protected void paintWidget(Graphics g) {
-		g.color(background);
+		var st = style();
+		var bg = st.get(StyleColor.BUTTON_BACKGROUND);
+		var bl = st.get(StyleColor.BUTTON_BORDER_LIGHT);
+		var bd = st.get(StyleColor.BUTTON_BORDER_DARK);
+		g.color(bg);
 		g.box(true, ORIGIN, size());
 		var s = size(); 
 		if (flag(Flag.ARMED)) {
-			g.color(borderLight);
+			g.color(bl);
 			g.lines(false, 0, 0, 0, s.y, s.x, s.y);
-			g.color(borderDark);
+			g.color(bd);
 			g.lines(false, 0, 0, s.x, 0, s.x, s.y);
 		} else {
-			g.color(borderDark);
+			g.color(bd);
 			g.lines(false, 0, 0, 0, s.y, s.x, s.y);
-			g.color(borderLight);
+			g.color(bl);
 			g.lines(false, 0, 0, s.x, 0, s.x, s.y);
 		}
 	}

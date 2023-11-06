@@ -13,8 +13,8 @@ import pgem.msg.MsgType;
 public class Frame extends Widget<Frame> {
 
 	//=============================================================================================
-	public static final Frame createFrame() {
-		return new Frame();
+	public static final Frame createFrame(Style style) {
+		return new Frame(style);
 	}
 	//=============================================================================================
 	
@@ -38,51 +38,55 @@ public class Frame extends Widget<Frame> {
 	//=============================================================================================
 	
 	//=============================================================================================
-	public Frame() {
+	public Frame(Style style) {
 
-		super(true);
+		super(style, true);
 
+		var fps = style.derive();
+		fps.put(StyleColor.PANEL_BACKGROUND, style.get(StyleColor.FRAME_BACKGROUND));
+		fps.put(StyleColor.PANEL_BORDER, style.get(StyleColor.FRAME_BORDER));
+
+		var tps = style.derive();
+		tps.put(StyleColor.PANEL_BACKGROUND, tps.get(StyleColor.FRAME_TITLE_BACKGROUND));
+		tps.put(StyleColor.PANEL_BORDER, tps.get(StyleColor.FRAME_TITLE_BORDER));
+		tps.put(StyleColor.LABEL_COLOR, tps.get(StyleColor.FRAME_TITLE_COLOR));
+	
 		size(800, 600);
 		dock(Dock.TOP_LEFT);
 		
 		framePanel = Panel
-			.createPanel()
+			.createPanel(fps)
 			.size(800, 600)
-			.dock(Dock.SCALE)
-			.background(0, 0, 0, 0);
+			.dock(Dock.SCALE);
 		
 		titlePanel = Panel
-			.createPanel()
+			.createPanel(tps)
 			.position(3, 577)
 			.size(771, 20)
-			.dock(Dock.SCALE_TOP)
-			.border(0, 0, 1, 1)
-			.background(0, 0, .8f, 1);
+			.dock(Dock.SCALE_TOP);
 
 		titleLabel = Label
-			.createLabel()
+			.createLabel(tps)
 			.position(2, 2)
 			.size(767, 16)
 			.dock(Dock.SCALE)
-			.align(Align.START)
-			.color(0, 1, 1, 1);
+			.align(Align.START);
 
 		closeButton = Button
-			.createButton()
+			.createButton(style)
 			.position(777, 577)
 			.size(20, 20)
 			.dock(Dock.TOP_RIGHT)
 			.action(this::handleClose);
 
 		closeButtonImage = Image
-			.createImage()
+			.createImage(style, style.get(StyleIcon.FRAME_CLOSE))
 			.position(0, 0)
 			.size(20, 20)
-			.color(0, 1, 1, 1)
 			.dock(Dock.SCALE);
 		
 		contentPanel = Panel
-			.createPanel()
+			.createPanel(style)
 			.position(3, 3)
 			.size(794, 571)
 			.dock(Dock.SCALE);
@@ -129,22 +133,7 @@ public class Frame extends Widget<Frame> {
 
 	//=============================================================================================
 	private void handleClose(Widget<?> widget, Msg msg) {
-		if (flag(Flag.HIDABLE)) {
-			flag(Flag.HIDDEN, true);
-		}
-	}
-	//=============================================================================================
-	
-	//=============================================================================================
-	protected void styleWidget(Style style) {
-		framePanel.border(style.get(flag(Flag.ARMED) ? StyleColor.FRAME_DRAG_BORDER : StyleColor.FRAME_BORDER));
-		framePanel.background(style.get(StyleColor.FRAME_BACKGROUND));
-		titlePanel.background(style.get(StyleColor.FRAME_TITLE_BACKGROUND));		
-		titlePanel.border(style.get(StyleColor.FRAME_TITLE_BORDER));		
-		titleLabel.color(style.get(StyleColor.FRAME_TITLE_COLOR));
-		titleLabel.font(style.get(StyleFont.FRAME_TITLE).name());
-		closeButtonImage.color(style.get(StyleColor.FRAME_ICON_COLOR));
-		closeButtonImage.image(style.get(StyleIcon.FRAME_CLOSE).name());
+		if (flag(Flag.HIDABLE)) flag(Flag.HIDDEN, true);
 	}
 	//=============================================================================================
 	
@@ -157,6 +146,7 @@ public class Frame extends Widget<Frame> {
 				var data = msg.data(InputData.class);
 				if (data.button.equals(pgem.msg.Button.POINTER_1)) {
 					flag(Flag.ARMED, false);
+					framePanel.style().put(StyleColor.PANEL_BORDER, style().get(StyleColor.FRAME_BORDER));
 				}
 			}
 			
@@ -208,6 +198,7 @@ public class Frame extends Widget<Frame> {
 					data.button.equals(pgem.msg.Button.POINTER_1)
 				) {
 					flag(Flag.ARMED, true);
+					framePanel.style().put(StyleColor.PANEL_BORDER, style().get(StyleColor.FRAME_DRAG_BORDER));
 					pointerBefore.set(px, py);
 				}
 

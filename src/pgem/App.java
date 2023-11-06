@@ -53,28 +53,28 @@ public final class App {
 		gui.root().size(1200, 800);
 		
 		final Widget<?> container = Widget
-			.createWidget(true)
+			.createWidget(gui.style(), true)
 			.position(0, 0)
 			.size(1200, 800)
 			.dock(Dock.SCALE)
 			.parent(gui.root());
 		
 		for (int i=0; i<5; i++) {
-			Frame frame = new Frame();
+			Frame frame = Frame.createFrame(gui.style());
 			frame.title("WINDOW " + (i+1));
 			frame.position(40 + i*20, 760 - frame.size().y - i * 30);
 			frame.parent(container);
 		}
 
 		Button menuButton = Button
-			.createButton("MENU")
+			.createButton(gui.style(), "MENU")
 			.position(10, 770)
 			.size(60, 20)
 			.dock(Dock.TOP_LEFT)
 			.parent(gui.root());
 
 		final Panel menuPanel = Panel
-			.createPanel()
+			.createPanel(gui.style())
 			.size(100, 70)
 			.position(10, 700)
 			.dock(Dock.TOP_LEFT)

@@ -24,14 +24,14 @@ public class Widget<W extends Widget<?>> {
 	//=============================================================================================
 
 	//=============================================================================================
-	public static final Widget<?> createWidget() {
-		return new Widget<Widget<?>>();
+	public static final Widget<?> createWidget(Style style) {
+		return new Widget<Widget<?>>(style);
 	}
 	//=============================================================================================
 
 	//=============================================================================================
-	public static final Widget<?> createWidget(boolean container) {
-		return new Widget<Widget<?>>(container);
+	public static final Widget<?> createWidget(Style style, boolean container) {
+		return new Widget<Widget<?>>(style, container);
 	}
 	//=============================================================================================
 	
@@ -43,24 +43,24 @@ public class Widget<W extends Widget<?>> {
 
 	//=============================================================================================
 	private final Set<Flag> flags = EnumSet.noneOf(Flag.class);
+	private final Style style;
 	//=============================================================================================
 	
 	//=============================================================================================
 	private Widget<?> parent = null;
 	private final List<Widget<?>> children;
-	private final List<Widget<?>> _children;
 	//=============================================================================================
 
 	//=============================================================================================
-	public Widget() {
-		this(false);
+	public Widget(Style style) {
+		this(style, false);
 	}
 	//=============================================================================================
 
 	//=============================================================================================
-	public Widget(boolean group) {
+	public Widget(Style style, boolean group) {
+		this.style = style;
 		children = group ? new ArrayList<>() : EMPTY;
-		_children = group ? Collections.unmodifiableList(children) : EMPTY;
 	}
 	//=============================================================================================
 
@@ -92,6 +92,11 @@ public class Widget<W extends Widget<?>> {
 	}
 	//=============================================================================================
 
+	//=============================================================================================
+	public Style style() {
+		return this.style;
+	}
+	//=============================================================================================
 	
 	//=============================================================================================
 	public Vector2f position() {
@@ -200,20 +205,10 @@ public class Widget<W extends Widget<?>> {
 
 	//=============================================================================================
 	public List<Widget<?>> children() {
-		return _children;
+		return children;
 	}
 	//=============================================================================================
 
-	//=============================================================================================
-	public void style(Style style) {
-		for (int i=0; i<children.size(); i++) {
-			var child = children.get(i);
-			child.style(style);
-		}
-		styleWidget(style);
-	}
-	//=============================================================================================
-	
 	//=============================================================================================
 	public void paint(Graphics g) {
 		if (flag(Flag.HIDDEN)) return;
