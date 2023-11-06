@@ -6,7 +6,7 @@ import pgem.gui.Button;
 import pgem.gui.Dock;
 import pgem.gui.Frame;
 import pgem.gui.GUI;
-import pgem.gui.GUIFlag;
+import pgem.gui.Flag;
 import pgem.gui.Panel;
 import pgem.gui.Widget;
 import pgem.host.Host;
@@ -78,10 +78,11 @@ public final class App {
 			.size(100, 70)
 			.position(10, 700)
 			.dock(Dock.TOP_LEFT)
-			.flag(GUIFlag.HIDDEN, true)
+			.flag(Flag.HIDDEN, true)
+			.flag(Flag.REACTIVE, true)
 			.parent(gui.root());
 		
-		menuButton.action((w, m) -> { menuPanel.flag(GUIFlag.HIDDEN, !menuPanel.flag(GUIFlag.HIDDEN)); }); 
+		menuButton.action((w, m) -> { menuPanel.flag(Flag.HIDDEN, !menuPanel.flag(Flag.HIDDEN)); }); 
 		
 		host.init();
 		host.plug(gui);

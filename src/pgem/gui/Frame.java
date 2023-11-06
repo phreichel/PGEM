@@ -129,15 +129,15 @@ public class Frame extends Widget<Frame> {
 
 	//=============================================================================================
 	private void handleClose(Widget<?> widget, Msg msg) {
-		if (flag(GUIFlag.HIDABLE)) {
-			flag(GUIFlag.HIDDEN, true);
+		if (flag(Flag.HIDABLE)) {
+			flag(Flag.HIDDEN, true);
 		}
 	}
 	//=============================================================================================
 	
 	//=============================================================================================
 	protected void styleWidget(Style style) {
-		framePanel.border(style.get(flag(GUIFlag.ARMED) ? StyleColor.FRAME_DRAG_BORDER : StyleColor.FRAME_BORDER));
+		framePanel.border(style.get(flag(Flag.ARMED) ? StyleColor.FRAME_DRAG_BORDER : StyleColor.FRAME_BORDER));
 		framePanel.background(style.get(StyleColor.FRAME_BACKGROUND));
 		titlePanel.background(style.get(StyleColor.FRAME_TITLE_BACKGROUND));		
 		titlePanel.border(style.get(StyleColor.FRAME_TITLE_BORDER));		
@@ -151,6 +151,33 @@ public class Frame extends Widget<Frame> {
 	//=============================================================================================
 	protected void handleWidget(Msg msg) {
 
+		switch (msg.type) {
+
+			case POINTER_RELEASED -> {
+				var data = msg.data(InputData.class);
+				if (data.button.equals(pgem.msg.Button.POINTER_1)) {
+					flag(Flag.ARMED, false);
+				}
+			}
+			
+			case POINTER_MOVED -> {
+				if (flag(Flag.ARMED)) {
+					var data = msg.data(InputData.class);
+					float px = data.axes.get(Axis.POINTER_HORIZONTAL);
+					float py = data.axes.get(Axis.POINTER_VERTICAL);
+					float dx = px- pointerBefore.x;
+					float dy = py- pointerBefore.y;
+					position(
+						position().x + dx,
+						position().y + dy);
+					pointerBefore.set(px, py);
+				}
+			}
+
+			default -> {}
+			
+		}
+		
 		if (msg.consumed) return;
 		
 		if (MsgType.POINTER_MASK.contains(msg.type)) {
@@ -180,31 +207,10 @@ public class Frame extends Widget<Frame> {
 					titlePanel.containsScreen(px, py) &&
 					data.button.equals(pgem.msg.Button.POINTER_1)
 				) {
-					flag(GUIFlag.ARMED, true);
+					flag(Flag.ARMED, true);
 					pointerBefore.set(px, py);
 				}
 
-			}
-
-			case POINTER_RELEASED -> {
-				var data = msg.data(InputData.class);
-				if (data.button.equals(pgem.msg.Button.POINTER_1)) {
-					flag(GUIFlag.ARMED, false);
-				}
-			}
-			
-			case POINTER_MOVED -> {
-				if (flag(GUIFlag.ARMED)) {
-					var data = msg.data(InputData.class);
-					float px = data.axes.get(Axis.POINTER_HORIZONTAL);
-					float py = data.axes.get(Axis.POINTER_VERTICAL);
-					float dx = px- pointerBefore.x;
-					float dy = py- pointerBefore.y;
-					position(
-						position().x + dx,
-						position().y + dy);
-					pointerBefore.set(px, py);
-				}
 			}
 
 			case POINTER_CLICKED -> {

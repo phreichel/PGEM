@@ -10,7 +10,10 @@ import java.util.Set;
 
 import javax.vecmath.Vector2f;
 
+import pgem.msg.Axis;
+import pgem.msg.InputData;
 import pgem.msg.Msg;
+import pgem.msg.MsgType;
 import pgem.paint.Graphics;
 
 //*************************************************************************************************
@@ -39,7 +42,7 @@ public class Widget<W extends Widget<?>> {
 	//=============================================================================================
 
 	//=============================================================================================
-	private final Set<GUIFlag> flags = EnumSet.noneOf(GUIFlag.class);
+	private final Set<Flag> flags = EnumSet.noneOf(Flag.class);
 	//=============================================================================================
 	
 	//=============================================================================================
@@ -69,20 +72,20 @@ public class Widget<W extends Widget<?>> {
 	//=============================================================================================
 
 	//=============================================================================================
-	public Set<GUIFlag> flag() {
+	public Set<Flag> flag() {
 		return flags;
 	}
 	//=============================================================================================
 
 	//=============================================================================================
-	public boolean flag(GUIFlag flag) {
+	public boolean flag(Flag flag) {
 		return flags.contains(flag);
 	}
 	//=============================================================================================
 
 	//=============================================================================================
 	@SuppressWarnings("unchecked")
-	public W flag(GUIFlag flag, boolean set) {
+	public W flag(Flag flag, boolean set) {
 		if (set) flags.add(flag);
 		else flags.remove(flag);
 		return (W) this;
@@ -213,7 +216,7 @@ public class Widget<W extends Widget<?>> {
 	
 	//=============================================================================================
 	public void paint(Graphics g) {
-		if (flag(GUIFlag.HIDDEN)) return;
+		if (flag(Flag.HIDDEN)) return;
 		g.push();
 		g.translate(position.x, position.y);
 		paintWidget(g);
@@ -238,7 +241,7 @@ public class Widget<W extends Widget<?>> {
 
 	//=============================================================================================
 	public void handle(Msg msg) {
-		if (flag(GUIFlag.HIDDEN)) return;
+		if (flag(Flag.HIDDEN)) return;
 		for (int i = 0; i<children.size(); i++) {
 			var child = children.get(i);
 			child.handle(msg);
@@ -248,7 +251,21 @@ public class Widget<W extends Widget<?>> {
 	//=============================================================================================
 
 	//=============================================================================================
-	protected void handleWidget(Msg msg) {}
+	protected void handleWidget(Msg msg) {
+		if (msg.consumed) return;
+		if (!flag(Flag.REACTIVE)) return;
+		if (MsgType.POINTER_MASK.contains(msg.type)) {
+			var data = msg.data(InputData.class);
+			float px = data.axes.get(Axis.POINTER_HORIZONTAL);
+			float py = data.axes.get(Axis.POINTER_VERTICAL);
+			if (containsScreen(px, py)) {
+				msg.consumed = true;
+				if (msg.type.equals(MsgType.POINTER_PRESSED)) {
+					focus();
+				}
+			}
+		}
+	}
 	//=============================================================================================
 
 	//=============================================================================================

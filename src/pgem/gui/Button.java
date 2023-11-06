@@ -216,7 +216,7 @@ public class Button extends Widget<Button> {
 		g.color(background);
 		g.box(true, ORIGIN, size());
 		var s = size(); 
-		if (flag(GUIFlag.ARMED)) {
+		if (flag(Flag.ARMED)) {
 			g.color(borderLight);
 			g.lines(false, 0, 0, 0, s.y, s.x, s.y);
 			g.color(borderDark);
@@ -236,7 +236,7 @@ public class Button extends Widget<Button> {
 		if (msg.type.equals(MsgType.POINTER_RELEASED)) {
 			var data = msg.data(InputData.class);
 			if (data.button.equals(pgem.msg.Button.POINTER_1)) {
-				flag(GUIFlag.ARMED, false);				
+				flag(Flag.ARMED, false);				
 			}
 		}
 
@@ -251,7 +251,7 @@ public class Button extends Widget<Button> {
 				if (msg.type.equals(MsgType.POINTER_PRESSED)) {
 					focus();
 					if (data.button.equals(pgem.msg.Button.POINTER_1)) {
-						flag(GUIFlag.ARMED, true);				
+						flag(Flag.ARMED, true);				
 					}
 				}
 				else if (msg.type.equals(MsgType.POINTER_RELEASED)) {
