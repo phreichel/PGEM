@@ -2,6 +2,7 @@
 package pgem.gui;
 //*************************************************************************************************
 
+import javax.vecmath.Color4f;
 import javax.vecmath.Vector2f;
 
 import pgem.paint.Graphics;
@@ -14,6 +15,11 @@ public class Panel extends Widget<Panel> {
 	//=============================================================================================
 
 	//=============================================================================================
+	private Color4f background;
+	private Color4f border;
+	//=============================================================================================
+	
+	//=============================================================================================
 	public static final Panel createPanel(Style style) {
 		return new Panel(style);
 	}
@@ -22,17 +28,30 @@ public class Panel extends Widget<Panel> {
 	//=============================================================================================
 	public Panel(Style style) {
 		super(style, true);
+		background = style().get(StyleColor.PANEL_BACKGROUND);
+		border = style().get(StyleColor.PANEL_BORDER);
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public Panel background(Color4f background) {
+		this.background = background;
+		return this;
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public Panel border(Color4f border) {
+		this.border = border;
+		return this;
 	}
 	//=============================================================================================
 	
 	//=============================================================================================
 	protected void paintWidget(Graphics g) {
-		var st = style();
-		var bg = st.get(StyleColor.PANEL_BACKGROUND);
-		var bc = st.get(StyleColor.PANEL_BORDER);
-		g.color(bg);
+		g.color(background);
 		g.box(true, ORIGIN, size());
-		g.color(bc);
+		g.color(border);
 		g.box(false, ORIGIN, size());
 	}
 	//=============================================================================================

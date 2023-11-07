@@ -8,10 +8,15 @@ import pgem.msg.Axis;
 import pgem.msg.InputData;
 import pgem.msg.Msg;
 import pgem.msg.MsgType;
+import pgem.paint.Graphics;
 
 //*************************************************************************************************
 public class Frame extends Widget<Frame> {
 
+	//=============================================================================================
+	private static final Vector2f ORIGIN = new Vector2f(0, 0);
+	//=============================================================================================
+	
 	//=============================================================================================
 	public static final Frame createFrame(Style style) {
 		return new Frame(style);
@@ -19,7 +24,6 @@ public class Frame extends Widget<Frame> {
 	//=============================================================================================
 	
 	//=============================================================================================
-	private Panel framePanel = null;
 	private Panel titlePanel = null;
 	private Label titleLabel = null;
 	private Button closeButton = null;
@@ -42,31 +46,21 @@ public class Frame extends Widget<Frame> {
 
 		super(style, true);
 
-		var fps = style.derive();
-		fps.put(StyleColor.PANEL_BACKGROUND, style.get(StyleColor.FRAME_BACKGROUND));
-		fps.put(StyleColor.PANEL_BORDER, style.get(StyleColor.FRAME_BORDER));
-
-		var tps = style.derive();
-		tps.put(StyleColor.PANEL_BACKGROUND, tps.get(StyleColor.FRAME_TITLE_BACKGROUND));
-		tps.put(StyleColor.PANEL_BORDER, tps.get(StyleColor.FRAME_TITLE_BORDER));
-		tps.put(StyleColor.LABEL_COLOR, tps.get(StyleColor.FRAME_TITLE_COLOR));
-	
 		size(800, 600);
 		dock(Dock.TOP_LEFT);
 		
-		framePanel = Panel
-			.createPanel(fps)
-			.size(800, 600)
-			.dock(Dock.SCALE);
-		
 		titlePanel = Panel
-			.createPanel(tps)
+			.createPanel(style)
+			.border(style.get(StyleColor.FRAME_TITLE_BORDER))
+			.background(style.get(StyleColor.FRAME_TITLE_BACKGROUND))
 			.position(3, 577)
 			.size(771, 20)
 			.dock(Dock.SCALE_TOP);
 
 		titleLabel = Label
-			.createLabel(tps)
+			.createLabel(style)
+			.font(style.get(StyleFont.FRAME_TITLE).name())
+			.color(style.get(StyleColor.FRAME_TITLE_COLOR))
 			.position(2, 2)
 			.size(767, 16)
 			.dock(Dock.SCALE)
@@ -92,12 +86,10 @@ public class Frame extends Widget<Frame> {
 			.dock(Dock.SCALE);
 		
 		titleLabel.parent(titlePanel);
-		titlePanel.parent(framePanel);
-		closeButton.parent(framePanel);
+		titlePanel.parent(this);
+		closeButton.parent(this);
 		closeButtonImage.parent(closeButton);
-		contentPanel.parent(framePanel);
-		
-		framePanel.parent(this);
+		contentPanel.parent(this);
 		
 	}
 	//=============================================================================================
@@ -132,6 +124,20 @@ public class Frame extends Widget<Frame> {
 	//=============================================================================================
 
 	//=============================================================================================
+	protected void paintWidget(Graphics g) {
+		var st = style();
+		var bg = st.get(StyleColor.FRAME_BACKGROUND);
+		var bc = st.get(StyleColor.FRAME_BORDER);
+		var dc = st.get(StyleColor.FRAME_DRAG_BORDER);
+		var rc = flag(Flag.ARMED) ? dc : bc;
+		g.color(bg);
+		g.box(true, ORIGIN, size());
+		g.color(rc);
+		g.box(false, ORIGIN, size());
+	}
+	//=============================================================================================
+	
+	//=============================================================================================
 	private void handleClose(Widget<?> widget, Msg msg) {
 		if (flag(Flag.HIDABLE)) flag(Flag.HIDDEN, true);
 	}
@@ -146,7 +152,6 @@ public class Frame extends Widget<Frame> {
 				var data = msg.data(InputData.class);
 				if (data.button.equals(pgem.msg.Button.POINTER_1)) {
 					flag(Flag.ARMED, false);
-					framePanel.style().put(StyleColor.PANEL_BORDER, style().get(StyleColor.FRAME_BORDER));
 				}
 			}
 			
@@ -198,7 +203,6 @@ public class Frame extends Widget<Frame> {
 					data.button.equals(pgem.msg.Button.POINTER_1)
 				) {
 					flag(Flag.ARMED, true);
-					framePanel.style().put(StyleColor.PANEL_BORDER, style().get(StyleColor.FRAME_DRAG_BORDER));
 					pointerBefore.set(px, py);
 				}
 
