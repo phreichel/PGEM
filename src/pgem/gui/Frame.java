@@ -28,11 +28,13 @@ public class Frame extends Widget<Frame> {
 	private Label titleLabel = null;
 	private Button closeButton = null;
 	private Image closeButtonImage = null;
+	private Panel scalePanel = null;
 	private Panel contentPanel = null;
 	//=============================================================================================
 
 	//=============================================================================================
-	private final Vector2f pointerBefore = new Vector2f();
+	private final Vector2f pointerOld = new Vector2f();
+	private int action = 0; 
 	//=============================================================================================
 
 	//=============================================================================================
@@ -78,18 +80,27 @@ public class Frame extends Widget<Frame> {
 			.position(0, 0)
 			.size(20, 20)
 			.dock(Dock.SCALE);
-		
+
 		contentPanel = Panel
 			.createPanel(style)
 			.position(3, 3)
 			.size(794, 571)
 			.dock(Dock.SCALE);
+
+		scalePanel = Panel
+				.createPanel(style)
+				.border(style.get(StyleColor.FRAME_SCALE_BORDER))
+				.background(style.get(StyleColor.FRAME_SCALE_BACKGROUND))
+				.position(796, 0)
+				.size(4, 4)
+				.dock(Dock.BOTTOM_RIGHT);
 		
 		titleLabel.parent(titlePanel);
 		titlePanel.parent(this);
 		closeButton.parent(this);
 		closeButtonImage.parent(closeButton);
 		contentPanel.parent(this);
+		scalePanel.parent(this);
 		
 	}
 	//=============================================================================================
@@ -152,6 +163,7 @@ public class Frame extends Widget<Frame> {
 				var data = msg.data(InputData.class);
 				if (data.button.equals(pgem.msg.Button.POINTER_1)) {
 					flag(Flag.ARMED, false);
+					action = 0;
 				}
 			}
 			
@@ -160,12 +172,22 @@ public class Frame extends Widget<Frame> {
 					var data = msg.data(InputData.class);
 					float px = data.axes.get(Axis.POINTER_HORIZONTAL);
 					float py = data.axes.get(Axis.POINTER_VERTICAL);
-					float dx = px- pointerBefore.x;
-					float dy = py- pointerBefore.y;
-					position(
-						position().x + dx,
-						position().y + dy);
-					pointerBefore.set(px, py);
+					float dx = px- pointerOld.x;
+					float dy = py- pointerOld.y;
+					if (action == 1) {
+						position(
+							position().x + dx,
+							position().y + dy);
+					}
+					else if (action == 2) {
+						position(
+							position().x,
+							position().y + dy);
+						size(
+							size().x + dx,
+							size().y - dy);
+					}
+					pointerOld.set(px, py);
 				}
 			}
 
@@ -187,34 +209,32 @@ public class Frame extends Widget<Frame> {
 		switch (msg.type) {
 
 			case POINTER_PRESSED -> {
-				
 				var data = msg.data(InputData.class);
-					
 				float px = data.axes.get(Axis.POINTER_HORIZONTAL);
 				float py = data.axes.get(Axis.POINTER_VERTICAL);
-
 				if (containsScreen(px, py)) {
 					focus();
 				}
-				
 				if (
 					!maximized &&
-					titlePanel.containsScreen(px, py) &&
-					data.button.equals(pgem.msg.Button.POINTER_1)
+					data.button.equals(pgem.msg.Button.POINTER_1) && (
+						titlePanel.containsScreen(px, py) ||
+						scalePanel.containsScreen(px, py)
+					)
 				) {
 					flag(Flag.ARMED, true);
-					pointerBefore.set(px, py);
+					pointerOld.set(px, py);
+					if (titlePanel.containsScreen(px, py))
+						action = 1;
+					else if (scalePanel.containsScreen(px, py))
+						action = 2;
 				}
-
 			}
 
 			case POINTER_CLICKED -> {
-
 				var data = msg.data(InputData.class);
-
 				float px = data.axes.get(Axis.POINTER_HORIZONTAL);
 				float py = data.axes.get(Axis.POINTER_VERTICAL);
-				
 				if (titlePanel.containsScreen(px, py)) {
 					if (data.button.equals(pgem.msg.Button.POINTER_1) && data.clickCount >= 2) {
 						if (!maximized) {

@@ -30,8 +30,11 @@ public class Style {
 		put(StyleColor.FRAME_BORDER, 0, 0, 1, 1);
 		put(StyleColor.FRAME_DRAG_BORDER, 0, 1, 1, 1);
 	    put(StyleColor.FRAME_ICON_COLOR, 0, 1, 1, 1);
+	    put(StyleColor.FRAME_SCALE_BACKGROUND, 0, 0, 1, 1);
+	    put(StyleColor.FRAME_SCALE_BORDER, 0, 0, 1, 1);
 	    put(StyleColor.FRAME_TITLE_BACKGROUND, 0, 0, .6f, 1);
 	    put(StyleColor.FRAME_TITLE_BORDER, 0, 0, 1, 1);
+	    put(StyleColor.FRAME_TITLE_COLOR, 0, 1, 1, 1);
 	    put(StyleColor.FRAME_TITLE_COLOR, 0, 1, 1, 1);
 	    put(StyleColor.IMAGE_COLOR, 1, 1, 1, 1);
 	    put(StyleColor.LABEL_COLOR, 1, 1, 1, 1);
