@@ -14,10 +14,6 @@ import pgem.paint.Graphics;
 public class Frame extends Widget<Frame> {
 
 	//=============================================================================================
-	private static final Vector2f ORIGIN = new Vector2f(0, 0);
-	//=============================================================================================
-	
-	//=============================================================================================
 	public static final Frame createFrame(Style style) {
 		return new Frame(style);
 	}
@@ -139,7 +135,7 @@ public class Frame extends Widget<Frame> {
 		var st = style();
 		var bg = st.get(StyleColor.FRAME_BACKGROUND);
 		var bc = st.get(StyleColor.FRAME_BORDER);
-		var dc = st.get(StyleColor.FRAME_DRAG_BORDER);
+		var dc = st.get(StyleColor.FRAME_BORDER_ARMED);
 		var rc = flag(Flag.ARMED) ? dc : bc;
 		g.color(bg);
 		g.box(true, ORIGIN, size());

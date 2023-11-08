@@ -2,62 +2,81 @@
 package pgem.gui;
 //*************************************************************************************************
 
-import javax.vecmath.Color4f;
-
-import pgem.paint.Graphics;
+import pgem.msg.Axis;
+import pgem.msg.InputData;
+import pgem.msg.Msg;
+import pgem.msg.MsgType;
 
 //*************************************************************************************************
-public class Image extends Widget<Image> {
+public class SubMenu extends MenuItem {
 
 	//=============================================================================================
-	public static final Image createImage(Style style, Icon icon) {
-		var image = new Image(style);
-		String name = null;
-		if (icon != null) name = icon.name();
-		image.image(name);
-		return image;
+	public static final SubMenu createSubMenu(Style style, Icon icon, String label) {
+		return new SubMenu(style, icon, label);
 	}
 	//=============================================================================================
 	
 	//=============================================================================================
-	private String image = null;
-	//=============================================================================================
-
-	//=============================================================================================
-	private Color4f color;
-	//=============================================================================================
-	
-	//=============================================================================================
-	public Image(Style style) {
-		super(style);
-		color = style().get(StyleColor.IMAGE_COLOR);
-	}
-	//=============================================================================================
-
-	//=============================================================================================
-	public Image color(Color4f color) {
-		this.color = color;
-		return this;
+	public static final SubMenu createSubMenu(Style style, Icon icon, String label, Menu menu) {
+		return new SubMenu(style, icon, label, menu);
 	}
 	//=============================================================================================
 	
 	//=============================================================================================
-	public String image() {
-		return image;
+	private Menu menu;
+	//=============================================================================================
+	
+	//=============================================================================================
+	public SubMenu(Style style, Icon icon, String label, Menu menu) {
+		super(style, icon, label);
+		this.menu = menu;
+		this.menu.flag(Flag.HIDDEN, true);
+		this.menu.parent(this);
 	}
 	//=============================================================================================
 
 	//=============================================================================================
-	public Image image(String image) {
-		this.image = image;
-		return this;
+	public SubMenu(Style style, Icon icon, String label) {
+		super(style, icon, label);
+		this.menu = Menu.createMenu(style);
+		this.menu.flag(Flag.HIDDEN, true);
+		this.menu.parent(this);
 	}
 	//=============================================================================================
-
+	
 	//=============================================================================================
-	protected void paintWidget(Graphics g) {		
-		g.color(color);
-		g.image(image, 0, 0, size().x, size().y);
+	public Menu menu() {
+		return this.menu;
+	}
+	//=============================================================================================
+	
+	//=============================================================================================
+	public void handleWidget(Msg msg) {
+
+		if (MsgType.POINTER_MASK.contains(msg.type)) {
+
+			var data = msg.data(InputData.class);
+			float px = data.axes.get(Axis.POINTER_HORIZONTAL);
+			float py = data.axes.get(Axis.POINTER_VERTICAL);
+			
+			if (msg.type.equals(MsgType.POINTER_PRESSED)) {
+				menu.flag(Flag.HIDDEN, true);
+			}
+			
+			if (!msg.consumed && containsScreen(px, py)) {
+				msg.consumed = true;
+				flag(Flag.ARMED, true);
+				if (parent() instanceof Menu m) {
+					m.closeSubMenus();
+				}
+				menu.position(size().x - 5, 15-menu.size().y);
+				menu.flag(Flag.HIDDEN, false);
+			} else {
+				flag(Flag.ARMED, false);
+			}
+			
+		}
+
 	}
 	//=============================================================================================
 	

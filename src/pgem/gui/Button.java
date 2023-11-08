@@ -2,8 +2,6 @@
 package pgem.gui;
 //*************************************************************************************************
 
-import javax.vecmath.Vector2f;
-
 import pgem.msg.Axis;
 import pgem.msg.InputData;
 import pgem.msg.Msg;
@@ -12,10 +10,6 @@ import pgem.paint.Graphics;
 
 //*************************************************************************************************
 public class Button extends Widget<Button> {
-
-	//=============================================================================================
-	private static final Vector2f ORIGIN = new Vector2f(0, 0);
-	//=============================================================================================
 
 	//=============================================================================================
 	public static final Button createButton(Style style) {
@@ -118,7 +112,7 @@ public class Button extends Widget<Button> {
 				}
 				else if (msg.type.equals(MsgType.POINTER_RELEASED)) {
 					if (data.button.equals(pgem.msg.Button.POINTER_1)) {
-						triggerAction(msg);
+							triggerAction(msg);
 					}
 				}
 			}

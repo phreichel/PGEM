@@ -28,7 +28,7 @@ public class Style {
 		put(StyleColor.BUTTON_BORDER_DARK, 0, 0, 1, 1);
 		put(StyleColor.FRAME_BACKGROUND, .4f, 0, 0, .4f);
 		put(StyleColor.FRAME_BORDER, 0, 0, 1, 1);
-		put(StyleColor.FRAME_DRAG_BORDER, 0, 1, 1, 1);
+		put(StyleColor.FRAME_BORDER_ARMED, 0, 1, 1, 1);
 	    put(StyleColor.FRAME_ICON_COLOR, 0, 1, 1, 1);
 	    put(StyleColor.FRAME_SCALE_BACKGROUND, 0, 0, 1, 1);
 	    put(StyleColor.FRAME_SCALE_BORDER, 0, 0, 1, 1);
@@ -38,12 +38,20 @@ public class Style {
 	    put(StyleColor.FRAME_TITLE_COLOR, 0, 1, 1, 1);
 	    put(StyleColor.IMAGE_COLOR, 1, 1, 1, 1);
 	    put(StyleColor.LABEL_COLOR, 1, 1, 1, 1);
+	    put(StyleColor.MENU_BACKGROUND, 0, 0, 1f, .6f);
+	    put(StyleColor.MENU_BORDER, 0, 0, 1, 1);
+	    put(StyleColor.MENU_ITEM_BACKGROUND, 0, 0, 0, 0);
+	    put(StyleColor.MENU_ITEM_BACKGROUND_ARMED, 0, 0, 1, 1);
+	    put(StyleColor.MENU_ITEM_BORDER, 0, 0, 0, 0);
+	    put(StyleColor.MENU_ITEM_ICON_COLOR, 0, 1, 1, 1);
+	    put(StyleColor.MENU_ITEM_LABEL_COLOR, 0, 1, 1, 1);
 	    put(StyleColor.PANEL_BACKGROUND, 0, 0, .4f, .6f);
 	    put(StyleColor.PANEL_BORDER, 0, 0, 1, 1);
 
 		put(StyleFont.DEFAULT, Font.DEFAULT_16);
 		put(StyleFont.LABEL, Font.DEFAULT_16);
 		put(StyleFont.FRAME_TITLE, Font.DEFAULT_18);
+		put(StyleFont.MENU_ITEM_LABEL, Font.DEFAULT_16);
 	    
 		put(StyleIcon.FRAME_CLOSE, Icon.CLOSE);
 	    
