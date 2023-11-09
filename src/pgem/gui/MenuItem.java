@@ -30,7 +30,7 @@ public class MenuItem extends Widget<MenuItem> {
 	public MenuItem(Style style, Icon icon, String label) {
 		super(style, true);
 		action = this::action;
-		size(100, 20);
+		size(120, 20);
 		this.icon = Image
 			.createImage(style, icon)
 			.color(style().get(StyleColor.MENU_ITEM_ICON_COLOR))
@@ -44,8 +44,8 @@ public class MenuItem extends Widget<MenuItem> {
 			.font(style().get(StyleFont.MENU_ITEM_LABEL).name())
 			.color(style().get(StyleColor.MENU_ITEM_LABEL_COLOR))
 			.flag(Flag.HIDDEN, label == null)
-			.position(20, 0)
-			.size(80, 20)
+			.position(25, 0)
+			.size(95, 20)
 			.parent(this);
 	}
 	//=============================================================================================
