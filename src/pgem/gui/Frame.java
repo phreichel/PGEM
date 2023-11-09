@@ -138,9 +138,9 @@ public class Frame extends Widget<Frame> {
 		var dc = st.get(StyleColor.FRAME_BORDER_ARMED);
 		var rc = flag(Flag.ARMED) ? dc : bc;
 		g.color(bg);
-		g.box(true, ORIGIN, size());
+		g.rectangle(true, ORIGIN, size());
 		g.color(rc);
-		g.box(false, ORIGIN, size());
+		g.rectangle(false, ORIGIN, size());
 	}
 	//=============================================================================================
 	

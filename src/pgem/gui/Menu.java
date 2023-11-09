@@ -102,9 +102,9 @@ public class Menu extends Widget<Menu> {
 		var bg = style().get(StyleColor.MENU_BACKGROUND); 
 		var bd = style().get(StyleColor.MENU_BORDER);
 		g.color(bg);
-		g.box(true, ORIGIN, size());
+		g.rectangle(true, ORIGIN, size());
 		g.color(bd);
-		g.box(false, ORIGIN, size());
+		g.rectangle(false, ORIGIN, size());
 	}
 	//=============================================================================================
 

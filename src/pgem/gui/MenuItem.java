@@ -124,9 +124,9 @@ public class MenuItem extends Widget<MenuItem> {
 		var ba = style().get(StyleColor.MENU_ITEM_BACKGROUND_ARMED);
 		var bd = style().get(StyleColor.MENU_ITEM_BORDER);
 		g.color(flag(Flag.ARMED) ? ba : bg);
-		g.box(true, ORIGIN, size());
+		g.rectangle(true, ORIGIN, size());
 		g.color(bd);
-		g.box(false, ORIGIN, size());
+		g.rectangle(false, ORIGIN, size());
 	}
 	//=============================================================================================
 

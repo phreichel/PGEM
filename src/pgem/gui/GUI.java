@@ -18,7 +18,7 @@ public class GUI implements Painter {
 	//=============================================================================================
 	private final List<Shortcut> shortcuts = new ArrayList<>();
 	private final Style style = new Style();	
-	private final Root  root  = Root.createRoot(style, this);
+	private final Root root = Root.createRoot(style, this);
 	//=============================================================================================
 
 	//=============================================================================================

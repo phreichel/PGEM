@@ -45,9 +45,9 @@ public class Panel extends Widget<Panel> {
 	//=============================================================================================
 	protected void paintWidget(Graphics g) {
 		g.color(background);
-		g.box(true, ORIGIN, size());
+		g.rectangle(true, ORIGIN, size());
 		g.color(border);
-		g.box(false, ORIGIN, size());
+		g.rectangle(false, ORIGIN, size());
 	}
 	//=============================================================================================
 

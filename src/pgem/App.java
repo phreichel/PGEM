@@ -11,14 +11,16 @@ import pgem.msg.Msg;
 import pgem.msg.MsgBox;
 import pgem.msg.MsgType;
 import pgem.msg.WindowData;
+import pgem.scene.Scene;
 
 //*************************************************************************************************
 public final class App {
 
 	//=============================================================================================
-	private final GUI gui = new GUI();
 	private final MsgBox msgBox = new MsgBox();
 	private final Host host = Host.create(Host.TYPE_JOGL, msgBox);
+	private final Scene scene = new Scene();
+	private final GUI gui = new GUI();
 	//=============================================================================================
 
 	//=============================================================================================
@@ -26,9 +28,7 @@ public final class App {
 	//=============================================================================================
 	
 	//=============================================================================================
-	public void config(String[] args) {
-		
-	}
+	public void config(String[] args) {}
 	//=============================================================================================
 
 	//=============================================================================================
@@ -47,8 +47,9 @@ public final class App {
 
 	//=============================================================================================
 	private void init() {
-
+	
 		gui.root().size(1200, 800);
+		
 		var menu = Menu.createMenu(gui.style());
 		menu.dock(Dock.TOP_LEFT);
 		menu.position(5, 800 - 25);
@@ -60,14 +61,15 @@ public final class App {
 			.add(Icon.FULL_SCREEN, "Fullscreen", (w, m) -> handleFullscreen())
 			.add(Icon.SHUT_DOWN, "Quit", (w, m) -> handleQuit(m));
 
-		host.init();
-		host.plug(gui);
-
 		msgBox.plug(MsgType.APPLICATION_QUIT, this::handleQuit);
 		msgBox.plug(MsgType.WINDOW_CLOSE, this::handleQuit);
 
 		gui.hook(msgBox);
-	
+
+		host.init();
+		host.plug(scene);
+		host.plug(gui);
+
 	}
 	//=============================================================================================
 

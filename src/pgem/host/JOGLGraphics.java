@@ -13,6 +13,7 @@ import java.util.Map;
 import javax.vecmath.Color3f;
 import javax.vecmath.Color4f;
 import javax.vecmath.Vector2f;
+import javax.vecmath.Vector3f;
 
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
@@ -121,8 +122,16 @@ public class JOGLGraphics implements GLEventListener, Graphics {
 	//=============================================================================================
 
 	//=============================================================================================
+	public void perspective(float fovy, float near, float far) {
+		float aspect = (float) wnd.getSurfaceWidth() / (float) wnd.getSurfaceHeight();
+		perspective(fovy, aspect, near, far);
+	}
+	//=============================================================================================
+	
+	//=============================================================================================
 	public void perspective(float fovy, float aspect, float near, float far) {
 		gl.glEnable(GL2.GL_LIGHTING);
+		gl.glEnable(GL2.GL_LIGHT0);
 		gl.glEnable(GL2.GL_DEPTH_TEST);
 		gl.glMatrixMode(GL2.GL_PROJECTION);
 		gl.glLoadIdentity();
@@ -162,6 +171,12 @@ public class JOGLGraphics implements GLEventListener, Graphics {
 	}
 	//=============================================================================================
 
+	//=============================================================================================
+	public void translate(float dx, float dy, float dz) {
+		gl.glTranslatef(dx, dy, dz);
+	}
+	//=============================================================================================
+	
 	//=============================================================================================
 	public void color(Color3f color) {
 		color(color.x, color.y, color.z);
@@ -238,13 +253,13 @@ public class JOGLGraphics implements GLEventListener, Graphics {
 	//=============================================================================================
 
 	//=============================================================================================
-	public void box(boolean filled, Vector2f origin, Vector2f size) {
-		box(filled, origin.x, origin.y, size.x, size.y);
+	public void rectangle(boolean filled, Vector2f origin, Vector2f size) {
+		rectangle(filled, origin.x, origin.y, size.x, size.y);
 	}
 	//=============================================================================================
 
 	//=============================================================================================
-	public void box(boolean filled, float x, float y, float w, float h) {
+	public void rectangle(boolean filled, float x, float y, float w, float h) {
 		gl.glPushAttrib(GL2.GL_POLYGON_BIT);
 		if (filled) gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
 		else gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
@@ -458,15 +473,10 @@ public class JOGLGraphics implements GLEventListener, Graphics {
 	
 	//=============================================================================================
 	public void text(float x, float y, String text, String font) {
+
 		var textRenderer = fonts.get(font);
 		textRenderer.setColor(color.x, color.y, color.z, color.w);
 
-		/*
-		textRenderer.beginRendering(wnd.getSurfaceWidth(), wnd.getSurfaceHeight(), true);
-		textRenderer.draw(text, (int) x, (int) y);
-		textRenderer.endRendering();
-		*/
-		
 		textRenderer.begin3DRendering();
 		textRenderer.draw3D(text, x, y, 0, 1);
 		textRenderer.end3DRendering();
@@ -522,6 +532,64 @@ public class JOGLGraphics implements GLEventListener, Graphics {
 		texture.disable(gl);
 		gl.glPopAttrib();
 
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public void box(boolean filled, Vector3f origin, Vector3f size) {
+		box(filled, origin.x, origin.y, origin.z, size.x, size.y, size.z);
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public void box(boolean filled, float x, float y, float z, float w, float h, float d) {
+		
+		gl.glPushAttrib(GL2.GL_POLYGON_BIT);
+		if (filled) gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
+		else gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
+		
+		gl.glBegin(GL2.GL_QUADS);
+		
+		gl.glNormal3f(0, 0, 1);
+		gl.glVertex3f(x+0, y+0, z+d);
+		gl.glVertex3f(x+w, y+0, z+d);
+		gl.glVertex3f(x+w, y+h, z+d);
+		gl.glVertex3f(x+0, y+h, z+d);
+
+		gl.glNormal3f(0, 0, -1);
+		gl.glVertex3f(x+w, y+0, z+0);
+		gl.glVertex3f(x+0, y+0, z+0);
+		gl.glVertex3f(x+0, y+h, z+0);
+		gl.glVertex3f(x+w, y+h, z+0);
+
+		gl.glNormal3f(-1, 0, 0);
+		gl.glVertex3f(x+0, y+0, z+0);
+		gl.glVertex3f(x+0, y+0, z+d);
+		gl.glVertex3f(x+0, y+h, z+d);
+		gl.glVertex3f(x+0, y+h, z+0);
+
+		gl.glNormal3f(1, 0, 0);
+		gl.glVertex3f(x+w, y+0, z+d);
+		gl.glVertex3f(x+w, y+0, z+0);
+		gl.glVertex3f(x+w, y+h, z+0);
+		gl.glVertex3f(x+w, y+h, z+d);
+
+		gl.glNormal3f(0, 1, 0);
+		gl.glVertex3f(x+0, y+h, z+d);
+		gl.glVertex3f(x+w, y+h, z+d);
+		gl.glVertex3f(x+w, y+h, z+0);
+		gl.glVertex3f(x+0, y+h, z+0);
+
+		gl.glNormal3f(0, -1, 0);
+		gl.glVertex3f(x+0, y+0, z+0);
+		gl.glVertex3f(x+w, y+0, z+0);
+		gl.glVertex3f(x+w, y+0, z+d);
+		gl.glVertex3f(x+0, y+0, z+d);
+		
+		gl.glEnd();
+		
+		gl.glPopAttrib();
+		
 	}
 	//=============================================================================================
 	

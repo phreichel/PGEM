@@ -70,7 +70,7 @@ public class Button extends Widget<Button> {
 		var bl = st.get(StyleColor.BUTTON_BORDER_LIGHT);
 		var bd = st.get(StyleColor.BUTTON_BORDER_DARK);
 		g.color(bg);
-		g.box(true, ORIGIN, size());
+		g.rectangle(true, ORIGIN, size());
 		var s = size(); 
 		if (flag(Flag.ARMED)) {
 			g.color(bl);

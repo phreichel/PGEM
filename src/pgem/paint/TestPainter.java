@@ -33,10 +33,10 @@ public class TestPainter implements Painter {
 		g.surface();
 		
 		g.color(1, 0, 0);
-		g.box(true, 50, 50, 200, 25);
+		g.rectangle(true, 50, 50, 200, 25);
 
 		g.color(0, 1, 0);
-		g.box(false, 50, 50, 200, 25);
+		g.rectangle(false, 50, 50, 200, 25);
 		
 		g.color(0, 0, 1);
 		g.lines(
@@ -58,7 +58,7 @@ public class TestPainter implements Painter {
 		g.rotate(45);
 		g.scale(.1f)	;
 		g.color(1, 1, 0);
-		g.box(true, -50, -50, 400, 400);
+		g.rectangle(true, -50, -50, 400, 400);
 		g.pop();
 		
 		g.color(1f, .5f, .8f);
