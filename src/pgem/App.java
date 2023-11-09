@@ -65,7 +65,7 @@ public final class App {
 
 		msgBox.plug(MsgType.APPLICATION_QUIT, this::handleQuit);
 		msgBox.plug(MsgType.WINDOW_CLOSE, this::handleQuit);
-		
+
 		gui.hook(msgBox);
 	
 	}
@@ -75,6 +75,7 @@ public final class App {
 	private void loop() {
 		quit = false;
 		host.visible(true);
+		host.fullscreen(true);
 		while (!quit) {
 			msgBox.update();
 			host.update();
@@ -97,7 +98,7 @@ public final class App {
 	//=============================================================================================
 
 	//=============================================================================================
-	private boolean fsState = false;
+	private boolean fsState = true;
 	//=============================================================================================
 	
 	//=============================================================================================

@@ -77,10 +77,10 @@ public class GUI implements Painter {
 		g.imageInit(Icon.ARROW_DOWN.name(), "data/icons/arrowdown.png");
 		g.imageInit(Icon.ARROW_UP.name(), "data/icons/arrowup.png");
 		g.imageInit(Icon.CLOSE.name(), "data/icons/close.png");
-		g.imageInit(Icon.DESK.name(), "data/icons/desk.png");
+		g.imageInit(Icon.DESK.name(), "data/icons/desk_inv.png");
 		g.imageInit(Icon.FULL_SCREEN.name(), "data/icons/fullscreen.png");
 		g.imageInit(Icon.PLUS.name(), "data/icons/plus.png");
-		g.imageInit(Icon.SHUT_DOWN.name(), "data/icons/shutdown.png");
+		g.imageInit(Icon.SHUT_DOWN.name(), "data/icons/shutdown_inv.png");
 		g.imageInit(Icon.SIZE.name(), "data/icons/size.png");
 		
 	}
