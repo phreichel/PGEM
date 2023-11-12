@@ -12,6 +12,7 @@ import java.util.Map;
 
 import javax.vecmath.Color3f;
 import javax.vecmath.Color4f;
+import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
 
@@ -174,6 +175,35 @@ public class JOGLGraphics implements GLEventListener, Graphics {
 	//=============================================================================================
 	public void translate(float dx, float dy, float dz) {
 		gl.glTranslatef(dx, dy, dz);
+	}
+	//=============================================================================================
+	
+	//=============================================================================================
+	public void apply(Matrix4f m) {
+		float[] buffer = new float[16];
+		get(m, buffer); 
+		gl.glLoadMatrixf(buffer, 0);
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	private static final void get(Matrix4f m, float[] buffer) {
+		buffer[0] = m.m00;
+		buffer[1] = m.m10;
+		buffer[2] = m.m20;
+		buffer[3] = m.m30;
+		buffer[4] = m.m01;
+		buffer[5] = m.m11;
+		buffer[6] = m.m21;
+		buffer[7] = m.m31;
+		buffer[8] = m.m02;
+		buffer[9] = m.m12;
+		buffer[10] = m.m22;
+		buffer[11] = m.m32;
+		buffer[12] = m.m03;
+		buffer[13] = m.m13;
+		buffer[14] = m.m23;
+		buffer[15] = m.m33;
 	}
 	//=============================================================================================
 	

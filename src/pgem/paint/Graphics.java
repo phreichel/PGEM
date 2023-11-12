@@ -1,12 +1,12 @@
 //*************************************************************************************************
 package pgem.paint;
+//*************************************************************************************************
 
 import javax.vecmath.Color3f;
 import javax.vecmath.Color4f;
+import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
-
-//*************************************************************************************************
 
 //*************************************************************************************************
 public interface Graphics {
@@ -28,6 +28,7 @@ public interface Graphics {
 	public void rotate(float a);
 	public void translate(float dx, float dy);
 	public void translate(float dx, float dy, float dz);
+	public void apply(Matrix4f m);
 	//=============================================================================================
 
 	//=============================================================================================
