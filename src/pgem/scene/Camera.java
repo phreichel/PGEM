@@ -1,10 +1,18 @@
 //*************************************************************************************************
 package pgem.scene;
+
+import javax.vecmath.Matrix4f;
+import javax.vecmath.Vector3f;
+
 //*************************************************************************************************
 
 //*************************************************************************************************
 public class Camera extends Node {
 
+	//=============================================================================================
+	private static final Vector3f ZERO = new Vector3f(0, 0, 0);
+	//=============================================================================================
+	
 	//=============================================================================================
 	public Camera() {
 		super();
@@ -28,6 +36,33 @@ public class Camera extends Node {
 		this.fovy = fovy;
 		this.near = near;
 		this.far = far;
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public Matrix4f pov() {
+
+		Matrix4f pov = new Matrix4f();
+		pov.setIdentity();
+		
+		Node node = this.parent();
+		while (node != null) {
+			if (node instanceof Transform t) {
+				pov.mul(t.matrix, pov);
+			}
+			node = node.parent();
+		}
+
+		Vector3f t = new Vector3f();
+		pov.get(t);
+		t.negate();
+		pov.setTranslation(ZERO);
+		pov.transform(t);
+		pov.transpose();
+		pov.setTranslation(t);
+
+		return pov;
+		
 	}
 	//=============================================================================================
 	

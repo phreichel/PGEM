@@ -2,6 +2,9 @@
 package pgem.scene;
 //*************************************************************************************************
 
+import javax.vecmath.AxisAngle4f;
+import javax.vecmath.Vector3f;
+
 import pgem.paint.Graphics;
 import pgem.paint.Painter;
 
@@ -18,21 +21,44 @@ public class Scene implements Painter {
 		return root;
 	}
 	//=============================================================================================
+
+	//=============================================================================================
+	public Camera camera() {
+		return camera;
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public void camera(Camera camera) {
+		this.camera = camera;
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public void init() {
+		Transform camTransform = new Transform(root());
+		var n = new Vector3f(-1, 1,0);
+		n.normalize();
+		camTransform.matrix.setRotation(new AxisAngle4f(n, (float) Math.toRadians(-30)));
+		camTransform.matrix.setTranslation(new Vector3f(5f, 5f, 10f));
+		Camera camera = new Camera(camTransform);
+		camera(camera);
+	}
+	//=============================================================================================
 	
 	//=============================================================================================
 	public void paint(Graphics g) {
-		if (camera != null) {
-			g.perspective(
-				camera.fovy,
-				camera.near,
-				camera.far);
-		} else {
-			g.perspective(
-				60f,
-				.6f,
-				1000f);
-		}
-		root.paint(g);
+		
+		float fovy = (camera == null) ? 60f : camera.fovy;
+		float near = (camera == null) ? .6f : camera.near;
+		float far  = (camera == null) ? 1000f : camera.far;
+		g.perspective(fovy, near, far);
+
+		if (camera != null) g.apply(camera.pov());
+
+		g.color(1, 0, 0);
+		g.box(false, new Vector3f(-1, -1, -1), new Vector3f(2, 2, 2));
+
 	}
 	//=============================================================================================
 
