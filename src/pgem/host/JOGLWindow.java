@@ -58,6 +58,7 @@ final class JOGLWindow implements WindowListener {
 		msgBox.plug(MsgType.WINDOW_VISIBLE, this::handle);
 		msgBox.plug(MsgType.WINDOW_MAXIMIZED, this::handle);
 		msgBox.plug(MsgType.WINDOW_FULLSCREEN, this::handle);
+		msgBox.plug(MsgType.WINDOW_POINTER, this::handle);
 	}
 	//=============================================================================================
 	
@@ -111,6 +112,18 @@ final class JOGLWindow implements WindowListener {
 	}
 	//=============================================================================================
 
+	//=============================================================================================
+	public boolean pointer() {
+		return window.isPointerVisible();
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public void pointer(boolean visible) {
+		window.setPointerVisible(visible);
+	}
+	//=============================================================================================
+	
 	//=============================================================================================
 	public String title() {
 		return window.getTitle();
@@ -179,6 +192,7 @@ final class JOGLWindow implements WindowListener {
 		case WINDOW_VISIBLE -> visible(data.state);
 		case WINDOW_MAXIMIZED -> maximized(data.state);
 		case WINDOW_FULLSCREEN -> fullscreen(data.state);
+		case WINDOW_POINTER -> pointer(data.state);
 		default -> {}
 		}
 	}

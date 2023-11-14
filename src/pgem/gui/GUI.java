@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pgem.msg.Msg;
-import pgem.msg.MsgBox;
-import pgem.msg.MsgType;
 import pgem.msg.WindowData;
 import pgem.paint.Graphics;
 import pgem.paint.Painter;
@@ -33,21 +31,6 @@ public class GUI implements Painter {
 	}
 	//=============================================================================================
 
-	//=============================================================================================
-	public void hook(MsgBox msgBox) {
-		msgBox.plug(MsgType.BUTTON_PRESSED, this::handleShortcuts);
-		msgBox.plug(MsgType.KEY_PRESSED, this::handleInput);
-		msgBox.plug(MsgType.KEY_RELEASED, this::handleInput);
-		msgBox.plug(MsgType.KEY_TYPED, this::handleInput);
-		msgBox.plug(MsgType.POINTER_MOVED, this::handleInput);
-		msgBox.plug(MsgType.POINTER_PRESSED, this::handleInput);
-		msgBox.plug(MsgType.POINTER_RELEASED, this::handleInput);
-		msgBox.plug(MsgType.POINTER_CLICKED, this::handleInput);
-		msgBox.plug(MsgType.POINTER_SCROLLED, this::handleInput);
-		msgBox.plug(MsgType.WINDOW_RESIZED, this::handleResize);
-	}
-	//=============================================================================================
-	
 	//=============================================================================================
 	public void paint(Graphics g) {
 

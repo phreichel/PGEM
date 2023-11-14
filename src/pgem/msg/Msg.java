@@ -9,6 +9,7 @@ public final class Msg {
 	public long    time;
 	public MsgType type;
 	public MsgData data;
+	public MsgBox  msgbox;
 	public boolean consumed;
 	//=============================================================================================
 
@@ -21,6 +22,7 @@ public final class Msg {
 		consumed = false;
 		time = -1L;
 		type = MsgType.NONE;
+		msgbox = null;
 		data = null;
 	}
 	//=============================================================================================

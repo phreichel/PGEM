@@ -7,6 +7,7 @@ import pgem.gui.GUI;
 import pgem.gui.Icon;
 import pgem.gui.Menu;
 import pgem.host.Host;
+import pgem.model.Controller;
 import pgem.msg.Msg;
 import pgem.msg.MsgBox;
 import pgem.msg.MsgType;
@@ -21,6 +22,7 @@ public final class App {
 	private final Host host = Host.create(Host.TYPE_JOGL, msgBox);
 	private final Scene scene = new Scene();
 	private final GUI gui = new GUI();
+	private Controller controller = new Controller(gui);
 	//=============================================================================================
 
 	//=============================================================================================
@@ -64,7 +66,7 @@ public final class App {
 		msgBox.plug(MsgType.APPLICATION_QUIT, this::handleQuit);
 		msgBox.plug(MsgType.WINDOW_CLOSE, this::handleQuit);
 
-		gui.hook(msgBox);
+		controller.hook(msgBox);
 
 		host.init();
 		host.plug(scene);

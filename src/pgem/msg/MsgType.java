@@ -22,6 +22,7 @@ public enum MsgType {
 	WINDOW_MAXIMIZED(WindowData.class),
 	WINDOW_FULLSCREEN(WindowData.class),
 	WINDOW_RESIZED(WindowData.class),
+	WINDOW_POINTER(WindowData.class),
 	WINDOW_CLOSE(null),
 	
 	BUTTON_PRESSED(InputData.class),

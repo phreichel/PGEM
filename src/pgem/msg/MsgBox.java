@@ -65,6 +65,7 @@ public final class MsgBox {
 		
 		msg.time = System.currentTimeMillis();
 		msg.type = type;
+		msg.msgbox = this;
 		msg.data = null;
 		
 		var cls = type.dataClass;
@@ -92,6 +93,7 @@ public final class MsgBox {
 
 	//=============================================================================================
 	public void post(Msg msg) {
+		msg.msgbox = this;
 		synchronized (msgInput) {
 			msgInput.offer(msg);
 		}
