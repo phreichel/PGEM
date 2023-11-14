@@ -22,7 +22,7 @@ public final class App {
 	private final Host host = Host.create(Host.TYPE_JOGL, msgBox);
 	private final Scene scene = new Scene();
 	private final GUI gui = new GUI();
-	private Controller controller = new Controller(gui);
+	private Controller controller = new Controller(gui, scene);
 	//=============================================================================================
 
 	//=============================================================================================
@@ -73,6 +73,7 @@ public final class App {
 		host.plug(gui);
 
 		scene.init();
+		controller.init();
 		
 	}
 	//=============================================================================================
@@ -84,8 +85,9 @@ public final class App {
 		host.fullscreen(true);
 		while (!quit) {
 			msgBox.update();
+			controller.update();
 			host.update();
-			Thread.yield();			
+			Thread.yield();
 		}
 	}
 	//=============================================================================================
