@@ -146,17 +146,23 @@ public class Controller {
 	//=============================================================================================
 	private void updateFreeMovement(float dT) {
 		
+		final float SCALE_TRS = .1f;
+		final float SCALE_ROT = 1f;
+		
 		Vector3f tl = new Vector3f();
-		tl.set(hor, -lat, ver);
+		tl.set(
+			 hor * SCALE_TRS,
+			 ver * SCALE_TRS,
+			-lat * SCALE_TRS);
 
 		Matrix3f rp = new Matrix3f();
-		rp.rotX((float) Math.toRadians(pitch * 5));
+		rp.rotX((float) Math.toRadians(pitch * SCALE_ROT));
 		
 		Matrix3f ry = new Matrix3f();
-		ry.rotY((float) Math.toRadians(yaw * 5));
+		ry.rotY((float) Math.toRadians(yaw * SCALE_ROT));
 
 		Matrix3f rr = new Matrix3f();
-		rr.rotZ((float) Math.toRadians(roll * 5));
+		rr.rotZ((float) Math.toRadians(roll * SCALE_ROT));
 
 		Matrix3f rt = new Matrix3f();
 		rt.set(rp);

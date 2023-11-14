@@ -39,7 +39,7 @@ public class Scene implements Painter {
 		Transform camTransform = new Transform(root());
 		var n = new Vector3f(-1, 1,0);
 		n.normalize();
-		camTransform.matrix.setRotation(new AxisAngle4f(n, (float) Math.toRadians(-30)));
+		camTransform.matrix.setRotation(new AxisAngle4f(n, (float) Math.toRadians(30)));
 		camTransform.matrix.setTranslation(new Vector3f(5f, 5f, 10f));
 		Camera camera = new Camera(camTransform);
 		camera(camera);
@@ -49,8 +49,8 @@ public class Scene implements Painter {
 	//=============================================================================================
 	public void paint(Graphics g) {
 		
-		float fovy = (camera == null) ? 60f : camera.fovy;
-		float near = (camera == null) ? .6f : camera.near;
+		float fovy = (camera == null) ? 70f : camera.fovy;
+		float near = (camera == null) ? .4f : camera.near;
 		float far  = (camera == null) ? 1000f : camera.far;
 		g.perspective(fovy, near, far);
 
