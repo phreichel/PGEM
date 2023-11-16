@@ -53,6 +53,7 @@ final class JOGLWindow implements WindowListener {
 		window.addMouseListener(input);
 		window.addWindowListener(this);
 		window.addGLEventListener(graphics);
+		window.setPointerVisible(false);
 		msgBox.plug(MsgType.WINDOW_TITLE, this::handle);
 		msgBox.plug(MsgType.WINDOW_SIZE, this::handle);
 		msgBox.plug(MsgType.WINDOW_VISIBLE, this::handle);

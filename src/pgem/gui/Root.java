@@ -18,6 +18,7 @@ class Root extends Widget<Root> {
 	//=============================================================================================
 	public Root(Style style, GUI gui) {
 		super(style, true);
+		this.flag(Flag.HIDDEN, true);
 		this.gui = gui;
 	}
 	//=============================================================================================
