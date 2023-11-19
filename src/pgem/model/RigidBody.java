@@ -1,127 +1,103 @@
 //*************************************************************************************************
-package pgem.gui;
+package pgem.model;
 //*************************************************************************************************
 
-import java.util.ArrayList;
-import java.util.List;
-
-import pgem.msg.Msg;
-import pgem.msg.WindowData;
-import pgem.paint.Graphics;
-import pgem.paint.Painter;
+import javax.vecmath.Matrix3f;
+import javax.vecmath.Vector3f;
 
 //*************************************************************************************************
-public class GUI implements Painter {
+public class RigidBody {
 
 	//=============================================================================================
-	private final List<Shortcut> shortcuts = new ArrayList<>();
-	private final Style style = new Style();	
-	private final Root root = Root.createRoot(style, this);
-	private Widget<?> focused = null;
+	private float    mass         = 1f;
+	private Matrix3f inertia      = new Matrix3f(1, 0, 0, 0, 1, 0, 0, 0, 1);
 	//=============================================================================================
 
 	//=============================================================================================
-	public Widget<?> root() {
-		return root;
+	private Vector3f location     = new Vector3f(0, 0, 0);
+	private Vector3f velocity     = new Vector3f(0, 0, 0);
+	private Vector3f acceleration = new Vector3f(0, 0, 0);
+	private Vector3f momentum     = new Vector3f(0, 0, 0);
+	//=============================================================================================
+
+	//=============================================================================================
+	private Vector3f angularMomentum = new Vector3f(0, 0, 0);
+	//=============================================================================================
+	
+	//=============================================================================================
+	private Vector3f force  = new Vector3f();
+	private Vector3f torque = new Vector3f();
+	//=============================================================================================
+
+	//=============================================================================================
+	public void resetForces() {
+		force.set(0, 0, 0);
+		torque.set(0, 0, 0);
 	}
 	//=============================================================================================
 
 	//=============================================================================================
-	public Widget<?> focused() {
-		return focused;
+	public void addForce(Vector3f force) {
+		force.add(force);
 	}
 	//=============================================================================================
 
 	//=============================================================================================
-	public void focused(Widget<?> focused) {
-		if (this.focused == focused) return;
-		if (this.focused != null) this.focused.flag(Flag.FOCUSED, false);
-		this.focused = focused;
-		if (this.focused != null) this.focused.flag(Flag.FOCUSED, true);
+	public void addTorque(Vector3f torque) {
+		torque.add(torque);
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public void addLinearImpulse(Vector3f impulse) {
+		momentum.add(impulse);
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public void addAngularImpulse(Vector3f impulse) {
+		angularMomentum.add(impulse);
 	}
 	//=============================================================================================
 	
 	//=============================================================================================
-	public Style style() {
-		return style;
+	public void update(float dT) {
+		updateLinearProperties(dT);
+		updateAngularProperties(dT);
 	}
 	//=============================================================================================
 
 	//=============================================================================================
-	public void paint(Graphics g) {
+	private void updateLinearProperties(float dT) {
 
-		init(g);
+		final var massInv = 1f / mass;
 		
-		g.surface();
-		root.paint(g);
+		acceleration.set(force);
+		acceleration.scale(massInv);
 		
-	}
-	//=============================================================================================
+		final var velocityRate = new Vector3f(acceleration);
+		velocityRate.scale(dT);
 
-	//=============================================================================================
-	private boolean initialized = false;
-	//=============================================================================================
+		final var momentumRate = new Vector3f(force);
+		momentumRate.scale(dT);
+		
+		momentum.add(momentumRate);
+		velocity.add(velocityRate);
 
-	//=============================================================================================
-	private void init(Graphics g) {
+		final var locationRate = new Vector3f(velocity);
+		locationRate.scale(dT);
 		
-		if (initialized) return;
-		initialized = true;
-		
-		g.fontInit(Font.DEFAULT_16.name(), "Aptos Black PLAIN 16");
-		g.fontInit(Font.DEFAULT_18.name(), "Aptos Black PLAIN 18");
-		g.fontInit(Font.DEFAULT_20.name(), "Aptos Black PLAIN 20");
-		g.fontInit(Font.GARAMOND_18.name(), "Garamond PLAIN 20");
-		
-		g.imageInit(Icon.ARROW_DOWN.name(), "data/icons/arrowdown.png");
-		g.imageInit(Icon.ARROW_UP.name(), "data/icons/arrowup.png");
-		g.imageInit(Icon.CLOSE.name(), "data/icons/close.png");
-		g.imageInit(Icon.DESK.name(), "data/icons/desk_inv.png");
-		g.imageInit(Icon.FULL_SCREEN.name(), "data/icons/fullscreen.png");
-		g.imageInit(Icon.PLUS.name(), "data/icons/plus.png");
-		g.imageInit(Icon.SHUT_DOWN.name(), "data/icons/shutdown_inv.png");
-		g.imageInit(Icon.SIZE.name(), "data/icons/size.png");
+		location.add(locationRate);
 		
 	}
 	//=============================================================================================
-	
-	//=============================================================================================
-	public void handleShortcuts(Msg msg) {
-		for (var shortcut : shortcuts) {
-			shortcut.update(msg);
-		}
-	}
-	//=============================================================================================
 
 	//=============================================================================================
-	public void shortcut(Shortcut sc) {
-		shortcuts.add(sc);
-	}
-	//=============================================================================================
+	private void updateAngularProperties(float dT) {
 
-	//=============================================================================================
-	public void shortcut(Action action, pgem.msg.Button button, pgem.msg.Button ... modifiers) {
-		var sc = new Shortcut(action, button, modifiers);
-		shortcuts.add(sc);
-	}
-	//=============================================================================================
-
-	//=============================================================================================
-	public List<Shortcut> shortcuts() {
-		return shortcuts;
-	}
-	//=============================================================================================
-	
-	//=============================================================================================
-	public void handleInput(Msg msg) {
-		root.handle(msg);
-	}
-	//=============================================================================================
-	
-	//=============================================================================================
-	public void handleResize(Msg msg) {
-		WindowData data = (WindowData) msg.data;
-		root.size(data.size);
+		var inertiaInv = new Matrix3f(inertia);
+		inertiaInv.invert();
+		
 	}
 	//=============================================================================================
 	

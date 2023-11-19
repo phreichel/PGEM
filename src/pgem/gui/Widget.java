@@ -252,13 +252,11 @@ public class Widget<W extends Widget<?>> {
 	//=============================================================================================
 	protected void handleWidget(Msg msg) {
 		if (msg.consumed) return;
-		if (!flag(Flag.REACTIVE)) return;
 		if (MsgType.POINTER_MASK.contains(msg.type)) {
 			var data = msg.data(InputData.class);
 			float px = data.axes.get(Axis.POINTER_HORIZONTAL);
 			float py = data.axes.get(Axis.POINTER_VERTICAL);
 			if (containsScreen(px, py)) {
-				msg.consumed = true;
 				if (msg.type.equals(MsgType.POINTER_PRESSED)) {
 					focus();
 				}
@@ -310,12 +308,10 @@ public class Widget<W extends Widget<?>> {
 	//=============================================================================================
 	@SuppressWarnings("unchecked")
 	public W focus() {
-		if (parent != null) {
-			parent.focus();
-		}
+		gui().focused(this);
 		return (W) this;
 	}
 	//=============================================================================================
-	
+
 }
 //*************************************************************************************************

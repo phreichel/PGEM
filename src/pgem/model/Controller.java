@@ -8,6 +8,7 @@ import javax.vecmath.Vector3f;
 
 import pgem.gui.Flag;
 import pgem.gui.GUI;
+import pgem.gui.Menu;
 import pgem.msg.Button;
 import pgem.msg.InputData;
 import pgem.msg.Msg;
@@ -22,7 +23,7 @@ import pgem.scene.Transform;
 public class Controller {
 
 	//=============================================================================================
-	private final GUI gui; 
+	private final GUI   gui; 
 	private final Scene scene;
 	//=============================================================================================
 
@@ -92,6 +93,10 @@ public class Controller {
 		) {
 			
 			guiMode = !guiMode;
+			if (guiMode && gui.root().children().get(0) instanceof Menu m) {
+				m.closeSubMenus();
+				m.children().get(0).focus();
+			}
 			gui.root().flag(Flag.HIDDEN, !guiMode);
 			
 			Msg ptrmsg = msg.msgbox.alloc(MsgType.WINDOW_POINTER);
@@ -104,6 +109,7 @@ public class Controller {
 		if (guiMode) {
 			gui.handleInput(msg);
 		} else {
+			gui.focused(null);
 			handleFreeMovement(msg);
 		}
 		

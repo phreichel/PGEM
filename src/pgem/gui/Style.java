@@ -41,7 +41,7 @@ public class Style {
 	    put(StyleColor.MENU_BACKGROUND, 0, 0, 1f, .6f);
 	    put(StyleColor.MENU_BORDER, 0, 0, 1, 1);
 	    put(StyleColor.MENU_ITEM_BACKGROUND, 0, 0, 0, 0);
-	    put(StyleColor.MENU_ITEM_BACKGROUND_ARMED, 0, 0, 1, 1);
+	    put(StyleColor.MENU_ITEM_BACKGROUND_FOCUSED, 0, 0, 1, 1);
 	    put(StyleColor.MENU_ITEM_BORDER, 0, 0, 0, 0);
 	    put(StyleColor.MENU_ITEM_ICON_COLOR, 0, 1, 1, 1);
 	    put(StyleColor.MENU_ITEM_LABEL_COLOR, 0, 1, 1, 1);

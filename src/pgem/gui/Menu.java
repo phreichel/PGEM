@@ -83,9 +83,7 @@ public class Menu extends Widget<Menu> {
 	
 	//=============================================================================================
 	public void handleWidget(Msg msg) {
-
 		if (msg.consumed) return;
-		
 		if (MsgType.POINTER_MASK.contains(msg.type)) {
 			var data = msg.data(InputData.class);
 			float px = data.axes.get(Axis.POINTER_HORIZONTAL);

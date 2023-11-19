@@ -3,6 +3,7 @@ package pgem.gui;
 //*************************************************************************************************
 
 import pgem.msg.Axis;
+import pgem.msg.Button;
 import pgem.msg.InputData;
 import pgem.msg.Msg;
 import pgem.msg.MsgType;
@@ -94,14 +95,13 @@ public class MenuItem extends Widget<MenuItem> {
 	
 	//=============================================================================================
 	public void handleWidget(Msg msg) {
-
 		if (MsgType.POINTER_MASK.contains(msg.type)) {
 			var data = msg.data(InputData.class);
 			float px = data.axes.get(Axis.POINTER_HORIZONTAL);
 			float py = data.axes.get(Axis.POINTER_VERTICAL);
 			if (!msg.consumed && containsScreen(px, py)) {
 				msg.consumed = true;
-				flag(Flag.ARMED, true);
+				focus();
 				if (parent() instanceof Menu m) {
 					m.closeSubMenus();
 				}
@@ -110,20 +110,45 @@ public class MenuItem extends Widget<MenuItem> {
 						triggerAction(msg);
 					}
 				}
-			} else {
-				flag(Flag.ARMED, false);
+			}
+		} else if (flag(Flag.FOCUSED) && msg.type.equals(MsgType.KEY_PRESSED)) {
+			if (msg.consumed) return; 
+			var data = msg.data(InputData.class);
+			if (parent() != null && parent() instanceof Menu m) {
+				if (data.button.equals(Button.KEY_UP)) {
+					msg.consumed = true;
+					int idx = m.children().indexOf(this);
+					if (idx < m.children().size()-1) {
+						m.children().get(idx+1).focus();
+					}
+				} else if (data.button.equals(Button.KEY_DOWN)) {
+					msg.consumed = true;
+					int idx = m.children().indexOf(this);
+					if (idx > 0) {
+						m.children().get(idx-1).focus();
+					}
+				} else if (data.button.equals(Button.KEY_LEFT)) {
+					msg.consumed = true;
+					if (m.parent() != null && m.parent() instanceof SubMenu psm) {
+						psm.focus();
+						m.closeSubMenus();
+						m.flag(Flag.HIDDEN, true);
+					}
+				} else if (data.button.equals(Button.KEY_ENTER)) {
+					msg.consumed = true;
+					triggerAction(msg);
+				}
 			}
 		}
-
 	}
 	//=============================================================================================
 	
 	//=============================================================================================
 	protected void paintWidget(Graphics g) {
 		var bg = style().get(StyleColor.MENU_ITEM_BACKGROUND); 
-		var ba = style().get(StyleColor.MENU_ITEM_BACKGROUND_ARMED);
+		var ba = style().get(StyleColor.MENU_ITEM_BACKGROUND_FOCUSED);
 		var bd = style().get(StyleColor.MENU_ITEM_BORDER);
-		g.color(flag(Flag.ARMED) ? ba : bg);
+		g.color(flag(Flag.FOCUSED) ? ba : bg);
 		g.rectangle(true, ORIGIN, size());
 		g.color(bd);
 		g.rectangle(false, ORIGIN, size());
