@@ -9,7 +9,7 @@ import java.util.List;
 public class World {
 
 	//=============================================================================================
-	private Space      space  = new Space();
+	private Space space = new Space();
 	private List<Body> bodies = new ArrayList<>();
 	//=============================================================================================
 
