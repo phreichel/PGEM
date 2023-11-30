@@ -67,7 +67,7 @@ public class Node {
 	//=============================================================================================
 	protected void paintChildren(Graphics g) {
 		for (int i=0; i<children.size(); i++) {
-			var child = children.get(0);
+			var child = children.get(i);
 			child.paint(g);
 		}
 	}

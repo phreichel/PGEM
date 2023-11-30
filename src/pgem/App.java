@@ -13,16 +13,18 @@ import pgem.msg.MsgBox;
 import pgem.msg.MsgType;
 import pgem.msg.WindowData;
 import pgem.scene.Scene;
+import pgem.terrain.Terrain;
 
 //*************************************************************************************************
 public final class App {
 
 	//=============================================================================================
-	private final MsgBox msgBox = new MsgBox();
-	private final Host host = Host.create(Host.TYPE_JOGL, msgBox);
-	private final Scene scene = new Scene();
-	private final GUI gui = new GUI();
-	private Controller controller = new Controller(gui, scene);
+	private final MsgBox     msgbox = new MsgBox();
+	private final Host       host = Host.create(Host.TYPE_JOGL, msgbox);
+	private final GUI        gui = new GUI();
+	private final Scene      scene = new Scene();
+	private final Terrain    terrain = new Terrain();
+	private final Controller controller = new Controller(gui, scene);
 	//=============================================================================================
 
 	//=============================================================================================
@@ -63,16 +65,16 @@ public final class App {
 			.add(Icon.FULL_SCREEN, "Fullscreen", (w, m) -> handleFullscreen())
 			.add(Icon.SHUT_DOWN, "Quit", (w, m) -> handleQuit(m));
 
-		msgBox.plug(MsgType.APPLICATION_QUIT, this::handleQuit);
-		msgBox.plug(MsgType.WINDOW_CLOSE, this::handleQuit);
+		msgbox.plug(MsgType.APPLICATION_QUIT, this::handleQuit);
+		msgbox.plug(MsgType.WINDOW_CLOSE, this::handleQuit);
 
-		controller.hook(msgBox);
+		controller.hook(msgbox);
 
 		host.init();
 		host.plug(scene);
 		host.plug(gui);
 
-		scene.init();
+		scene.init(terrain);
 		controller.init();
 		
 	}
@@ -84,7 +86,7 @@ public final class App {
 		host.visible(true);
 		host.fullscreen(true);
 		while (!quit) {
-			msgBox.update();
+			msgbox.update();
 			controller.update();
 			host.update();
 			Thread.yield();
@@ -94,7 +96,7 @@ public final class App {
 	
 	//=============================================================================================
 	private void done() {
-		msgBox.unplug(this::handleQuit);
+		msgbox.unplug(this::handleQuit);
 		host.done();
 	}
 	//=============================================================================================
@@ -111,11 +113,11 @@ public final class App {
 	
 	//=============================================================================================
 	private void handleFullscreen() {
-		var msg = msgBox.alloc(MsgType.WINDOW_FULLSCREEN);
+		var msg = msgbox.alloc(MsgType.WINDOW_FULLSCREEN);
 		var data = msg.data(WindowData.class);
 		fsState = !fsState;
 		data.state = fsState;
-		msgBox.post(msg);
+		msgbox.post(msg);
 	}
 	//=============================================================================================
 	

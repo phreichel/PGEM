@@ -2,7 +2,9 @@
 package pgem.terrain;
 //*************************************************************************************************
 
+import pgem.noise.Octave;
 import pgem.noise.Perlin;
+import pgem.noise.Scale;
 
 //*************************************************************************************************
 public class TerrainGenerator {
@@ -39,15 +41,17 @@ public class TerrainGenerator {
 	//=============================================================================================
 	private void initALT() {
 		Perlin perlin = new Perlin(seed);
-		alt = perlin;
+		Octave octave = new Octave(perlin, 8);
+		Scale  scale  = new Scale(octave, 5);
+		alt = scale;
 	}
 	//=============================================================================================
 	
 	//=============================================================================================
 	private void genALT(Chunk chunk) {
-		for (int i=0; i<w; i++) {
-			for (int j=0; j<h; j++) {
-				double value = alt.noise(chunk.x+i, chunk.y+j, 0);
+		for (int i=0; i<=w; i++) {
+			for (int j=0; j<=h; j++) {
+				double value = alt.noise((chunk.x+i) * .1, 0, (chunk.y+j) * .1);
 				chunk.alt[i][j] = (float) value;
 			}
 		}

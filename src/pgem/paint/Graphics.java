@@ -8,6 +8,8 @@ import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
 
+import pgem.terrain.Chunk;
+
 //*************************************************************************************************
 public interface Graphics {
 
@@ -66,6 +68,10 @@ public interface Graphics {
 	//=============================================================================================
 	public void box(boolean filled, Vector3f origin, Vector3f size);
 	public void box(boolean filled, float x, float y, float z, float w, float h, float d);
+	//=============================================================================================
+
+	//=============================================================================================
+	public void chunk(Chunk chunk);
 	//=============================================================================================
 	
 }

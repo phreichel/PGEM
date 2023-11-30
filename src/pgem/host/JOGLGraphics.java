@@ -26,6 +26,7 @@ import com.jogamp.opengl.util.texture.TextureIO;
 
 import pgem.paint.Painter;
 import pgem.paint.TextData;
+import pgem.terrain.Chunk;
 import pgem.X;
 import pgem.paint.Fn;
 import pgem.paint.Graphics;
@@ -623,5 +624,54 @@ public class JOGLGraphics implements GLEventListener, Graphics {
 	}
 	//=============================================================================================
 	
+	//=============================================================================================
+	public void chunk(Chunk chunk) {
+
+		gl.glBegin(GL2.GL_TRIANGLES);
+		for (int i=0; i<chunk.w; i++) {
+			for (int j=0; j<chunk.h; j++) {
+				
+				final long cx = chunk.x + i;
+				final long cy = chunk.y + j;
+
+				final Vector3f a = new Vector3f(cx + 0, chunk.alt[i+0][j+0], cy + 0);
+				final Vector3f b = new Vector3f(cx + 1, chunk.alt[i+1][j+0], cy + 0);
+				final Vector3f c = new Vector3f(cx + 1, chunk.alt[i+1][j+1], cy + 1);
+				final Vector3f d = new Vector3f(cx + 0, chunk.alt[i+0][j+1], cy + 1);
+				
+				final Vector3f dAB = new Vector3f();
+				dAB.sub(b, a);
+
+				final Vector3f dAC = new Vector3f();
+				dAC.sub(c, a);
+
+				final Vector3f dAD = new Vector3f();
+				dAD.sub(d, a);
+	
+				final Vector3f nABC = new Vector3f();
+				nABC.cross(dAC, dAB);
+				nABC.normalize();
+				
+				final Vector3f nACD = new Vector3f();
+				nACD.cross(dAD, dAC);
+				nACD.normalize();
+				
+				gl.glNormal3f(nABC.x, nABC.y, nABC.z);
+				gl.glVertex3f(a.x, a.y, a.z);
+				gl.glVertex3f(b.x, b.y, b.z);
+				gl.glVertex3f(c.x, c.y, c.z);
+
+				gl.glNormal3f(nACD.x, nACD.y, nACD.z);
+				gl.glVertex3f(a.x, a.y, a.z);
+				gl.glVertex3f(c.x, c.y, c.z);
+				gl.glVertex3f(d.x, d.y, d.z);
+				
+			}
+		}
+		gl.glEnd();
+
+	}
+	//=============================================================================================
+
 }
 //*************************************************************************************************

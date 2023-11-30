@@ -7,6 +7,7 @@ import javax.vecmath.Vector3f;
 
 import pgem.paint.Graphics;
 import pgem.paint.Painter;
+import pgem.terrain.Terrain;
 
 //*************************************************************************************************
 public class Scene implements Painter {
@@ -35,14 +36,20 @@ public class Scene implements Painter {
 	//=============================================================================================
 
 	//=============================================================================================
-	public void init() {
+	public void init(Terrain terrain) {
+
 		Transform camTransform = new Transform(root());
 		var n = new Vector3f(-1, 1,0);
 		n.normalize();
 		camTransform.matrix.setRotation(new AxisAngle4f(n, (float) Math.toRadians(30)));
 		camTransform.matrix.setTranslation(new Vector3f(5f, 5f, 10f));
+		
 		Camera camera = new Camera(camTransform);
 		camera(camera);
+		
+		terrain.load(0, 0, 128, null);
+		TerrainNode terrainNode = new TerrainNode(root(), terrain);
+
 	}
 	//=============================================================================================
 	
@@ -58,6 +65,8 @@ public class Scene implements Painter {
 
 		g.color(1, 0, 0);
 		g.box(false, new Vector3f(-1, -1, -1), new Vector3f(2, 2, 2));
+		
+		root.paint(g);
 
 	}
 	//=============================================================================================
