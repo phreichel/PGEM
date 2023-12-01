@@ -10,8 +10,8 @@ import java.util.UUID;
 public class Terrain {
 
 	//=============================================================================================
-	public static final short CHUNK_WIDTH = (short) 32;
-	public static final short CHUNK_HEIGHT = (short) 32;
+	public static final short CHUNK_WIDTH  = (short) 256;
+	public static final short CHUNK_HEIGHT = (short) 256;
 	//=============================================================================================
 	
 	//=============================================================================================

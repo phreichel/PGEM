@@ -5,6 +5,9 @@ package pgem.scene;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.vecmath.Point3f;
+import javax.vecmath.Vector3f;
+
 import pgem.paint.Graphics;
 
 //*************************************************************************************************
@@ -69,6 +72,26 @@ public class Node {
 		for (int i=0; i<children.size(); i++) {
 			var child = children.get(i);
 			child.paint(g);
+		}
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public void toWorld(Point3f src, Point3f dst) {
+		if (parent == null) {
+			dst.set(src);		
+		} else {
+			parent.toWorld(src, dst);
+		}
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public void toWorld(Vector3f src, Vector3f dst) {
+		if (parent == null) {
+			dst.set(src);		
+		} else {
+			parent.toWorld(src, dst);
 		}
 	}
 	//=============================================================================================

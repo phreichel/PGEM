@@ -5,6 +5,8 @@ package pgem.terrain;
 import java.io.Serializable;
 import java.util.UUID;
 
+import javax.vecmath.Vector3f;
+
 //*************************************************************************************************
 public class Chunk implements Serializable {
 
@@ -17,13 +19,22 @@ public class Chunk implements Serializable {
 	public final long  y;
 	public final short w;
 	public final short h;
+	public float lo = 0f;
+	public float hi = 0f;
 	public final UUID  uuid;
 	//=============================================================================================
 
 	//=============================================================================================
 	public final float[][] alt;
 	//=============================================================================================
-	
+
+	//=============================================================================================
+	public transient int gw = -1;
+	public transient int gh = -1;
+	public transient Vector3f[][] coords;
+	public transient Vector3f[][] normals;
+	//=============================================================================================
+
 	//=============================================================================================
 	public Chunk(long x, long y, short w, short h) {
 		this.x= x;
@@ -64,15 +75,23 @@ public class Chunk implements Serializable {
 
 	//=============================================================================================
 	public static final UUID genUUID(long x, long y) {
-		final String sgnx = (x < 0) ? "N" : "P"; 
-		final String sgny = (y < 0) ? "N" : "P"; 
-		final String str  = String.format("%s%08d:%s%08d", sgnx, Math.abs(x), sgny, Math.abs(y));
-		int hc = str.hashCode();
 		byte[] bytes = {
-			(byte) (hc >> 0),
-			(byte) (hc >> 8),
-			(byte) (hc >> 16),
-			(byte) (hc >> 32),
+			(byte) (x >> 0),
+			(byte) (y >> 0),
+			(byte) (x >> 8),
+			(byte) (y >> 8),
+			(byte) (x >> 16),
+			(byte) (y >> 16),
+			(byte) (x >> 24),
+			(byte) (y >> 24),
+			(byte) (x >> 32),
+			(byte) (y >> 32),
+			(byte) (x >> 40),
+			(byte) (y >> 40),
+			(byte) (x >> 48),
+			(byte) (y >> 48),
+			(byte) (x >> 56),
+			(byte) (y >> 56)
 		};
 		final UUID uuid = UUID.nameUUIDFromBytes(bytes);
 		return uuid;

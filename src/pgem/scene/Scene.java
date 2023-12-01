@@ -47,8 +47,7 @@ public class Scene implements Painter {
 		Camera camera = new Camera(camTransform);
 		camera(camera);
 		
-		terrain.load(0, 0, 128, null);
-		TerrainNode terrainNode = new TerrainNode(root(), terrain);
+		new TerrainNode(root(), terrain);
 
 	}
 	//=============================================================================================

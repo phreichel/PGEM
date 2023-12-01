@@ -55,10 +55,10 @@ public class TerrainStorage {
 	//=============================================================================================
 	private String path(long x, long y) {
 		String signx = (x < 0) ? "NX" : "PX";
-		String signy = (y < 0) ? "NX" : "PY";
+		String signy = (y < 0) ? "NY" : "PY";
 		String namx  = String.format("%s%08d", signx, Math.abs(x));
 		String namy  = String.format("%s%08d", signy, Math.abs(y));
-		String path  = String.format("./data/terrain/%s/%s/CHUNK.DAT", namx, namy);
+		String path  = String.format("./data/terrain/%s/%s.DAT", namx, namy);
 		return path;
 	}
 	//=============================================================================================

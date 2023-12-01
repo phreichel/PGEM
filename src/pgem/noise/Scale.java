@@ -6,7 +6,9 @@ package pgem.noise;
 public class Scale implements Module {
 
 	//=============================================================================================
-	public double scale = 1f;
+	public double sx = 1;
+	public double sy = 1;
+	public double sz = 1;
 	public final Module module;
 	//=============================================================================================
 
@@ -17,15 +19,17 @@ public class Scale implements Module {
 	//=============================================================================================
 
 	//=============================================================================================
-	public Scale(Module module, double scale) {
-		this.scale = scale;
+	public Scale(Module module, double sx, double sy, double sz) {
+		this.sx = sx;
+		this.sy = sy;
+		this.sz = sz;
 		this.module = module;
 	}
 	//=============================================================================================
 	
 	//=============================================================================================
 	public double noise(double x, double y, double z) {
-		return module.noise(x, y, z) * scale;
+		return module.noise(x * sx, y * sy, z *sz);
 	}
 	//=============================================================================================
 

@@ -576,6 +576,7 @@ public class JOGLGraphics implements GLEventListener, Graphics {
 	public void box(boolean filled, float x, float y, float z, float w, float h, float d) {
 		
 		gl.glPushAttrib(GL2.GL_POLYGON_BIT);
+		
 		if (filled) gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
 		else gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
 		
@@ -625,45 +626,146 @@ public class JOGLGraphics implements GLEventListener, Graphics {
 	//=============================================================================================
 	
 	//=============================================================================================
-	public void chunk(Chunk chunk) {
+	public void chunk(Chunk chunk, Chunk chr, Chunk chb, Chunk chbr, float s) {
 
+		var gw = grid(8, s);
+		var gh = grid(8, s);
+
+		if ((chunk.gw == gw) && (chunk.gh == gh)) {
+			gl.glBegin(GL2.GL_TRIANGLES);
+			for (int i=0; i<chunk.w; i += gw) {
+				for (int j=0; j<chunk.h; j += gh) {
+
+					final Vector3f a = chunk.coords[i+0 ][j+0 ]; 
+					final Vector3f b = chunk.coords[i+gw][j+0 ]; 
+					final Vector3f c = chunk.coords[i+gw][j+gh]; 
+					final Vector3f d = chunk.coords[i+0 ][j+gh]; 
+
+					final Vector3f nA = chunk.normals[i+0 ][j+0 ]; 
+					final Vector3f nB = chunk.normals[i+gw][j+0 ]; 
+					final Vector3f nC = chunk.normals[i+gw][j+gh]; 
+					final Vector3f nD = chunk.normals[i+0 ][j+gh]; 
+					
+					gl.glNormal3f(nA.x, nA.y, nA.z);
+					gl.glVertex3f(a.x, a.y, a.z);
+					gl.glNormal3f(nB.x, nB.y, nB.z);
+					gl.glVertex3f(b.x, b.y, b.z);
+					gl.glNormal3f(nC.x, nC.y, nC.z);
+					gl.glVertex3f(c.x, c.y, c.z);
+
+					gl.glNormal3f(nA.x, nA.y, nA.z);
+					gl.glVertex3f(a.x, a.y, a.z);
+					gl.glNormal3f(nC.x, nC.y, nC.z);
+					gl.glVertex3f(c.x, c.y, c.z);
+					gl.glNormal3f(nD.x, nD.y, nD.z);
+					gl.glVertex3f(d.x, d.y, d.z);
+					
+				}
+			}
+			gl.glEnd();
+			return;	
+		}
+		
+		chunk.gw = gw;
+		chunk.gh = gh;
+		if (chunk.coords == null)  chunk.coords  = new Vector3f[chunk.w+1][chunk.h+1];
+		if (chunk.normals == null) chunk.normals = new Vector3f[chunk.w+1][chunk.h+1];
+		
 		gl.glBegin(GL2.GL_TRIANGLES);
-		for (int i=0; i<chunk.w; i++) {
-			for (int j=0; j<chunk.h; j++) {
+		for (int i=0; i<chunk.w; i += gw) {
+			for (int j=0; j<chunk.h; j += gh) {
 				
 				final long cx = chunk.x + i;
 				final long cy = chunk.y + j;
 
-				final Vector3f a = new Vector3f(cx + 0, chunk.alt[i+0][j+0], cy + 0);
-				final Vector3f b = new Vector3f(cx + 1, chunk.alt[i+1][j+0], cy + 0);
-				final Vector3f c = new Vector3f(cx + 1, chunk.alt[i+1][j+1], cy + 1);
-				final Vector3f d = new Vector3f(cx + 0, chunk.alt[i+0][j+1], cy + 1);
-				
-				final Vector3f dAB = new Vector3f();
-				dAB.sub(b, a);
+				final Vector3f a = new Vector3f(cx + 0,  chunk.alt[i+0 ][j+0 ], cy + 0 );
+				final Vector3f b = new Vector3f(cx + gw, chunk.alt[i+gw][j+0 ], cy + 0 );
+				final Vector3f c = new Vector3f(cx + gw, chunk.alt[i+gw][j+gh], cy + gh);
+				final Vector3f d = new Vector3f(cx + 0,  chunk.alt[i+0 ][j+gh], cy + gh);
 
-				final Vector3f dAC = new Vector3f();
-				dAC.sub(c, a);
+				final Vector3f nA = new Vector3f(0, 1, 0);
+				final Vector3f nB = new Vector3f(0, 1, 0);
+				final Vector3f nC = new Vector3f(0, 1, 0);
+				final Vector3f nD = new Vector3f(0, 1, 0);
 
-				final Vector3f dAD = new Vector3f();
-				dAD.sub(d, a);
-	
-				final Vector3f nABC = new Vector3f();
-				nABC.cross(dAC, dAB);
-				nABC.normalize();
+				normal(a, b, c, d, nA);
+
+				if (i<chunk.w-gw) {
+					final Vector3f ar = new Vector3f(cx + gw,   chunk.alt[i+gw  ][j+0 ], cy + 0 );
+					final Vector3f br = new Vector3f(cx + gw*2, chunk.alt[i+gw*2][j+0 ], cy + 0 );
+					final Vector3f cr = new Vector3f(cx + gw*2, chunk.alt[i+gw*2][j+gh], cy + gh);
+					final Vector3f dr = new Vector3f(cx + gw,   chunk.alt[i+gw  ][j+gh], cy + gh);
+					normal(ar, br, cr, dr, nB);
+				} else {
+					final Vector3f ar = new Vector3f(cx + gw,   chr.alt[0 ][j+0 ], cy + 0 );
+					final Vector3f br = new Vector3f(cx + gw*2, chr.alt[gw][j+0 ], cy + 0 );
+					final Vector3f cr = new Vector3f(cx + gw*2, chr.alt[gw][j+gh], cy + gh);
+					final Vector3f dr = new Vector3f(cx + gw,   chr.alt[0 ][j+gh], cy + gh);
+					normal(ar, br, cr, dr, nB);
+				}
+
+				if (j<chunk.h-gh) {
+					final Vector3f ab = new Vector3f(cx + 0,  chunk.alt[i+0 ][j+gh  ], cy + gh);
+					final Vector3f bb = new Vector3f(cx + gw, chunk.alt[i+gw][j+gh  ], cy + gh);
+					final Vector3f cb = new Vector3f(cx + gw, chunk.alt[i+gw][j+gh*2], cy + gh*2);
+					final Vector3f db = new Vector3f(cx + 0,  chunk.alt[i+0 ][j+gh*2], cy + gh*2);
+					normal(ab, bb, cb, db, nD);
+				} else {
+					final Vector3f ab = new Vector3f(cx + 0,  chb.alt[i+0 ][0 ], cy + gh);
+					final Vector3f bb = new Vector3f(cx + gw, chb.alt[i+gw][0 ], cy + gh);
+					final Vector3f cb = new Vector3f(cx + gw, chb.alt[i+gw][gh], cy + gh*2);
+					final Vector3f db = new Vector3f(cx + 0,  chb.alt[i+0 ][gh], cy + gh*2);
+					normal(ab, bb, cb, db, nD);
+				}
+
+				if ((i<chunk.w-gw) && (j<chunk.h-gh)) {
+					final Vector3f abr = new Vector3f(cx + gw,   chunk.alt[i+gw  ][j+gh  ], cy + gh  );
+					final Vector3f bbr = new Vector3f(cx + gw*2, chunk.alt[i+gw*2][j+gh  ], cy + gh  );
+					final Vector3f cbr = new Vector3f(cx + gw*2, chunk.alt[i+gw*2][j+gh*2], cy + gh*2);
+					final Vector3f dbr = new Vector3f(cx + gw,   chunk.alt[i+gw  ][j+gh*2], cy + gh*2);
+					normal(abr, bbr, cbr, dbr, nC);
+				} else if ((i>=chunk.w-gw) && (j<chunk.h-gh)) {
+					final Vector3f abr = new Vector3f(cx + gw,   chr.alt[0 ][j+0 ], cy + 0 );
+					final Vector3f bbr = new Vector3f(cx + gw*2, chr.alt[gw][j+0 ], cy + 0 );
+					final Vector3f cbr = new Vector3f(cx + gw*2, chr.alt[gw][j+gh], cy + gh);
+					final Vector3f dbr = new Vector3f(cx + gw,   chr.alt[0 ][j+gh], cy + gh);
+					normal(abr, bbr, cbr, dbr, nC);
+				} else if ((i<chunk.w-gw) && (j>=chunk.h-gh)) {
+					final Vector3f abr = new Vector3f(cx + 0,  chb.alt[i+0 ][0 ], cy + gh);
+					final Vector3f bbr = new Vector3f(cx + gw, chb.alt[i+gw][0 ], cy + gh);
+					final Vector3f cbr = new Vector3f(cx + gw, chb.alt[i+gw][gh], cy + gh*2);
+					final Vector3f dbr = new Vector3f(cx + 0,  chb.alt[i+0 ][gh], cy + gh*2);
+					normal(abr, bbr, cbr, dbr, nC);
+				} else {
+					final Vector3f abr = new Vector3f(cx + gw,   chbr.alt[0 ][0 ], cy + gh);
+					final Vector3f bbr = new Vector3f(cx + gw*2, chbr.alt[gw][0 ], cy + gh);
+					final Vector3f cbr = new Vector3f(cx + gw*2, chbr.alt[gw][gh], cy + gh*2);
+					final Vector3f dbr = new Vector3f(cx + gw,   chbr.alt[0 ][gh], cy + gh*2);
+					normal(abr, bbr, cbr, dbr, nC);
+				}
+
+				chunk.coords[i+0 ][j+0 ] = a;
+				chunk.coords[i+gw][j+0 ] = b;
+				chunk.coords[i+gw][j+gh] = c;
+				chunk.coords[i+0 ][j+gh] = d;
+
+				chunk.normals[i+0 ][j+0 ] = nA;
+				chunk.normals[i+gw][j+0 ] = nB;
+				chunk.normals[i+gw][j+gh] = nC;
+				chunk.normals[i+0 ][j+gh] = nD;
 				
-				final Vector3f nACD = new Vector3f();
-				nACD.cross(dAD, dAC);
-				nACD.normalize();
-				
-				gl.glNormal3f(nABC.x, nABC.y, nABC.z);
+				gl.glNormal3f(nA.x, nA.y, nA.z);
 				gl.glVertex3f(a.x, a.y, a.z);
+				gl.glNormal3f(nB.x, nB.y, nB.z);
 				gl.glVertex3f(b.x, b.y, b.z);
+				gl.glNormal3f(nC.x, nC.y, nC.z);
 				gl.glVertex3f(c.x, c.y, c.z);
 
-				gl.glNormal3f(nACD.x, nACD.y, nACD.z);
+				gl.glNormal3f(nA.x, nA.y, nA.z);
 				gl.glVertex3f(a.x, a.y, a.z);
+				gl.glNormal3f(nC.x, nC.y, nC.z);
 				gl.glVertex3f(c.x, c.y, c.z);
+				gl.glNormal3f(nD.x, nD.y, nD.z);
 				gl.glVertex3f(d.x, d.y, d.z);
 				
 			}
@@ -673,5 +775,38 @@ public class JOGLGraphics implements GLEventListener, Graphics {
 	}
 	//=============================================================================================
 
+	//=============================================================================================
+	private Vector3f normal(Vector3f a, Vector3f b, Vector3f c, Vector3f d, Vector3f dst) {
+		final Vector3f nABC = new Vector3f();
+		final Vector3f nACD = new Vector3f();
+		normal(a, b, c, nABC);
+		normal(a, c, d, nACD);
+		dst.add(nABC, nACD);
+		dst.normalize();
+		return dst;
+	}
+	//=============================================================================================
+	
+	//=============================================================================================
+	private Vector3f normal(Vector3f a, Vector3f b, Vector3f c, Vector3f dst) {
+		final Vector3f dAB = new Vector3f();
+		final Vector3f dAC = new Vector3f();
+		dAB.sub(b, a);
+		dAC.sub(c, a);
+		dst.cross(dAC, dAB);
+		dst.normalize();
+		return dst;
+	}
+	//=============================================================================================
+	
+	//=============================================================================================
+	private int grid(int max, float s) {
+		s = Math.min(1, s);
+		int grid = (int) Math.ceil(s * max);
+		if (grid<1) grid = 1;
+		return (1 << grid);
+	}
+	//=============================================================================================
+	
 }
 //*************************************************************************************************
