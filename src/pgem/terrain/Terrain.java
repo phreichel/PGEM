@@ -20,7 +20,7 @@ public class Terrain {
 	private final TerrainStorage       storage;
 	private final HashMap<UUID, Chunk> cache = new HashMap<>();
 	//=============================================================================================
-	
+
 	//=============================================================================================
 	public Terrain() {
 		storage   = new TerrainStorage();
@@ -60,8 +60,8 @@ public class Terrain {
 		}
 		
 		chunk = generator.generate(cx, cy);
-		storage.store(chunk);
 		cache.put(uuid, chunk);
+		storage.store(chunk);
 		return chunk;
 
 	}
@@ -82,6 +82,13 @@ public class Terrain {
 		iy /= CHUNK_HEIGHT;
 		iy *= CHUNK_HEIGHT;
 		return iy;
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public void done() {
+		generator.done();
+		storage.done();
 	}
 	//=============================================================================================
 	

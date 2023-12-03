@@ -2,6 +2,8 @@
 package pgem.terrain;
 //*************************************************************************************************
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Random;
 
 import pgem.noise.Add;
@@ -22,6 +24,15 @@ public class TerrainGenerator {
 	//=============================================================================================
 	private pgem.noise.Module alt;
 	//=============================================================================================
+
+	//=============================================================================================
+	private boolean stop = false;
+	//=============================================================================================
+	
+	//=============================================================================================
+	private Deque<Chunk> chunks = new ArrayDeque<>();
+	private Thread worker = new Thread(this::run);
+	//=============================================================================================
 	
 	//=============================================================================================
 	public TerrainGenerator(long seed, short w, short h) {
@@ -37,13 +48,48 @@ public class TerrainGenerator {
 		x = x - x % w;
 		y = y - y % h;
 		Chunk chunk = new Chunk(x, y, w, h);
-		genALT(chunk);
+		chunk.modified(true);
+		push(chunk);
 		return chunk;
 	}
 	//=============================================================================================
 
 	//=============================================================================================
+	private synchronized void push(Chunk chunk) {
+		chunks.offer(chunk);
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public void run() {
+		while (true) {
+			if (update() && stop) break;
+			try {
+				Thread.sleep(1L);
+			} catch (InterruptedException e) {}
+		}
+	}
+	//=============================================================================================
+	
+	//=============================================================================================
+	public boolean update() {
+		Chunk chunk = null;
+		synchronized (this) {
+			chunk = chunks.poll();
+		}
+		if (chunk != null) {
+			genALT(chunk);
+			chunk.loaded(true);
+			return false;
+		} else {
+			return true;
+		}
+	}
+	//=============================================================================================
+	
+	//=============================================================================================
 	private void initALT() {
+
 		Random rnd = new Random(seed);
 		
 		Perlin  shape  = new Perlin(rnd.nextLong());
@@ -52,13 +98,16 @@ public class TerrainGenerator {
 		
 		Perlin  detail = new Perlin(rnd.nextLong());
 		Octave  octave = new Octave(detail, 4);
-		Amplify damp   = new Amplify(octave, 4);
-		Scale   dscale = new Scale(damp, .1, 1, .1); 
+		Amplify damp   = new Amplify(octave, 10);
+		Scale   dscale = new Scale(damp, .03, 1, .03); 
 
 		Add add = new Add(sscale, dscale);
 		
 		alt = add;
 
+		worker.setDaemon(true);
+		worker.start();
+		
 	}
 	//=============================================================================================
 	
@@ -73,6 +122,19 @@ public class TerrainGenerator {
 				chunk.hi = Math.max(chunk.hi, value); 
 				chunk.alt[i][j] = value;
 			}
+		}
+	}
+	//=============================================================================================
+
+	//=============================================================================================
+	public void done() {
+		stop = true;
+		boolean joined = false;
+		while (!joined) {
+			try {
+				worker.join();
+				joined = true;
+			} catch (InterruptedException e) {}			
 		}
 	}
 	//=============================================================================================

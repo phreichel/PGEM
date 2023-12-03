@@ -45,6 +45,9 @@ public class TerrainNode extends Node {
 		for (int i=0; i<chunks.size(); i++) {
 
 			Chunk chunk = chunks.get(i);
+			
+			if (!chunk.loaded()) continue;
+			
 			float h = (chunk.lo + chunk.hi) * .5f;
 			float r = (float)
 				Math.sqrt(

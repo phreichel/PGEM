@@ -89,7 +89,9 @@ public final class App {
 			msgbox.update();
 			controller.update();
 			host.update();
-			Thread.yield();
+			try {
+				Thread.sleep(1L);
+			} catch (InterruptedException e) {}
 		}
 	}
 	//=============================================================================================
@@ -98,6 +100,7 @@ public final class App {
 	private void done() {
 		msgbox.unplug(this::handleQuit);
 		host.done();
+		terrain.done();
 	}
 	//=============================================================================================
 
