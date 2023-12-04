@@ -706,7 +706,7 @@ public class JOGLGraphics implements GLEventListener, Graphics {
 						final Vector3f br = new Vector3f(cx + gw*2, chr.alt[gw][j+0 ], cy + 0 );
 						final Vector3f cr = new Vector3f(cx + gw*2, chr.alt[gw][j+gh], cy + gh);
 						final Vector3f dr = new Vector3f(cx + gw,   chr.alt[0 ][j+gh], cy + gh);
-						//normal(ar, br, cr, dr, nB);
+						normal(ar, br, cr, dr, nB);
 					}
 	
 					if (j<chunk.h-gh) {
