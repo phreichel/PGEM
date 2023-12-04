@@ -13,6 +13,8 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 //*************************************************************************************************
 public class TerrainStorage {
@@ -26,7 +28,7 @@ public class TerrainStorage {
 	//=============================================================================================
 	
 	//=============================================================================================
-	private Deque<Chunk> loading = new ArrayDeque<>();
+	private Queue<Chunk> loading = new PriorityQueue<>((a, b) -> Double.compare(a.distance, b.distance));
 	private Thread loadThread = new Thread(this::runLoad);
 	//=============================================================================================
 
@@ -51,10 +53,11 @@ public class TerrainStorage {
 	//=============================================================================================
 	
 	//=============================================================================================
-	public Chunk load(long x, long y) {
+	public Chunk load(long x, long y, double d) {
 		File file = new File(path(x, y));
 		if (!file.exists()) return null;
-		Chunk chunk = new Chunk(x, y, Terrain.CHUNK_WIDTH, Terrain.CHUNK_WIDTH);
+		Chunk chunk = new Chunk(x, y);
+		chunk.distance = d;
 		synchronized (this) {
 			loading.offer(chunk);
 		}

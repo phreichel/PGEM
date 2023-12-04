@@ -4,7 +4,6 @@ package pgem.terrain;
 
 import java.io.Serializable;
 import java.util.UUID;
-
 import javax.vecmath.Vector3f;
 
 //*************************************************************************************************
@@ -30,6 +29,7 @@ public class Chunk implements Serializable {
 
 	//=============================================================================================
 	public transient boolean loaded   = false;
+	public transient double  distance = Double.MAX_VALUE;
 	public transient boolean modified = false;
 	public transient int gw = -1;
 	public transient int gh = -1;
@@ -38,11 +38,11 @@ public class Chunk implements Serializable {
 	//=============================================================================================
 
 	//=============================================================================================
-	public Chunk(long x, long y, short w, short h) {
-		this.x= x;
-		this.y= y;
-		this.w= w;
-		this.h= h;
+	public Chunk(long x, long y) {
+		this.x = x;
+		this.y = y;
+		this.w = Terrain.CHUNK_WIDTH;
+		this.h = Terrain.CHUNK_HEIGHT;
 		this.uuid = genUUID(x, y);
 		alt = new float[w+1][h+1];
 	}

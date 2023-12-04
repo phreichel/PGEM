@@ -10,12 +10,13 @@ import java.util.UUID;
 public class Terrain {
 
 	//=============================================================================================
-	public static final short CHUNK_WIDTH  = (short) 256;
-	public static final short CHUNK_HEIGHT = (short) 256;
+	public static final int CHUNK_POWER  = 8;
+	public static final int CHUNK_WIDTH  = 2 << (CHUNK_POWER-1);
+	public static final int CHUNK_HEIGHT = 2 << (CHUNK_POWER-1);
 	//=============================================================================================
 	
 	//=============================================================================================
-	public  final long seed = 0L; 
+	public  final long seed = 0L;
 	private final TerrainGenerator     generator;
 	private final TerrainStorage       storage;
 	private final HashMap<UUID, Chunk> cache = new HashMap<>();
@@ -24,7 +25,7 @@ public class Terrain {
 	//=============================================================================================
 	public Terrain() {
 		storage   = new TerrainStorage();
-		generator = new TerrainGenerator(seed, CHUNK_WIDTH, CHUNK_HEIGHT);
+		generator = new TerrainGenerator(seed);
 	}
 	//=============================================================================================
 
@@ -34,17 +35,25 @@ public class Terrain {
 		final int ny = (int) Math.ceil((r*2) / CHUNK_HEIGHT);
 		for (int i=0; i<nx; i++) {
 			for (int j=0; j<ny; j++) {
-				Chunk chunk = chunk(
-					x - r + (i*CHUNK_WIDTH),
-					y - r + (j*CHUNK_HEIGHT));
-				if (chunks != null) chunks.add(chunk);
+				double cx = x - r + (i*CHUNK_WIDTH);
+				double cy = y - r + (j*CHUNK_HEIGHT);
+				double dx = x - (cx + CHUNK_WIDTH * .5);
+				double dy = y - (cy + CHUNK_HEIGHT * .5);
+				double d = Math.sqrt(dx*dx + dy*dy); 
+				if ((chunks != null) && d<r) {
+					Chunk chunk = chunk(
+						cx,
+						cy,
+						d);
+					chunks.add(chunk);
+				}
 			}
 		}
 	}
 	//=============================================================================================
 	
 	//=============================================================================================
-	public Chunk chunk(double x, double y) {
+	public Chunk chunk(double x, double y, double d) {
 
 		long cx = chunkX(x);
 		long cy = chunkY(y);
@@ -53,13 +62,13 @@ public class Terrain {
 		Chunk chunk = cache.get(uuid);
 		if (chunk != null) return chunk;
 		
-		chunk = storage.load(cx, cy);
+		chunk = storage.load(cx, cy, d);
 		if (chunk != null) {
 			cache.put(uuid, chunk);
 			return chunk;
 		}
 		
-		chunk = generator.generate(cx, cy);
+		chunk = generator.generate(cx, cy, d);
 		cache.put(uuid, chunk);
 		storage.store(chunk);
 		return chunk;

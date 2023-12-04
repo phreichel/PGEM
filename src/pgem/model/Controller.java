@@ -152,7 +152,7 @@ public class Controller {
 	//=============================================================================================
 	private void updateFreeMovement(float dT) {
 		
-		final float SCALE_TRS = 10f;
+		final float SCALE_TRS = 5f;
 		final float SCALE_ROT = 1f;
 		
 		Vector3f tl = new Vector3f();
