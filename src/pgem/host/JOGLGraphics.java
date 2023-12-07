@@ -627,8 +627,13 @@ public class JOGLGraphics implements GLEventListener, Graphics {
 	//=============================================================================================
 	
 	//=============================================================================================
-	public void chunk(Chunk chunk, Chunk chr, Chunk chb, Chunk chbr, float s) {
+	public void chunk(Chunk chunk, Chunk chr, Chunk chb, Chunk chbr, float s, boolean filled) {
 
+		gl.glPushAttrib(GL2.GL_POLYGON_BIT);
+		
+		if (filled) gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL);
+		else gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINE);
+		
 		var gw = grid(Terrain.CHUNK_POWER, s);
 		var gh = grid(Terrain.CHUNK_POWER, s);
 
@@ -776,9 +781,8 @@ public class JOGLGraphics implements GLEventListener, Graphics {
 				}
 			}
 			gl.glEnd();
-			
 		}
-
+		gl.glPopAttrib();
 	}
 	//=============================================================================================
 

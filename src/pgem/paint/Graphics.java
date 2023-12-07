@@ -71,7 +71,7 @@ public interface Graphics {
 	//=============================================================================================
 
 	//=============================================================================================
-	public void chunk(Chunk chunk, Chunk chr, Chunk chb, Chunk chbr, float s);
+	public void chunk(Chunk chunk, Chunk chr, Chunk chb, Chunk chbr, float s, boolean filled);
 	//=============================================================================================
 	
 }

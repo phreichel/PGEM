@@ -41,7 +41,7 @@ public class TerrainNode extends Node {
 		g.color(.7f, 1, 0);
 		
 		final List<Chunk> chunks = new ArrayList<>();
-		terrain.load(cpos.x, cpos.z, 10000, chunks);
+		terrain.load(cpos.x, cpos.z, 5000, chunks);
 		for (int i=0; i<chunks.size(); i++) {
 
 			Chunk chunk = chunks.get(i);
@@ -67,7 +67,7 @@ public class TerrainNode extends Node {
 				var chr = terrain.chunk(chunk.x + chunk.w + 1, chunk.y, chunk.distance);
 				var chb = terrain.chunk(chunk.x, chunk.y + chunk.h + 1, chunk.distance);
 				var chbr = terrain.chunk(chunk.x + chunk.w + 1, chunk.y + chunk.h + 1, chunk.distance);
-				g.chunk(chunk, chr, chb, chbr, d/5000f);
+				g.chunk(chunk, chr, chb, chbr, d/2500f, false);
 			}
 		}
 
