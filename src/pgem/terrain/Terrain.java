@@ -10,7 +10,7 @@ import java.util.UUID;
 public class Terrain {
 
 	//=============================================================================================
-	public static final int CHUNK_POWER  = 8;
+	public static final int CHUNK_POWER  = 7;
 	public static final int CHUNK_WIDTH  = 2 << (CHUNK_POWER-1);
 	public static final int CHUNK_HEIGHT = 2 << (CHUNK_POWER-1);
 	//=============================================================================================

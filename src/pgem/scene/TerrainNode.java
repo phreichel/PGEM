@@ -67,7 +67,7 @@ public class TerrainNode extends Node {
 				var chr = terrain.chunk(chunk.x + chunk.w + 1, chunk.y, chunk.distance);
 				var chb = terrain.chunk(chunk.x, chunk.y + chunk.h + 1, chunk.distance);
 				var chbr = terrain.chunk(chunk.x + chunk.w + 1, chunk.y + chunk.h + 1, chunk.distance);
-				g.chunk(chunk, chr, chb, chbr, d/2500f, false);
+				g.chunk(chunk, chr, chb, chbr, d/2500f, true);
 			}
 		}
 
